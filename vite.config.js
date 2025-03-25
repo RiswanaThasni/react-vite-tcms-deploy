@@ -7,6 +7,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [  tailwindcss(),
     react()],
+    base: process.env.VITE_BASE_PATH || '/react-vite-tcms-deploy', 
     server:{
       host:'0.0.0.0',
       port:5173
