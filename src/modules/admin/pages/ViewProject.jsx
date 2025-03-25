@@ -77,6 +77,8 @@ const ViewProject = () => {
               </div>
               <div className="mt-2 p-2 bg-gray-00 bg-opacity-40 rounded text-xs">
                 <p className="text-custom1 text-xs line-clamp-2">{project.project_description}</p>
+                <h1>hiii</h1>
+
               </div>
             </div>
           ))}
