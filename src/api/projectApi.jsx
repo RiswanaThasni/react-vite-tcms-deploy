@@ -272,7 +272,7 @@ export const fetchProjectManagers = async () => {
 
     export const ListProjectByAdmin = async () => {
       try {
-        const response = await axiosInstance.get("/api/admin/recent-projects/", {
+        const response = await axiosInstance.get("/api/project_list/", {
           headers: {
             "Content-Type": "application/json",
           },
