@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .bg-radial-custom {
+    background: radial-gradient(circle, #FFF8F8, #D9D9D9);
+  }
+  .bg-radial-custom1 {
+    background: radial-gradient(circle, #F2EDED, #DBDBDB);
+  }
+  .bg-custom{
+      background-color: #7A7EA1;
+  }
+  .bg-custom-dark{
+      background-color: #474b5c;
+  }
+  .text-custom{
+      color: #7A7EA1 ;
+  }
+  .text-custom-dark{
+      color: #4c6bdd;
+  }
+  .text-custom1{
+    color: #474b5c;
+  }
+  .bg-card1{
+    background-color: #BA6ADF;
+  }
+  .bg-card2{
+    background-color: #43A6C1;
+  }
+  .bg-card3{
+    background-color: #EE9A3B;
+  }
+  .bg-card4{
+    background-color: #E80A84;
+  }
+}
+
+

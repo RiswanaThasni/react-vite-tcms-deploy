@@ -1,0 +1,180 @@
+import axios from "axios";
+import { API_URL } from '../utils/constants';
+import { refreshAccessToken } from './authApi' 
+
+export const fetchDevelopersByProject = async (projectId) => {
+  let accessToken = localStorage.getItem("access_token");
+  
+  try {
+    const response = await axios.get(`${API_URL}/api/projects/${projectId}/developers/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+     
+      try {
+        accessToken = await refreshAccessToken();
+        
+        // Retry API request with new token
+        const retryResponse = await axios.get(`${API_URL}/projects/${projectId}/developers/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        return retryResponse.data;
+
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error fetching developers:", error.response?.data || error.message);
+      throw new Error("Failed to load developers. Please try again.");
+    }
+  }
+};
+
+
+
+
+// Function to fetch developer tasks
+export const listDeveloperTasks = async () => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/developer/tasks/`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data; // Return task data
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken(); // Refresh token
+        const retryResponse = await axios.get(`${API_URL}/api/developer/tasks/`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        return retryResponse.data;
+      } catch (refreshError) {
+        throw new Error("Session expired. Please log in again.");
+      }
+    }
+    throw error;
+  }
+};
+
+export const getTaskById = async (taskId) => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/developer/tasks/${taskId}/`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Failed to fetch task details");
+  }
+};
+
+
+export const updateTaskStatus = async (taskId, newStatus) => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/api/developer/tasks/${taskId}/update-status/`,
+      { status: newStatus },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        // Refresh token
+        accessToken = await refreshAccessToken();
+        localStorage.setItem("access_token", accessToken); // Store new token
+
+        // Retry the request
+        const retryResponse = await axios.patch(
+          `${API_URL}/api/developer/tasks/${taskId}/update-status/`,
+          { status: newStatus },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        return retryResponse.data;
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error updating task status:", error.response?.data || error.message);
+      throw new Error("Failed to update task status.");
+    }
+  }
+};
+
+
+
+// Function to fetch tasks
+export const getTasks = async () => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/developer/track_task_list/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,  // Pass the token in the header
+      },
+    });
+    
+    // Check if the response contains the expected 'tasks' array
+    if (response.data && Array.isArray(response.data.tasks)) {
+      return response.data;  // Return the full response containing the tasks array
+    } else {
+      throw new Error("Tasks data is not in the expected format");
+    }
+    
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken();  // Refresh the token
+
+        // Store the new access token in localStorage
+        localStorage.setItem("access_token", accessToken);
+
+        // Retry the request with the new access token
+        const retryResponse = await axios.get(`${API_URL}/api/developer/track_task_list/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,  // Pass the new token
+          },
+        });
+
+        return retryResponse.data;  // Return the updated tasks data
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    }
+
+    console.error("Error fetching tasks:", error.message);  // Log the error message
+    throw new Error("Failed to fetch tasks. Please try again.");
+  }
+};
+
+
+
