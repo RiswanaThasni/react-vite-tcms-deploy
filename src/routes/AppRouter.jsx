@@ -34,8 +34,7 @@ import Tasks from '../modules/developer/pages/Tasks'
 import Tests from '../modules/test engineer/pages/Tests'
 import ProjectDetails from '../modules/project manager/pages/ProjectDetails'
 import Bugs from '../modules/test engineer/pages/Bugs'
-
-
+import AdminProjectDetails from '../modules/admin/pages/AdminProjectDetails'
 
 
 const AppRouter = () => {
@@ -57,6 +56,7 @@ const AppRouter = () => {
     <Route path="/admin_dashboard/user_management" element={<UserManagement />} />
     <Route path="/admin_dashboard/overview" element={<ViewProject />} />
     <Route path="/admin_dashboard/report_analysis" element={<Report />} />
+    <Route path='/admin_dashboard/project_details/:projectId' element={<AdminProjectDetails/>}/>
   </Route>
 </Route>
 

@@ -88,7 +88,7 @@ const [showProfile, setShowProfile] = useState(false);
       {/* Left Section - Dynamic Title */}
       <div className="flex items-center space-x-3">
         <button className="md:hidden p-2" onClick={toggleSidebar}>
-          <FiMenu size={24} className="text-custom-dark !text-[#4c6bdd]" />
+          {/* <FiMenu size={24} className="text-custom-dark !text-[#4c6bdd]" /> */}
         </button>
         <span className="text-2xl font-bold mb-4 text-custom1">
           {selectedPage} {/*  Display Dynamic Page Title */}

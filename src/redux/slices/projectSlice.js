@@ -23,6 +23,17 @@ export const viewProjectsByProjectManager = createAsyncThunk("projects/viewProje
   }
 })
 
+export const viewProjectsByAdmin = createAsyncThunk("projects/viewProjectsByAdmin",async (token,{rejectWithValue}) =>{
+  try{
+    const data = await viewProject(token)
+    return data
+  }
+  catch (error){
+    return rejectWithValue(error.response?.data || error.message)
+
+  }
+})
+
 export const getProjectByLead = createAsyncThunk("projects/getProjectByLead", async (token, { rejectWithValue }) => {
   try {
     const data = await fetchProjectByLead(token);
@@ -97,6 +108,18 @@ const projectSlice = createSlice({
         state.projects = action.payload;
       })
       .addCase(viewProjectsByProjectManager.rejected,(state,action)=>{
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(viewProjectsByAdmin.pending,(state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(viewProjectsByAdmin.fulfilled,(state,action)=>{
+        state.loading = false;
+        state.projects = action.payload;
+      })
+      .addCase(viewProjectsByAdmin.rejected,(state,action)=>{
         state.loading = false;
         state.error = action.payload;
       })

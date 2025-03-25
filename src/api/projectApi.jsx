@@ -237,7 +237,6 @@ export const fetchProjectManagers = async () => {
       }
     }
 
-
     export const viewProject = async(projectId)=>{
       try{
         const response = await axiosInstance.get(`${API_URL}/api/project/details/${projectId}/`)
@@ -272,7 +271,7 @@ export const fetchProjectManagers = async () => {
 
     export const ListProjectByAdmin = async () => {
       try {
-        const response = await axiosInstance.get("/api/project_list/", {
+        const response = await axiosInstance.get("/api/admin/recent-projects/", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -283,6 +282,7 @@ export const fetchProjectManagers = async () => {
         throw error;
       }
     };
+
   
 
 

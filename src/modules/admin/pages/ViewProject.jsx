@@ -31,7 +31,7 @@ const ViewProject = () => {
 
   // Function to handle navigation when a project is clicked
   const handleProjectClick = (projectId) => {
-    navigate(`/project-details/${projectId}`);
+    navigate(`/admin_dashboard/project_details/${projectId}`);
   };
 
   if (loading) {
@@ -68,7 +68,7 @@ const ViewProject = () => {
             <div
               key={project.id}
               className="bg-gray-100 p-3 rounded-md  cursor-pointer"
-              // onClick={() => handleProjectClick(project.id)}
+              onClick={() => handleProjectClick(project.id)}
             >
               <div className="flex items-start justify-between mb-2">
                 <div>
