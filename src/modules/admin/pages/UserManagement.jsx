@@ -4,6 +4,7 @@ import { fetchUsers, deleteUser } from "../../../redux/slices/userSlice";
 import AddUserPopup from "../../../components/ui/AddUserPopup";
 import { FiMoreVertical } from "react-icons/fi";
 import { fetchRole } from "../../../api/userApi";
+import { Search } from "lucide-react";
 
 const UserManagement = () => {
   const dispatch = useDispatch();
@@ -17,25 +18,17 @@ const UserManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState("all")
 
   useEffect(() => {
-    dispatch(fetchUsers()); // Fetch users from Redux store
-  }, [dispatch]);
-
-  useEffect(() => {
-    console.log("Fetched Users:", users); // Debugging API response
-  }, [users]); 
-
-  useEffect(() => {
-    // Fetch roles from API
+    dispatch(fetchUsers());
     const getRoles = async () => {
       try {
-        const data = await fetchRole(); // API Call
-        setRole(data); // Ensure this matches your API response structure
+        const data = await fetchRole();
+        setRole(data);
       } catch (error) {
         console.error("Error fetching roles:", error);
       }
     };
     getRoles();
-  }, []);
+  }, [dispatch]);
 
   const toggleMenu = (userId) => {
     setMenuOpen(menuOpen === userId ? null : userId);
@@ -65,40 +58,41 @@ const UserManagement = () => {
   
     return matchesSearch && matchesRole && matchesStatus;
   });
-  
-  
-  
-  
-  
 
   return (
-    <div className="p-4 w-full">
-      <div className="justify-between flex items-center mb-4">
-        <div className="flex items-center gap-5">
-          <input
-            type="text"
-            placeholder="Search by name or email"
-            className="border-null w-md bg-gray-200 rounded-lg p-2"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+    <div className="p-2">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="relative flex-grow">
+            <input
+              type="text"
+              placeholder="Search by name or email"
+              className="w-full p-1.5 pl-7 text-xs bg-gray-100 rounded-md border border-gray-200"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className="absolute left-2 top-2 text-gray-400" size={14} />
+          </div>
 
-          <select
-            className="bg-gray-200 w-40 rounded-lg border-null p-2"
+         
+        </div>
+
+        <div className="flex flex-row gap-1.5">
+        <select
+            className="bg-gray-100 text-xs rounded-md border border-gray-200 p-1.5"
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
           >
             <option value="all">All Roles</option>
-
-            {/* Map API roles */}
             {role.map((roles, index) => (
-              <option key={index} value={roles.id.toString()}>
+              <option key={index} value={roles.id.toString()} className="text-xs">
                 {roles.role_name}
               </option>
             ))}
           </select>
+
           <select
-            className="bg-gray-200 w-40 rounded-lg border-null p-2"
+            className="bg-gray-100 text-xs rounded-md border border-gray-200 p-1.5"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -106,78 +100,83 @@ const UserManagement = () => {
             <option value="active">Active Users</option>
             <option value="inactive">Inactive Users</option>
           </select>
-        </div>
+          <div className="relative">
+          <button
+    className="flex items-center bg-yellow-400 text-black rounded-md px-2 py-1"
+    onClick={() => setShowPopup(true)}
+  >
+    <span className="mr-1 text-sm font-bold">+</span>
+    <span className="text-xs">Add User</span>
+  </button>
 
-        <button
-          className="flex items-center bg-yellow-400 text-black rounded-md px-3 py-2"
-          onClick={() => setShowPopup(true)}
-        >
-          <span className="mr-2 font-bold text-lg">+</span>
-          <span>Add User</span>
-        </button>
+ 
+</div>
+
+        </div>
+       
+
+        
       </div>
 
       <div className="bg-gray-100 rounded-lg overflow-hidden">
-        {loading && <p className="text-center p-4">Loading users...</p>}
-        {error && <p className="text-red-500 text-center p-4">{error}</p>}
+        {loading && <p className="text-center text-xs p-2">Loading users...</p>}
+        {error && <p className="text-red-500 text-center text-xs p-2">{error}</p>}
 
-        <table className="w-full">
+        <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-6 font-medium"></th>
-              <th className="text-left py-3 px-6 font-medium">Employee ID</th>
-              <th className="text-left py-3 px-6 font-medium">Name</th>
-              <th className="text-left py-3 px-6 font-medium">Email</th>
-              <th className="text-left py-3 px-6 font-medium">Role</th>
-              <th className="text-left py-3 px-6 font-medium">Status</th>
-              <th className="text-left py-3 px-6 font-medium"></th>
+            <tr className="border-b border-gray-200 bg-gray-200">
+              <th className="text-left p-2"></th>
+              <th className="text-left p-2">Employee ID</th>
+              <th className="text-left p-2">Name</th>
+              <th className="text-left p-2">Email</th>
+              <th className="text-left p-2">Role</th>
+              <th className="text-left p-2">Status</th>
+              <th className="text-left p-2"></th>
             </tr>
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
               <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="py-4 px-6">
+                <td className="p-2">
                   {user?.profile_picture ? (
                     <img
                       src={user.profile_picture}
                       alt="Profile"
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-7 h-7 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-gray-600 text-sm">N/A</span>
+                    <div className="w-7 h-7 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span className="text-gray-600 text-[10px]">N/A</span>
                     </div>
                   )}
                 </td>
-                <td className="py-4 px-6">{user?.user_id || "N/A"}</td>
-
-
-                <td className="py-4 px-6">{user?.name || "N/A"}</td>
-                <td className="py-4 px-6">{user?.email || "N/A"}</td>
-                <td className="py-4 px-6">{user?.role || "N/A"}</td>
+                <td className="p-2">{user?.user_id || "N/A"}</td>
+                <td className="p-2">{user?.name || "N/A"}</td>
+                <td className="p-2">{user?.email || "N/A"}</td>
+                <td className="p-2">{user?.role || "N/A"}</td>
                 <td
-                  className={`py-4 px-6 font-bold ${
+                  className={`p-2 font-bold ${
                     user.status === "active" ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {user?.status || "Inactive"}
                 </td>
-                <td className="py-4 px-6 relative">
-                  <button onClick={() => toggleMenu(user.id)} className="p-2">
-                    <FiMoreVertical size={20} />
+                <td className="p-2 relative">
+                  <button onClick={() => toggleMenu(user.id)} className="p-1">
+                    <FiMoreVertical size={14} />
                   </button>
                   {menuOpen === user.id && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white shadow-md rounded-md z-10">
+                    <div className="absolute right-0 mt-1 w-32 bg-white shadow-md rounded-md z-10 text-xs border">
                       <button
                         onClick={() => handleEditUser(user.id)}
-                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                        className="block w-full text-left px-2 py-1.5 hover:bg-gray-100"
                       >
                         Edit
                       </button>
 
                       <button
                         onClick={() => handleDeleteUser(user.id)}
-                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        className="block w-full text-left px-2 py-1.5 text-red-600 hover:bg-gray-100"
                       >
                         Inactive User
                       </button>
@@ -188,9 +187,16 @@ const UserManagement = () => {
             ))}
           </tbody>
         </table>
+
+        {filteredUsers.length === 0 && (
+          <div className="text-center text-gray-500 text-xs py-2">
+            No users found
+          </div>
+        )}
       </div>
 
       {showPopup && <AddUserPopup onClose={() => setShowPopup(false)} />}
+
     </div>
   );
 };
