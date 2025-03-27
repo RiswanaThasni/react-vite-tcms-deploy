@@ -7,12 +7,12 @@ export default defineConfig({
   plugins: [  tailwindcss(),
     react()],
     // base: process.env.VITE_BASE_PATH || '/react-vite-tcms-deploy', 
+    base: '/',
     server:{
       host:'0.0.0.0',
       port:5173
     },
-    base:'/',
     build: {
-    outDir: 'dist' // Ensure the output directory matches the deployment target
-  }
+      outDir: 'dist'
+    }
 })
