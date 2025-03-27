@@ -49,7 +49,7 @@ const SideBar = ({ setSelectedPage }) => {
     <>
       {/* Sidebar for Large Screens */}
       <div className="hidden md:flex flex-col items-center bg-gray-100 fixed left-0 top-0 h-full w-20 py-6">
-        <img src={logo} className="w-18 h-18 mb-10" alt="logo" />
+        <img src={logo} className="w-18 h-18 mb-18" alt="logo" />
         
         {/* Navigation Buttons */}
         <div className="flex flex-col flex-grow items-center gap-4">
