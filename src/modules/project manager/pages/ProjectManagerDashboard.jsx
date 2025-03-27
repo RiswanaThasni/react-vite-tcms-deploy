@@ -3,26 +3,41 @@ import { Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 
-
 const ProjectManagerDashboard = () => {
-const [selectedPage, setSelectedPage] = useState(
+  const [selectedPage, setSelectedPage] = useState(
     localStorage.getItem("selectedPage") || "Dashboard"
   );
 
-   useEffect(() => {
-      localStorage.setItem("selectedPage", selectedPage);
-    }, [selectedPage]);
+  useEffect(() => {
+    localStorage.setItem("selectedPage", selectedPage);
+  }, [selectedPage]);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="flex min-h-screen bg-white ">
-      <SideBar setSelectedPage={setSelectedPage} />
+    <div className="flex min-h-screen bg-white">
+      <SideBar 
+        setSelectedPage={setSelectedPage} 
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
+      
       <div className="flex-1 flex flex-col">
-        <NavBar selectedPage={selectedPage} />
-        <main className="p-6 mt-16 md:ml-40">
-        <Outlet />
+        <NavBar 
+          selectedPage={selectedPage} 
+          toggleSidebar={toggleSidebar}
+        />
+        
+        <main className="flex-1 p-4 md:ml-20 mt-16">
+          <Outlet />
         </main>
       </div>
     </div>
   );
 };
 
-export default ProjectManagerDashboard;
+export default ProjectManagerDashboard

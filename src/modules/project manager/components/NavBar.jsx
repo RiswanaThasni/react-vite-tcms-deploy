@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { fetchUserNotifications } from "../../../redux/slices/notificationSlice";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { changePassword } from "../../../api/userApi";
+import { FaBell } from "react-icons/fa";
+import {  markNotificationsRead } from "../../../redux/slices/notificationSlice";
 
 const NavBar = ({ toggleSidebar, selectedPage }) => {
   const dispatch = useDispatch();
@@ -13,7 +15,9 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
 
   const profileData = useSelector((state) => state.profile.data);
   const user = useSelector((state) => state.auth.user);
-
+    const { list: notifications, unreadCount } = useSelector((state) => state.notifications);
+  
+  const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState({
@@ -36,9 +40,26 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   const notificationRef = useRef(null);
 
   useEffect(() => {
-    dispatch(fetchUserNotifications());
-    dispatch(fetchUserProfile());
-  }, [dispatch]);
+      dispatch(fetchUserNotifications());
+      dispatch(fetchUserProfile());
+    }, [dispatch]);
+  
+    const handleOpenNotifications = () => {
+      setShowNotifications((prev) => !prev);
+  
+      if (!showNotifications) {
+        dispatch(fetchUserNotifications());
+      }
+  
+      if (unreadCount > 0) {
+        notifications.forEach((notif) => {
+          if (notif.status === "unread") {
+            dispatch(markNotificationsRead(notif.id));
+          }
+        });
+      }
+    };
+  
 
   
 
@@ -165,20 +186,54 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   }, [isLoading]);
 
   return (
-    <div className="fixed top-0 left-45 bg-white md:left-45 w-full md:w-[calc(100%-10rem)] py-4 px-6 flex items-center justify-between z-50">
+    <div className="fixed top-0 left-0 md:left-20 bg-white w-full md:w-[calc(100%-5rem)] py-4 px-6 flex items-center justify-between z-50">
       {/* Left Section - Dynamic Title */}
       <div className="flex items-center space-x-3">
         <button className="md:hidden p-2" onClick={toggleSidebar}>
           <FiMenu size={24} className="text-custom-dark !text-[#4c6bdd]" />
         </button>
-        <span className="text-2xl font-bold mb-4 text-custom1">
+        <span className="text-xl font-bold mb-4 text-custom1">
           {selectedPage} {/*  Display Dynamic Page Title */}
         </span>
       </div>
 
       {/* Right Section */}
       <div className="absolute right-6 top-4 flex items-center space-x-8">
+         <div className="relative">
+                  <FaBell
+                    size={20}
+                    className="cursor-pointer text-gray-700 hover:text-gray-400 notification-toggle"
+                    onClick={handleOpenNotifications}
+                  />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
         
+                  {/* Notification Dropdown */}
+                  {showNotifications && (
+                    <div
+                      ref={notificationRef}
+                      className="absolute right-0 top-10 w-64 bg-white shadow-lg rounded-lg p-4 z-50 max-h-64 overflow-y-auto"
+                    >
+                      <h3 className="text-md font-bold mb-2">Notifications</h3>
+                      {notifications.length === 0 ? (
+                        <p className="text-gray-500 text-sm">No new notifications</p>
+                      ) : (
+                        <ul>
+                          {notifications.map((notif) => (
+                            <li key={notif.id} className="py-2 border-b text-sm">
+                              <a href={notif.link} className="text-blue-900 ">
+                                {notif.message}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}  
+                </div>
         <img 
           src={profileData?.profile_picture || user?.profile_picture } 
           alt="profile" 

@@ -117,3 +117,41 @@ export const DetailedBug = async(bugId)=>{
     }
   }
 }
+
+
+export const ReportBug = async (testId, bugData) => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.post(`${API_URL}/api/qa-report-bug/${testId}/`, bugData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken();
+        
+        // Retry API request with new token
+        const retryResponse = await axios.post(`${API_URL}/api/qa-report-bug/${testId}/`, bugData, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          },
+        });
+
+        return retryResponse.data;
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error reporting bug:", error.response?.data || error.message);
+      throw error; // Throw the original error to be handled by the caller
+    }
+  }
+};

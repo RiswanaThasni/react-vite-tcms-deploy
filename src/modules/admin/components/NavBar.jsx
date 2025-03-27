@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiMenu } from "react-icons/fi";
-import { logoutUser } from "../../../redux/slices/userSlice";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -21,10 +20,7 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
+  
 
   const handleOpenProfile = () => {
     setShowProfile((prev) => !prev);
@@ -54,7 +50,7 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
         <button className="md:hidden p-2" onClick={toggleSidebar}>
           <FiMenu size={24} className="text-custom-dark text-[#4c6bdd]" />
         </button>
-        <span className="text-base font-medium text-custom1">
+        <span className="text-xl font-bold text-custom1">
           {selectedPage}
         </span>
       </div>
@@ -88,12 +84,7 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
               {profileData?.email || user?.email || "user@example.com"}
             </p>
             
-            <button
-              className="mt-4 w-full py-2 text-center bg-custom-dark text-white rounded-md hover:bg-gray-900"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            
           </div>
         </div>
       )}

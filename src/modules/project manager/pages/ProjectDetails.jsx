@@ -1,242 +1,198 @@
-import React, { useEffect, useState } from 'react';
+import { ChevronLeft, UsersIcon, FolderIcon, CalendarIcon, BarChart2Icon } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { viewProject } from "../../../api/projectApi";
+import { fetchTasksByModule } from '../../../redux/slices/taskSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { viewProjectsByProjectManager } from '../../../redux/slices/projectSlice';
-import { useParams } from 'react-router-dom';
+
+
 
 const ProjectDetails = () => {
-  const dispatch = useDispatch();
   const { projectId } = useParams();
-  console.log("Project ID:", projectId); // Debugging
-    const { projects, loading, error } = useSelector((state) => state.projects);
+  const navigate = useNavigate();
+  const  dispatch = useDispatch()
+
+
   const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedModuleId, setSelectedModuleId] = useState(null);
+
+  const { tasks, loading: tasksLoading } = useSelector((state) => state.tasks);
+
 
   useEffect(() => {
-    // Fetch project data when component mounts
-    dispatch(viewProjectsByProjectManager(projectId));
-  }, [dispatch, projectId]);
+    const fetchProjectDetails = async () => {
+      try {
+        const response = await viewProject(projectId);
+        setProject(response.data);
+      } catch (err) {
+        setError(err.message || "Failed to load project details");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    // When projects are loaded, find the current project by ID
-    if (projects && projects.length > 0) {
-      setProject(projects.find(p => p.project_id === projectId) || projects[0]);
-    }
-  }, [projects, projectId]);
+    fetchProjectDetails();
+  }, [projectId]);
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  if (error) return <div className="bg-red-100 text-red-800 p-4 rounded">Error: {error}</div>;
-  if (!project) return <div className="p-6">No project data available</div>;
-
-  // Transform backend data structure to match component expectations
-  const transformedProject = {
-    id: project.project_id,
-    name: project.project_name,
-    description: project.project_description,
-    status: project.status,
-    manager: project.project_lead ? `${project.project_lead.first_name} ${project.project_lead.last_name}` : 'Not Assigned',
-    createdDate: new Date(project.created_at).toLocaleDateString(),
-    deadline: new Date(project.deadline).toLocaleDateString(),
-    completion: `${Math.round(project.progress * 100)}%`,
-    modules: project.modules.map(module => ({
-      id: module.id,
-      name: module.module_name,
-      description: module.module_description,
-      // Transform tasks, test cases, and bugs if they exist in your backend
-      tasks: module.tasks ? module.tasks.map(task => ({
-        id: task.id,
-        name: task.task_name,
-        status: task.status,
-        assignee: task.assignee ? `${task.assignee.first_name} ${task.assignee.last_name}` : 'Unassigned',
-        dueDate: new Date(task.due_date).toLocaleDateString(),
-        description: task.task_description
-      })) : [],
-      testCases: module.test_cases ? module.test_cases.map(testCase => ({
-        id: testCase.id,
-        name: testCase.test_case_name || `TC-${testCase.id}`,
-        description: testCase.description
-      })) : [],
-      bugs: module.bugs ? module.bugs.map(bug => ({
-        id: bug.id,
-        name: bug.bug_name || `BUG-${bug.id}`,
-        status: bug.status,
-        reporter: bug.reporter ? `${bug.reporter.first_name} ${bug.reporter.last_name}` : 'Unknown',
-        reportDate: new Date(bug.created_at).toLocaleDateString(),
-        description: bug.description
-      })) : []
-    }))
+  const handleBackClick = () => {
+    navigate("/projectmanager_dashboard/project_management");
   };
 
-  return (
-    <main className="bg-gray-100 p-6">
-      <ProjectHeader project={transformedProject} />
-      <ModulesGrid modules={transformedProject.modules} />
-    </main>
-  );
-};
 
-const ProjectHeader = ({ project }) => (
-  <header className="bg-white p-5 mb-5 border border-gray-200">
-    <div className="flex justify-between items-center mb-4">
-      <h1 className="text-xl font-bold">{project.name}</h1>
-      <StatusBadge status={project.status} />
-    </div>
-    
-    <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-      <MetaItem label="Project Manager" value={project.manager} />
-      <MetaItem label="Created Date" value={project.createdDate} />
-      <MetaItem label="Deadline" value={project.deadline} />
-      <MetaItem label="Completion" value={project.completion} />
-    </section>
-    
-    <p className="text-gray-600">{project.description}</p>
-  </header>
-);
+  const handleModuleClick = (moduleId) => {
+    setSelectedModuleId(moduleId);
+    dispatch(fetchTasksByModule(moduleId));
+  };
 
-const MetaItem = ({ label, value }) => (
-  <div className="border border-gray-200 p-3">
-    <h4 className="text-sm text-gray-500">{label}</h4>
-    <p>{value}</p>
-  </div>
-);
-
-const StatusBadge = ({ status }) => {
-  const getStatusClasses = () => {
-    switch (status?.toLowerCase()) {
-      case 'completed': return 'bg-green-100 text-green-800 border-green-300';
-      case 'in progress': 
-      case 'ongoing': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'to do': 
-      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'critical': return 'bg-red-100 text-red-800 border-red-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'pending': return 'text-yellow-500 bg-yellow-50';
+      case 'completed': return 'text-green-500 bg-green-50';
+      case 'in-progress': return 'text-blue-500 bg-blue-50';
+      default: return 'text-red-500 bg-red-50';
     }
   };
-  
+
+ 
+
   return (
-    <span className={`px-3 py-1 border rounded text-sm ${getStatusClasses()}`}>
-      {status || 'Unknown'}
-    </span>
-  );
-};
+    <div className="container mx-auto px-4 py-8">
+      <button
+        onClick={handleBackClick}
+        className="flex items-center  text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+      >
+        <ChevronLeft size={14} />
+        <span className="text-sm">Back to Projects</span>
+      </button>
 
-const ModulesGrid = ({ modules }) => (
-  <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
-    {modules.map(module => (
-      <ModuleCard key={module.id} module={module} />
-    ))}
-  </section>
-);
-
-const ModuleCard = ({ module }) => {
-  const [activeTab, setActiveTab] = useState('tasks');
-  
-  return (
-    <article className="bg-white border border-gray-200">
-      <header className="p-4 border-b border-gray-200">
-        <h2 className="text-lg font-medium">{module.name}</h2>
-      </header>
-      
-      <section className="p-4">
-        <p className="text-gray-600 mb-4">{module.description}</p>
-        
-        <nav className="flex border-b mb-4">
-          <TabButton 
-            label="Tasks" 
-            isActive={activeTab === 'tasks'} 
-            onClick={() => setActiveTab('tasks')} 
-          />
-          <TabButton 
-            label="Test Cases" 
-            isActive={activeTab === 'testCases'} 
-            onClick={() => setActiveTab('testCases')} 
-          />
-          <TabButton 
-            label="Bugs" 
-            isActive={activeTab === 'bugs'} 
-            onClick={() => setActiveTab('bugs')} 
-          />
-        </nav>
-        
-        {activeTab === 'tasks' && <TasksTab tasks={module.tasks || []} />}
-        {activeTab === 'testCases' && <TestCasesTab testCases={module.testCases || []} />}
-        {activeTab === 'bugs' && <BugsTab bugs={module.bugs || []} />}
-      </section>
-    </article>
-  );
-};
-
-const TabButton = ({ label, isActive, onClick }) => (
-  <button
-    className={`px-4 py-2 text-sm ${
-      isActive 
-        ? 'border-b-2 border-gray-600 text-gray-800' 
-        : 'text-gray-500 hover:text-gray-700'
-    }`}
-    onClick={onClick}
-  >
-    {label}
-  </button>
-);
-
-const TasksTab = ({ tasks }) => {
-  if (tasks.length === 0) return <p className="text-gray-500">No tasks available.</p>;
-  
-  return (
-    <div>
-      <h3 className="text-lg mb-3">Tasks</h3>
-      {tasks.map(task => (
-        <div key={task.id} className="border border-gray-200 p-3 mb-3">
-          <div className="flex justify-between">
-            <h4>{task.name}</h4>
-            <StatusBadge status={task.status} />
+      {project ? (
+        <div className="grid md:grid-cols-3 gap-4">
+          {/* Project Overview */}
+          <div className="md:col-span-2 bg-gray-50  rounded-md  p-6 space-y-4">
+            <div>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">{project.project_name}</h2>
+              <p className="text-gray-600 mb-4">{project.project_description}</p>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3">
+                  <CalendarIcon className="text-gray-500" size={24} />
+                  <div>
+                    <p className="text-sm text-gray-500">Deadline</p>
+                    <p className="font-semibold">{project.deadline}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <BarChart2Icon className="text-gray-500" size={24} />
+                  <div>
+                    <p className="text-sm text-gray-500">Progress</p>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-blue-600 h-2.5 rounded-full" 
+                          style={{ width: `${project.progress}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm font-semibold">{project.progress}%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <div>
+                    <p className="text-sm text-gray-500">Status</p>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
+                      {project.status.replace('-', ' ')}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between text-sm text-gray-500 mt-2">
-            <span>Assignee: {task.assignee}</span>
-            <span>Due: {task.dueDate}</span>
+
+          {/* Project Team */}
+          <div className="bg-gray-50 rounded-md p-6">
+            <div className="flex items-center mb-4">
+              <UsersIcon className="mr-2 text-gray-500" size={24} />
+              <h3 className="text-sm font-semibold text-gray-800">Project Team</h3>
+            </div>
+            <div className="space-y-3">
+              {project.project_team.map((member) => (
+                <div 
+                  key={member.id} 
+                  className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg"
+                >
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="text-blue-600 font-bold">
+                      {member.user_details.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-800">{member.user_details.name}</p>
+                    <p className="text-sm text-gray-500">{member.user_details.role}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <p className="mt-2 text-sm">{task.description}</p>
+
+          {/* Modules */}
+          <div className="md:col-span-3 bg-gray-50  rounded-md p-6">
+            <div className="flex items-center mb-4">
+              <FolderIcon className="mr-2 text-gray-500" size={24} />
+              <h3 className="text-xl font-semibold text-gray-800">Project Modules</h3>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              {project.modules.map((module) => (
+                <div 
+                  key={module.id} 
+                  className="bg-white p-4 rounded-md "
+                  onClick={() => handleModuleClick(module.id)}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="text-lg font-semibold text-gray-800">{module.module_name}</h4>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium 
+                      ${module.priority === 'high' ? 'bg-red-100 text-red-800' : 
+                        module.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                        'bg-green-100 text-green-800'}`}>
+                      {module.priority}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 text-sm">{module.module_description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {selectedModuleId && (
+            <div className="md:col-span-3 bg-gray-50 rounded-md p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">Tasks for Selected Module</h3>
+              {tasksLoading ? (
+                <p className="text-gray-500">Loading tasks...</p>
+              ) : tasks.length > 0 ? (
+                <ul className="space-y-4">
+                  {tasks.map((task) => (
+                    <li key={task.id} className="p-4 bg-white rounded-md shadow-md">
+                      <h4 className="text-lg font-semibold text-gray-800">{task.task_name}</h4>
+                      <p className="text-gray-600 text-sm">{task.task_description}</p>
+                      <p className="text-sm text-gray-500"><strong>Assigned To:</strong> {task.assigned_to_name}</p>
+                      <p className="text-sm text-gray-500"><strong>Status:</strong> {task.status}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500">No tasks available for this module.</p>
+              )}
+            </div>
+          )}
         </div>
-      ))}
+      ) : (
+        <p className="text-center text-gray-500">No project details found.</p>
+      )}
     </div>
   );
 };
 
-const TestCasesTab = ({ testCases }) => {
-  if (testCases.length === 0) return <p className="text-gray-500">No test cases available.</p>;
-  
-  return (
-    <div>
-      <h3 className="text-lg mb-3">Test Cases</h3>
-      {testCases.map(testCase => (
-        <div key={testCase.id} className="border border-gray-200 p-3 mb-3">
-          <h4>{testCase.name}</h4>
-          <p className="mt-2 text-sm">{testCase.description}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const BugsTab = ({ bugs }) => {
-  if (bugs.length === 0) return <p className="text-gray-500">No bugs reported yet.</p>;
-  
-  return (
-    <div>
-      <h3 className="text-lg mb-3">Bugs</h3>
-      {bugs.map(bug => (
-        <div key={bug.id} className="border border-gray-200 p-3 mb-3">
-          <div className="flex justify-between">
-            <h4>{bug.name}</h4>
-            <StatusBadge status={bug.status} />
-          </div>
-          <div className="flex justify-between text-sm text-gray-500 mt-2">
-            <span>Reported by: {bug.reporter}</span>
-            <span>{bug.reportDate}</span>
-          </div>
-          <p className="mt-2 text-sm">{bug.description}</p>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default ProjectDetails;
+export default ProjectDetails

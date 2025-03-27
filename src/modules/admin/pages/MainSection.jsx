@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Search, BarChart2 } from "lucide-react";
 import { RecentActivityAdmin, SummaryCardsByAdmin } from "../../../api/projectApi";
+import { useNavigate } from "react-router-dom";
 
 const MainSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [summaryData, setSummaryData] = useState([]);
   const [recentProjects, setRecentProjects] = useState([]);
+  const navigate = useNavigate()
   const [loading, setLoading] = useState({
     summary: true,
     activities: true
@@ -72,6 +74,10 @@ const MainSection = () => {
     } finally {
       setLoading(prev => ({ ...prev, activities: false }));
     }
+  };
+
+  const handleRowClick = (projectId) => {
+    navigate(`/admin_dashboard/project_details/${projectId}`);
   };
 
   // Filter projects based on search query
@@ -151,6 +157,7 @@ const MainSection = () => {
                         <tr 
                           key={project.id} 
                           className="bg-white hover:bg-blue-50 transition-colors duration-150"
+                          onClick={() => handleRowClick(project.id)}
                         >
                           <td className="px-2 py-2 whitespace-nowrap text-xs text-gray-900">
                             {project.project_id}

@@ -65,7 +65,7 @@ const AppRouter = () => {
   <Route index element={<Navigate to="mainsection" replace/>}/>
   <Route path='mainsection' element={<PmMainSection/>}/>
   <Route path='/projectmanager_dashboard/project_management' element={<ProjectManagement/>}/>
-  <Route path='/projectmanager_dashboard/project_details' element={<ProjectDetails/>}/>
+  <Route path='/projectmanager_dashboard/project_details/:projectId' element={<ProjectDetails/>}/>
   <Route path='/projectmanager_dashboard/task_management' element={<TaskManagement/>}/>
   <Route path='/projectmanager_dashboard/report_analysis' element={<ReportAnalysis/>}/> 
   <Route path='/projectmanager_dashboard/create_project' element={<CreateProject/>}/>

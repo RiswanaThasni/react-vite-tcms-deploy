@@ -17,7 +17,7 @@ const [selectedPage, setSelectedPage] = useState(
       <SideBar setSelectedPage={setSelectedPage} />
       <div className="flex-1 flex flex-col">
         <NavBar selectedPage={selectedPage} />
-        <main className="p-6 mt-16 md:ml-40">
+        <main className="flex-1 p-4 md:ml-20 mt-16">
         <Outlet />
         </main>
       </div>

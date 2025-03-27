@@ -151,7 +151,7 @@ const TaskManagement = () => {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className=" ">
       
       <div className="relative w-80 mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
@@ -160,7 +160,7 @@ const TaskManagement = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="col-span-1 bg-gray-50 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Projects</h2>
+          <h2 className="text-sm font-semibold mb-4">Projects</h2>
           
           {projectsLoading && <p className="text-sm text-gray-500">Loading projects...</p>}
           {projectsError && <p className="text-sm text-red-500">{projectsError}</p>}

@@ -3,6 +3,7 @@ import { getProjectByQa } from '../../../redux/slices/projectSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchModules } from '../../../redux/slices/moduleSlice';
 import { getBugDetails, getFailedTestCases, getTestCaseBugs } from '../../../api/testApi';
+import { ReportBug } from '../../../api/bugApi';
 
 const BugManagement = () => {
   const dispatch = useDispatch();
@@ -20,8 +21,9 @@ const BugManagement = () => {
   const [errorBugs, setErrorBugs] = useState(null);
 
   const [bugDetails, setBugDetails] = useState(null);
-const [loadingBugDetails, setLoadingBugDetails] = useState(false);
-const [errorBugDetails, setErrorBugDetails] = useState(null);
+  const [loadingBugDetails, setLoadingBugDetails] = useState(false);
+  const [errorBugDetails, setErrorBugDetails] = useState(null);
+  
   // UI state
   const [selectedBug, setSelectedBug] = useState(null);
   const [isAddingBug, setIsAddingBug] = useState(false);
@@ -29,6 +31,8 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
 
   // New bug form state
   const [newBug, setNewBug] = useState({
+    id: '', // Now this field is editable
+    bugId: '', // Added explicit bugId field
     title: '',
     description: '',
     stepsToReproduce: '',
@@ -36,18 +40,40 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
     priority: 'Medium',
     status: 'Open',
     assignedTo: '',
-    reportedBy: 'Current User', // This would be the logged-in user in a real app
-    environmentInfo: ''
+    reportedBy: 'Current User',
+    environmentInfo: '',
+    attachments: [] ,
   });
 
-  // Team members for assignment
-  const teamMembers = [
-    'John Doe',
-    'Jane Smith',
-    'Mike Johnson',
-    'Sara Wilson',
-    'Tom Brown'
-  ];
+  const [attachmentFiles, setAttachmentFiles] = useState([]);
+
+// Add file attachment handler
+const handleFileAttachment = (event) => {
+  const files = Array.from(event.target.files);
+  
+  // Validate file types and sizes
+  const validFiles = files.filter(file => {
+    const allowedTypes = [
+      'image/jpeg', 
+      'image/png', 
+      'image/gif', 
+      'image/webp', 
+      'video/mp4', 
+      'video/webm', 
+      'video/quicktime'
+    ];
+    
+    // Max file size: 10MB
+    const maxSize = 10 * 1024 * 1024; 
+    
+    return allowedTypes.includes(file.type) && file.size <= maxSize;
+  });
+
+  setAttachmentFiles(prevFiles => [...prevFiles, ...validFiles]);
+};
+
+
+  
 
   // Fetch projects on component mount
   useEffect(() => {
@@ -90,7 +116,6 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
     setLoadingTestCases(true);
     setErrorTestCases(null);
     try {
-      // Replace with your actual API call to get failed test cases
       const response = await getFailedTestCases(moduleId);
       setTestCases(response);
     } catch (error) {
@@ -152,56 +177,74 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
   const handleAddBug = async () => {
     if (!selectedTestCase || !newBug.title) return;
     
-    // Here you would add API call to create a new bug
-    // For now, we're just updating the local state
-    const bugId = bugs.length ? Math.max(...bugs.map(b => b.id)) + 1 : 1;
-    const bug = {
-      id: bugId,
-      testCaseId: selectedTestCase,
-      title: newBug.title,
-      description: newBug.description,
-      stepsToReproduce: newBug.stepsToReproduce,
-      severity: newBug.severity,
-      priority: newBug.priority,
-      status: 'Open',
-      assignedTo: newBug.assignedTo,
-      reportedBy: newBug.reportedBy,
-      reportedDate: new Date().toISOString().split('T')[0],
-      screenshots: [],
-      environmentInfo: newBug.environmentInfo
-    };
-    
-    setBugs([...bugs, bug]);
-    setNewBug({
-      title: '',
-      description: '',
-      stepsToReproduce: '',
-      severity: 'Minor',
-      priority: 'Medium',
-      status: 'Open',
-      assignedTo: '',
-      reportedBy: 'Current User',
-      environmentInfo: ''
-    });
-    setIsAddingBug(false);
+    try {
+      const formData = new FormData();
+  
+      // Append the bug data as JSON
+      const bugData = {
+        bug: {
+          bug_id: newBug.bugId || `BUG-${Date.now()}`, 
+          title: newBug.title,
+          description: newBug.description,
+          priority: newBug.priority.toLowerCase(),
+          status: 'open',
+          severity: newBug.severity.toLowerCase(),
+          steps_to_reproduce: newBug.stepsToReproduce,
+          environment: newBug.environmentInfo,
+          reported_by: {
+            id: null,
+            full_name: 'Current User'
+          },
+          assigned_to: null,
+          attachments: [],
+        },
+        remarks: newBug.description
+      };
+  
+      // Append bug data as a JSON string
+      formData.append('bugData', JSON.stringify(bugData));
+  
+      // Append attachments
+      attachmentFiles.forEach((file, index) => {
+        formData.append(`attachments`, file, file.name);
+      });
+      
+      const reportedBug = await ReportBug(selectedTestCase, formData);
+      
+      setBugs(prevBugs => [...prevBugs, reportedBug]);
+      
+      // Reset the form
+      setNewBug({
+        id: '',
+        bugId: '',
+        title: '',
+        description: '',
+        stepsToReproduce: '',
+        severity: 'Minor',
+        priority: 'Medium',
+        status: 'Open',
+        assignedTo: '',
+        reportedBy: 'Current User',
+        environmentInfo: '',
+        attachments: []
+      });
+      setAttachmentFiles([]);
+      setIsAddingBug(false);
+    } catch (error) {
+      console.error("Error reporting bug:", error.response?.data || error.message);
+      alert(error.response?.data?.error || "Failed to report bug");
+    }
   };
 
-  const handleUpdateBugStatus = async (bugId, newStatus) => {
-    // Here you would add API call to update bug status
-    // For now, we're just updating the local state
-    const updatedBugs = bugs.map(bug => 
-      bug.id === bugId ? {...bug, status: newStatus} : bug
-    );
-    setBugs(updatedBugs);
-  };
-
+ 
   // Helper functions for UI display
   const getFailedTestCasesByModuleId = () => testCases.filter(t => t.status === 'Failed' || t.status === 'failed');
-  const getBugsByTestCaseId = () => bugs;
   
   const getTestCaseById = (testCaseId) => testCases.find(t => t.id === testCaseId);
   
   const getBugStatusClass = (status) => {
+    if (!status) return 'bg-gray-100 text-gray-800';
+    
     switch (status.toLowerCase()) {
       case 'open':
         return 'bg-red-100 text-red-800';
@@ -220,6 +263,8 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
   };
 
   const getSeverityClass = (severity) => {
+    if (!severity) return 'bg-gray-100 text-gray-800';
+    
     switch (severity.toLowerCase()) {
       case 'critical':
         return 'bg-red-100 text-red-800';
@@ -235,7 +280,7 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className="">
       <div className="grid grid-cols-3 md:grid-cols-3 gap-4">
         {/* Left Panel: Projects and Modules */}
         <div className="col-span-1 bg-gray-50 p-4 rounded-lg shadow-sm">
@@ -340,6 +385,16 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
             <div className="bg-white p-4 rounded-lg border">
               <h2 className="text-lg font-semibold mb-4">Report Bug</h2>
               <div className="space-y-4">
+              <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Bug ID (Optional)</label>
+            <input
+              type="text"
+              className="w-full p-2 border rounded"
+              value={newBug.bugId}
+              onChange={(e) => setNewBug({...newBug, bugId: e.target.value})}
+              placeholder="Enter Bug ID (Leave blank for auto-generation)"
+            />
+          </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                   <input
@@ -412,6 +467,24 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
                     placeholder="OS, Browser, Device, etc."
                   />
                 </div>
+                <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Attachments</label>
+  <input
+    type="file"
+    multiple
+    accept="image/*, video/*"
+    className="w-full p-2 border rounded"
+    onChange={handleFileAttachment}
+  />
+  {attachmentFiles.length > 0 && (
+    <div className="mt-2 text-sm text-gray-600">
+      {attachmentFiles.length} file(s) selected
+    </div>
+  )}
+  <p className="text-xs text-gray-500 mt-1">
+    Allowed: Images (JPEG, PNG, GIF) and Videos (MP4, WebM). Max 10MB per file.
+  </p>
+</div>
               </div>
               
               <div className="mt-6 flex justify-end space-x-2">
@@ -473,110 +546,92 @@ const [errorBugDetails, setErrorBugDetails] = useState(null);
                         <p className="text-sm mb-3">{bug.description}</p>
                         
                         {selectedBug === bug.id && (
-  <div className="mt-4 space-y-3">
-    {loadingBugDetails ? (
-      <p className="text-sm text-gray-500">Loading bug details...</p>
-    ) : errorBugDetails ? (
-      <p className="text-sm text-red-500">{errorBugDetails}</p>
-    ) : bugDetails ? (
-      <>
-        <div>
-          <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Steps to Reproduce</h4>
-          <pre className="text-sm bg-gray-50 p-2 rounded whitespace-pre-wrap">
-            {bugDetails.steps_to_reproduce || "Not provided"}
-          </pre>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Reported By</h4>
-            <p className="text-sm">
-              {bugDetails.reported_by?.full_name || "Unknown"} on {bugDetails.created_at ? new Date(bugDetails.created_at).toLocaleDateString() : "Unknown date"}
-            </p>
-          </div>
-          <div>
-            <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Assigned To</h4>
-            <p className="text-sm">
-              {bugDetails.assigned_to?.full_name || 'Unassigned'}
-            </p>
-          </div>
-        </div>
-        
-        <div>
-          <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Environment</h4>
-          <p className="text-sm">{bugDetails.environment || "Not specified"}</p>
-        </div>
-        
-        {bugDetails.attachments && bugDetails.attachments.length > 0 && (
-          <div>
-            <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Attachments</h4>
-            <div className="flex flex-wrap gap-2">
-              {bugDetails.attachments.map(attachment => (
-                <a 
-                  key={attachment.id}
-                  href={attachment.file}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-xs text-blue-600 hover:underline"
-                >
-                  {attachment.file.split('/').pop()}
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-      </>
-    ) : (
-      // Fallback to original data if no details fetched yet
-      <>
-        <div>
-          <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Steps to Reproduce</h4>
-          <pre className="text-sm bg-gray-50 p-2 rounded whitespace-pre-wrap">{bug.stepsToReproduce || "Not provided"}</pre>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Reported By</h4>
-            <p className="text-sm">
-              {typeof bug.reportedBy === 'object' ? bug.reportedBy.full_name : bug.reportedBy || 
-                typeof bug.reported_by === 'object' ? bug.reported_by.full_name : bug.reported_by || 
-                "Unknown"} on {bug.reportedDate || bug.created_at || "Unknown date"}
-            </p>
-          </div>
-          <div>
-            <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Assigned To</h4>
-            <p className="text-sm">
-              {typeof bug.assignedTo === 'object' ? bug.assignedTo.full_name : bug.assignedTo || 
-                typeof bug.assigned_to === 'object' ? bug.assigned_to.full_name : bug.assigned_to || 
-                'Unassigned'}
-            </p>
-          </div>
-        </div>
-        
-        <div>
-          <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Environment</h4>
-          <p className="text-sm">{bug.environmentInfo || bug.environment_info || "Not specified"}</p>
-        </div>
-      </>
-    )}
+                          <div className="mt-4 space-y-3">
+                            {loadingBugDetails ? (
+                              <p className="text-sm text-gray-500">Loading bug details...</p>
+                            ) : errorBugDetails ? (
+                              <p className="text-sm text-red-500">{errorBugDetails}</p>
+                            ) : bugDetails ? (
+                              <>
+                                <div>
+                                  <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Steps to Reproduce</h4>
+                                  <pre className="text-sm bg-gray-50 p-2 rounded whitespace-pre-wrap">
+                                    {bugDetails.steps_to_reproduce || "Not provided"}
+                                  </pre>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Reported By</h4>
+                                    <p className="text-sm">
+                                      {bugDetails.reported_by?.full_name || "Unknown"} on {bugDetails.created_at ? new Date(bugDetails.created_at).toLocaleDateString() : "Unknown date"}
+                                    </p>
+                                  </div>
+                                 
+                                </div>
+                                
+                                <div>
+                                  <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Environment</h4>
+                                  <p className="text-sm">{bugDetails.environment || "Not specified"}</p>
+                                </div>
+                                
+                                {bugDetails.attachments && bugDetails.attachments.length > 0 && (
+                                  <div>
+                                    <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Attachments</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                      {bugDetails.attachments.map(attachment => (
+                                        <a 
+                                          key={attachment.id}
+                                          href={attachment.file}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          className="text-xs text-blue-600 hover:underline"
+                                        >
+                                          {attachment.file.split('/').pop()}
+                                        </a>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              // Fallback to original data if no details fetched yet
+                              <>
+                                <div>
+                                  <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Steps to Reproduce</h4>
+                                  <pre className="text-sm bg-gray-50 p-2 rounded whitespace-pre-wrap">{bug.stepsToReproduce || "Not provided"}</pre>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Reported By</h4>
+                                    <p className="text-sm">
+                                      {typeof bug.reportedBy === 'object' ? bug.reportedBy.full_name : bug.reportedBy || 
+                                        typeof bug.reported_by === 'object' ? bug.reported_by.full_name : bug.reported_by || 
+                                        "Unknown"} on {bug.reportedDate || bug.created_at || "Unknown date"}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Assigned To</h4>
+                                    <p className="text-sm">
+                                      {typeof bug.assignedTo === 'object' ? bug.assignedTo.full_name : bug.assignedTo || 
+                                        typeof bug.assigned_to === 'object' ? bug.assigned_to.full_name : bug.assigned_to || 
+                                        'Unassigned'}
+                                    </p>
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                  <h4 className="text-xs font-medium uppercase text-gray-500 mb-1">Environment</h4>
+                                  <p className="text-sm">{bug.environmentInfo || bug.environment_info || "Not specified"}</p>
+                                </div>
+                              </>
+                            )}
 
-    <div className="pt-4 border-t">
-      <div className="flex justify-between items-center mb-2">
-        <h4 className="text-xs font-medium uppercase text-gray-500">Update Status</h4>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {/* Status buttons remain the same */}
-        <button 
-          className={`text-xs px-3 py-1 rounded-full border ${(bugDetails?.status || bug.status).toLowerCase() === 'open' ? 'bg-red-100 border-red-300' : 'hover:bg-gray-50'}`}
-          onClick={() => handleUpdateBugStatus(bug.id, 'Open')}
-        >
-          Open
-        </button>
-        {/* ... other status buttons */}
-      </div>
-    </div>
-  </div>
-)}            </div>
+                            
+                          </div>
+                        )}
+                      </div>
                     ))
                   ) : (
                     <p className="text-sm text-gray-500">No bugs reported for this test case yet</p>

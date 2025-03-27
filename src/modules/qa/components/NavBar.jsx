@@ -183,7 +183,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   }, [isLoading]);
 
   return (
-    <div className="fixed top-0 left-40 bg-white md:left-40 w-full md:w-[calc(100%-10rem)] py-4 px-6 flex items-center justify-between z-50">
+    <div className="fixed top-0 left-0 md:left-20 bg-white w-full md:w-[calc(100%-5rem)] py-4 px-6 flex items-center justify-between z-50">
       {/* Left Section - Dynamic Title */}
       <div className="flex items-center space-x-3">
         <button className="md:hidden p-2" onClick={toggleSidebar}>

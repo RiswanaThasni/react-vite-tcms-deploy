@@ -285,7 +285,7 @@ const TestCaseManagement = () => {
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className=" mx-auto">
       
       <div className="relative w-80 mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
