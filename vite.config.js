@@ -12,5 +12,8 @@ export default defineConfig({
       host:'0.0.0.0',
       port:5173
     },
-    base:'/'
+    base:'/',
+    build: {
+    outDir: 'dist' // Ensure the output directory matches the deployment target
+  }
 })
