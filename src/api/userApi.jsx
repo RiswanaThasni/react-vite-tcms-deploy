@@ -95,6 +95,17 @@ export const addRole = async (roleName) => {
   }
 };
 
+export const userCount = async () => {
+  try {
+    const response = await axiosInstance.get("/api/admin/user-stats/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user count:", error);
+    throw error;
+  }
+}
+
+
 
 
 

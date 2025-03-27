@@ -72,6 +72,7 @@ const AdminProjectDetails = () => {
           {/* Project Overview */}
           <div className="md:col-span-2 bg-gray-50  rounded-md  p-6 space-y-4">
             <div>
+            <h2>{project.project_lead}</h2>
               <h2 className="text-xl font-bold text-gray-800 mb-4">{project.project_name}</h2>
               <p className="text-gray-600 mb-4">{project.project_description}</p>
               
