@@ -15,6 +15,8 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
  
   
   const [showProfile, setShowProfile] = useState(false);
+  const [showOptions, setShowOptions] = useState(false); 
+
   const profileRef = useRef(null);
 
   const dispatch = useDispatch();
