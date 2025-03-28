@@ -8,6 +8,7 @@ import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { changePassword, updateProfileImg } from "../../../api/userApi";
 import { FaBell } from "react-icons/fa";
 import {  markNotificationsRead } from "../../../redux/slices/notificationSlice";
+import { API_URL } from "../../../utils/constants";
 
 
 
