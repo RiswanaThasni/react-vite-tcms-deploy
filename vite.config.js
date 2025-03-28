@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [  tailwindcss(),
     react()],
-    // base: process.env.VITE_BASE_PATH || '/react-vite-tcms-deploy', 
+    base: process.env.VITE_BASE_PATH || '/react-vite-tcms-deploy', 
     base: '/',
     build: {
       outDir: 'dist'
