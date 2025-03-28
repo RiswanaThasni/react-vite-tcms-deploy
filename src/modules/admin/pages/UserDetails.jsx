@@ -156,7 +156,7 @@ lastName: selectedUser.last_name || "",
 <button
   onClick={handleStatusToggle}
   className={`ml-auto flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-    editedData.status === "Active" 
+    editedData.status === "active" 
       ? "bg-green-200 text-green-800" 
       : "bg-red-200 text-red-800"
   }`}
