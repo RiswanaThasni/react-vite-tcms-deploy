@@ -148,7 +148,7 @@ const UserManagement = () => {
               <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50" onClick={()=>handleRowClick(user.id)}>
               <td className="p-2">
   <img
-    src={user?.profile_picture || "/public/default.svg"}
+    src={user?.profile_picture || "/default.svg"}
     alt="Profile"
     className="w-7 h-7 rounded-full object-cover"
   />
