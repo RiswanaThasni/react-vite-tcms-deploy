@@ -18,6 +18,8 @@ const UserDetails = () => {
   const [roles, setRoles] = useState([]); // State to store roles
   const [rolesLoading, setRolesLoading] = useState(true);
   const [rolesError, setRolesError] = useState(null);
+  const [userStatus, setUserStatus] = useState('');
+
      
   useEffect(()=>{
     // Fetch user details and roles
