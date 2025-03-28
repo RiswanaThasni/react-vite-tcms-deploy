@@ -110,7 +110,7 @@ lastName: selectedUser.last_name || "",
         className="flex items-center text-sm text-gray-600 hover:text-gray-900 mb-2"
       >
         <ArrowLeft size={12} className="mr-1" />
-        Back to Task List
+        Back to User List
       </button>
       <div className="flex flex-col gap-6 items-start w-full max-w-2xl">
         {/* User Profile Section */}

@@ -16,6 +16,9 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+
+  const [showProfile, setShowProfile] = useState(false);
+    const profileRef = useRef(null);
   
 
   const profileData = useSelector((state) => state.profile.data);
@@ -23,7 +26,6 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
     const { list: notifications, unreadCount } = useSelector((state) => state.notifications);
   
   const [showNotifications, setShowNotifications] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState({
     old: false,
@@ -41,7 +43,6 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [changeSuccess, setChangeSuccess] = useState(false);
 
-  const profileRef = useRef(null);
   const notificationRef = useRef(null);
 
   const profilePicture = profileData?.profile_picture || user?.profile_picture;
