@@ -106,23 +106,23 @@ lastName: selectedUser.last_name || "",
   };
 
   const handleStatusToggle = async () => {
-    try {
-      const newStatus = userStatus === "Active" ? "Inactive" : "Active";
-      
-      // Update the status locally first
-      setUserStatus(newStatus);
+  try {
+    const newStatus = editedData.status === "Active" ? "Inactive" : "Active";
 
-      // Send update to backend
-      await updateUser(userId, { status: newStatus });
-      
-      // Refresh user details to ensure consistency
-      dispatch(fetchUserDetails(userId)); 
-    } catch (error) {
-      console.error("Status update failed:", error);
-      // Revert status if update fails
-      setUserStatus(userStatus);
-    }
-  };
+    // Update state immediately for better UI experience
+    setEditedData(prev => ({ ...prev, status: newStatus }));
+
+    // Call the API to update status
+    await updateUser(userId, { status: newStatus });
+
+    // Fetch updated user details after API call
+    dispatch(fetchUserDetails(userId));
+
+  } catch (error) {
+    console.error("Status update failed:", error);
+  }
+};
+
 
 
   return (
@@ -149,16 +149,18 @@ lastName: selectedUser.last_name || "",
   </div>
 
   {/* Status Toggle Button */}
-  <button
-            onClick={handleStatusToggle}
-            className={`ml-auto flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-              userStatus === "Active" 
-                ? "bg-green-200 text-green-800" 
-                : "bg-red-200 text-red-800"
-            }`}
-          >
-            {selectedUser.userStatus}
-          </button>
+ {/* Status Toggle Button */}
+<button
+  onClick={handleStatusToggle}
+  className={`ml-auto flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+    editedData.status === "Active" 
+      ? "bg-green-200 text-green-800" 
+      : "bg-red-200 text-red-800"
+  }`}
+>
+  {editedData.status}
+</button>
+
 </div>
 
         {/* User Details Section */}
