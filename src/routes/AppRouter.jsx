@@ -35,6 +35,7 @@ import Tests from '../modules/test engineer/pages/Tests'
 import ProjectDetails from '../modules/project manager/pages/ProjectDetails'
 import Bugs from '../modules/test engineer/pages/Bugs'
 import AdminProjectDetails from '../modules/admin/pages/AdminProjectDetails'
+import UserDetails from '../modules/admin/pages/UserDetails'
 
 
 const AppRouter = () => {
@@ -54,6 +55,7 @@ const AppRouter = () => {
     <Route index element={<Navigate to="mainsection" replace />} />
     <Route path="mainsection" element={<MainSection />} />
     <Route path="/admin_dashboard/user_management" element={<UserManagement />} />
+    <Route path='/admin_dashboard/view_user_details/:userId' element={<UserDetails/>}/>
     <Route path="/admin_dashboard/overview" element={<ViewProject />} />
     <Route path="/admin_dashboard/report_analysis" element={<Report />} />
     <Route path='/admin_dashboard/project_details/:projectId' element={<AdminProjectDetails/>}/>

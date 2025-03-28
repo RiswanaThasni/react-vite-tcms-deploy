@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { fetchUsers as fetchUsersApi , deleteUser as deleteUserAPI } from '../../api/userApi'
 import { logoutUser as logOutApi } from '../../api/authApi'
 import { viewProfile } from '../../api/userApi';
-
+import { viewUserDetails } from '../../api/userApi';
 
 
 const getStoredUser = () => {
@@ -36,6 +36,19 @@ export const fetchUsers = createAsyncThunk("user/fetchUsers", async (_, { reject
     return rejectWithValue(error)
   }
 })
+
+export const fetchUserDetails = createAsyncThunk("user/fetchUserDetails",async(userId,{rejectWithValue}) =>{
+  try{
+    const user = await viewUserDetails(userId)
+    return user
+  }
+  catch(error){
+    return rejectWithValue(error.message || "Failed to fetch user details");
+  }
+})
+
+
+
 export const deleteUser = createAsyncThunk("users/deleteUser", async (userId, { dispatch }) => {
   await deleteUserAPI(userId);
   dispatch(fetchUsers()); // Refresh the user list after deleting
@@ -63,8 +76,13 @@ export const fetchUserProfile = createAsyncThunk('user/fetchUserProfile', async 
 
 const userSlice = createSlice({
   name: 'user',
-  initialState,
-  reducers: {
+  
+  initialState: {
+    loading: false,
+    users: [],
+    selectedUser: null,
+    error: null,
+  },  reducers: {
       setUsers : (state,action)=>{
             state.users =action.payload
       },
@@ -107,6 +125,18 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(fetchUserDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedUser = action.payload;
+      })
+      .addCase(fetchUserDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch user details";
+      });
      
 
   }

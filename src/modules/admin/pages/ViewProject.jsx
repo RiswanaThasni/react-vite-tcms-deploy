@@ -64,20 +64,34 @@ const ViewProject = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-gray-100 p-3 rounded-md cursor-pointer"
+              className="bg-gray-100 p-3 rounded-md cursor-pointer relative"
               onClick={() => handleProjectClick(project.id)}
             >
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="text-xs text-custom1">{project.project_id}</h3>
-                  <div className="inline-block px-2 py-0.5 rounded-full font-medium text-xs text-custom1 mt-1">
-                    {project.project_name}
-                  </div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs text-custom1">{project.project_id}</h3>
+                <div className="text-xs font-semibold text-gray-700">
+                  Status: <span className="capitalize text-blue-600">{project.status}</span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center mt-1">
+                <div className="inline-block px-2 py-0.5 rounded-full font-medium text-xs text-custom1">
+                  {project.project_name}
                 </div>
               </div>
               <div className="mt-2 p-2 bg-gray-00 bg-opacity-40 rounded text-xs">
                 <p className="text-custom1 text-xs line-clamp-2">{project.project_description}</p>
-
+              </div>
+              
+              {/* Profile images positioned at the right bottom corner */}
+              <div className="absolute bottom-2 right-2 mt-3 flex items-center space-x-2">
+                {project.project_team.map((member) => (
+                  <img
+                    key={member.id}
+                    src={member.user_details.profile_picture || "/public/default.svg"}
+                    alt={member.user_details.name}
+                    className="w-8 h-8 rounded-full border border-gray-300"
+                  />
+                ))}
               </div>
             </div>
           ))}

@@ -160,14 +160,14 @@ export const addUser = async (userData) => {
   }
 };
 
-// API Call: Update User Status
-export const updateUserStatus = async (userId, status) => {
+// API Call: Update User 
+export const updateUser = async (userId, userData) => {
   try {
-    const response = await axiosInstance.patch(`/api/edit_user/${userId}/`, { status });
+    const response = await axiosInstance.put(`/api/edit_user/${userId}/`, userData);
     return response.data;
   } catch (error) {
-    console.error("Error updating user status:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || "Failed to update status");
+    console.error("Error updating user:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to update user");
   }
 };
 
@@ -182,6 +182,24 @@ export const viewProfile = async () => {
   }
 };
 
+export const updateProfileImg = async (imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("profile_picture", imageFile);
+
+    const response = await axiosInstance.put("/api/add_profile/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error adding profile:", error.response?.data || error.message);
+    throw new Error("Failed to add profile");
+  }
+};
+
 
 export const deleteUser = async (userId) => {
   try {
@@ -192,3 +210,15 @@ export const deleteUser = async (userId) => {
     throw new Error(error.response?.data?.error || "Failed to delete user");
   }
 }
+
+export const viewUserDetails = async (userId) => {
+  try {
+    const response = await axiosInstance.get(`/api/profile/${userId}/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user details:", error.response?.data || error.message);
+    return Promise.reject(error.response?.data?.error || "Failed to fetch user details");
+  }
+}
+
+

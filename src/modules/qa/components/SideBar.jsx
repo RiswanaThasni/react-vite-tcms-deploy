@@ -49,23 +49,18 @@ const SideBar = ({ setSelectedPage }) => {
 
   return (
     <>
-      {/* Sidebar for Large Screens */}
-      <div className="hidden md:flex flex-col items-center bg-gray-100 fixed left-0  h-full w-20 py-6">
-  {/* Logo at the Top */}
-  <div className="top-0">
-    <img src={logo} className="w-14 h-14" alt="Logo" />
-  </div>
-
-  {/* Navigation Buttons - Centered */}
-  <div className="flex flex-col flex-grow items-center gap-6">
-    <NavButton icon={home} alt="Home" page="Dashboard" path="/qa_dashboard" />
+       <div className="hidden md:flex flex-col items-center bg-gray-100 fixed left-0 top-0 h-full w-20 py-6">
+              <img src={logo} className="w-18 h-18 mb-10" alt="logo" />
+              
+              <div className="flex flex-col flex-grow items-center gap-4">
+   <NavButton icon={home} alt="Home" page="Dashboard" path="/qa_dashboard" />
     <NavButton icon={test} alt="TestCase Management" page="TestCase Management" path="/qa_dashboard/testcase_management" />
     <NavButton icon={bug} alt="Bug Management" page="Bug Management" path="/qa_dashboard/bug_management" />
     <NavButton icon={reportanalysis} alt="Report Analysis" page="Report Analysis" path="/qa_dashboard/report_analysis" />
   </div>
 
   {/* Logout Button at Bottom */}
-  <div className="mt-auto mb-4">
+  <div className="mt-auto ">
     <button
       onClick={handleLogout}
       onMouseEnter={() => setHoverLogout(true)}

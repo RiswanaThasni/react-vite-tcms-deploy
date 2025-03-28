@@ -25,6 +25,7 @@ const AdminProjectDetails = () => {
     const fetchProjectDetails = async () => {
       try {
         const response = await viewProject(projectId);
+        console.log("Project Data:", response.data)
         setProject(response.data);
       } catch (err) {
         setError(err.message || "Failed to load project details");
@@ -72,7 +73,6 @@ const AdminProjectDetails = () => {
           {/* Project Overview */}
           <div className="md:col-span-2 bg-gray-50  rounded-md  p-6 space-y-4">
             <div>
-            <h2>{project.project_lead}</h2>
               <h2 className="text-xl font-bold text-gray-800 mb-4">{project.project_name}</h2>
               <p className="text-gray-600 mb-4">{project.project_description}</p>
               
@@ -120,17 +120,25 @@ const AdminProjectDetails = () => {
               <h3 className="text-sm font-semibold text-gray-800">Project Team</h3>
             </div>
             <div className="space-y-3">
+             <p className="p-2 text-sm font-semibold text-gray-800 mb-2">
+             <span className="text-gray-800">{project.project_lead.name}</span> <br />
+             <span className="text-gray-500 text-sm">{project.project_lead.role}</span>    
+                      </p>
+
+
               {project.project_team.map((member) => (
                 <div 
                   key={member.id} 
                   className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg"
-                >
+                >                 
+
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                     <span className="text-blue-600 font-bold">
                       {member.user_details.name.charAt(0)}
                     </span>
                   </div>
-                  <div>
+                  <div>            
+
                     <p className="text-sm font-medium text-gray-800">{member.user_details.name}</p>
                     <p className="text-sm text-gray-500">{member.user_details.role}</p>
                   </div>

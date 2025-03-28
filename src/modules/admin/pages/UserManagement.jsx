@@ -5,6 +5,10 @@ import AddUserPopup from "../../../components/ui/AddUserPopup";
 import { FiMoreVertical } from "react-icons/fi";
 import { fetchRole } from "../../../api/userApi";
 import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const UserManagement = () => {
   const dispatch = useDispatch();
@@ -16,6 +20,7 @@ const UserManagement = () => {
   const [role, setRole] = useState([]);
   const [selectedRole, setSelectedRole] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all")
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -57,7 +62,11 @@ const UserManagement = () => {
       selectedStatus === "all" || user.status?.toLowerCase() === selectedStatus;
   
     return matchesSearch && matchesRole && matchesStatus;
-  });
+  })
+
+  const handleRowClick = (userId)=>{
+    navigate(`/admin_dashboard/view_user_details/${userId}`)
+  }
 
   return (
     <div className="p-2">
@@ -136,20 +145,14 @@ const UserManagement = () => {
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="p-2">
-                  {user?.profile_picture ? (
-                    <img
-                      src={user.profile_picture}
-                      alt="Profile"
-                      className="w-7 h-7 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-7 h-7 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-gray-600 text-[10px]">N/A</span>
-                    </div>
-                  )}
-                </td>
+              <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50" onClick={()=>handleRowClick(user.id)}>
+              <td className="p-2">
+  <img
+    src={user?.profile_picture || "/public/default.svg"}
+    alt="Profile"
+    className="w-7 h-7 rounded-full object-cover"
+  />
+</td>
                 <td className="p-2">{user?.user_id || "N/A"}</td>
                 <td className="p-2">{user?.name || "N/A"}</td>
                 <td className="p-2">{user?.email || "N/A"}</td>
