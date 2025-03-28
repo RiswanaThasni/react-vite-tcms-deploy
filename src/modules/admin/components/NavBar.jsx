@@ -4,7 +4,7 @@ import { FiMenu, FiPlus } from "react-icons/fi";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/constants"
-import { updateProfileImg } from "../../../api/userApi";
+import { removeProfileImg, updateProfileImg } from "../../../api/userApi";
 
 
 

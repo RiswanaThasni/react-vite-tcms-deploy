@@ -200,6 +200,27 @@ export const updateProfileImg = async (imageFile) => {
   }
 };
 
+export const removeProfileImg = async (imageFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("profile_picture", imageFile);
+
+    const response = await axiosInstance.delete("/api/remove-profile-picture/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error removing profile:", error.response?.data || error.message);
+    throw new Error("Failed to remove profile");
+  }
+};
+
+
+
+
 
 export const deleteUser = async (userId) => {
   try {

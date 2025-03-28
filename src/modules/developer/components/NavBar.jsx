@@ -8,7 +8,7 @@ import { fetchUserNotifications, markNotificationsRead } from "../../../redux/sl
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { changePassword, updateProfileImg } from "../../../api/userApi";
 import { API_URL } from "../../../utils/constants"
-
+import defaultImage from '../../../../public/default.svg'
 
 
 const NavBar = ({ toggleSidebar, selectedPage }) => {
@@ -43,7 +43,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   const notificationRef = useRef(null);
 
   const profilePicture = profileData?.profile_picture || user?.profile_picture;
-  const profileImageSrc = profilePicture ? `${API_URL}${profilePicture}` : "/public/default.svg"
+  const profileImageSrc = profilePicture ? `${API_URL}${profilePicture}` : "/default.svg"
   
 
   useEffect(() => {
