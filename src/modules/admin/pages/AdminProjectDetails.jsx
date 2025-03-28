@@ -121,6 +121,7 @@ const AdminProjectDetails = () => {
             </div>
             <div className="space-y-3">
              <p className="p-2 text-sm font-semibold text-gray-800 mb-2">
+             <span className="text-gray-800">{project.project_lead.profile_picture}</span> <br />
              <span className="text-gray-800">{project.project_lead.name}</span> <br />
              <span className="text-gray-500 text-sm">{project.project_lead.role}</span>    
                       </p>
@@ -133,9 +134,10 @@ const AdminProjectDetails = () => {
                 >                 
 
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-bold">
-                      {member.user_details.name.charAt(0)}
-                    </span>
+                    {/* <span className="text-blue-600 font-bold "> */}
+                      {member.user_details.profile_picture}
+
+                    {/* </span> */}
                   </div>
                   <div>            
 

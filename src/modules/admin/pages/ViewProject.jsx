@@ -83,11 +83,11 @@ const ViewProject = () => {
               </div>
               
               {/* Profile images positioned at the right bottom corner */}
-              <div className="absolute bottom-2 right-2 mt-3 flex items-center space-x-2">
-                {project.project_team.map((member) => (
+              <div className="absolute bottom-2 right-2 mt-3 flex -space-x-2">
+              {project.project_team.map((member) => (
                   <img
                     key={member.id}
-                    src={member.user_details.profile_picture || "/public/default.svg"}
+                    src={member.user_details.profile_picture || "/default.svg"}
                     alt={member.user_details.name}
                     className="w-8 h-8 rounded-full border border-gray-300"
                   />
