@@ -116,7 +116,7 @@ lastName: selectedUser.last_name || "",
         {/* User Profile Section */}
         <div className="border border-dashed rounded-2xl bg-gray-50 border-gray-200 p-6 flex flex-row items-center w-full">
           <img
-  src={selectedUser.profile_picture ? `${API_URL}${selectedUser.profile_picture}` : "/public/default.svg"}
+  src={selectedUser.profile_picture ? `${API_URL}${selectedUser.profile_picture}` : "/default.svg"}
   alt="Profile"
             className="w-18 h-18 rounded-full object-cover"
           />
