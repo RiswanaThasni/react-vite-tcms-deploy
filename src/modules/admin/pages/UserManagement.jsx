@@ -157,13 +157,13 @@ const UserManagement = () => {
                 <td className="p-2">{user?.name || "N/A"}</td>
                 <td className="p-2">{user?.email || "N/A"}</td>
                 <td className="p-2">{user?.role || "N/A"}</td>
-                {/* <td
+                <td
                   className={`p-2 font-bold ${
                     user.status === "active" ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {user?.status || "Inactive"}
-                </td> */}
+                </td>
                 {/* <td className="p-2 relative">
                   <button onClick={() => toggleMenu(user.id)} className="p-1">
                     <FiMoreVertical size={14} />
