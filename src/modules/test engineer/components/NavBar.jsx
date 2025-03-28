@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchUserNotifications, markNotificationsRead } from "../../../redux/slices/notificationSlice";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { changePassword, updateProfileImg } from "../../../api/userApi";
+import { API_URL } from "../../../utils/constants";
 
 
 const NavBar = ({ toggleSidebar, selectedPage }) => {
