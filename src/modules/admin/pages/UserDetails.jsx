@@ -44,15 +44,15 @@ const UserDetails = () => {
     const currentRole = roles.find(role => role.name === selectedUser.role);
     setEditedData({
       firstName: selectedUser.first_name || "",
-lastName: selectedUser.last_name || "",
-
-      role: currentRole ? currentRole.id : roles.length > 0 ? roles[0].id : "", // Set default role
+      lastName: selectedUser.last_name || "",
+      role: currentRole ? currentRole.id : roles.length > 0 ? roles[0].id : "",
       specialization: selectedUser.specialization || "",
-      status: selectedUser.status || "",
+      status: selectedUser.status || "Inactive",  
       email: selectedUser.email
     });
   }
 }, [selectedUser, roles]);
+
 
 
   if (loading || rolesLoading) return <p>Loading...</p>;
@@ -107,21 +107,25 @@ lastName: selectedUser.last_name || "",
 
   const handleStatusToggle = async () => {
   try {
-    const newStatus = editedData.status === "Active" ? "Inactive" : "Active";
+    const newStatus = editedData.status === "active" ? "inactive" : "active";
 
-    // Update state immediately for better UI experience
+    // ✅ Update UI instantly for a smooth experience
     setEditedData(prev => ({ ...prev, status: newStatus }));
 
-    // Call the API to update status
-    await updateUser(userId, { status: newStatus });
+    // ✅ Ensure correct API payload (adjust if needed)
+    const updatePayload = { status: newStatus };
 
-    // Fetch updated user details after API call
+    // ✅ Send API request to update status
+    await updateUser(userId, updatePayload);
+
+    // ✅ Fetch updated user details
     dispatch(fetchUserDetails(userId));
 
   } catch (error) {
     console.error("Status update failed:", error);
   }
 };
+
 
 
 
@@ -148,7 +152,6 @@ lastName: selectedUser.last_name || "",
     <p>{selectedUser.role}</p>
   </div>
 
-  {/* Status Toggle Button */}
  {/* Status Toggle Button */}
 <button
   onClick={handleStatusToggle}
@@ -160,6 +163,7 @@ lastName: selectedUser.last_name || "",
 >
   {editedData.status}
 </button>
+
 
 </div>
 
