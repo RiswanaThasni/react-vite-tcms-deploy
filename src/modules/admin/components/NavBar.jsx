@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FiMenu, FiPlus } from "react-icons/fi";
+import { FiMenu, FiPlus, FiTrash } from "react-icons/fi";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../../utils/constants"
@@ -64,6 +64,15 @@ const profileImageSrc = profilePicture ? `${API_URL}${profilePicture}` : "/publi
     }
   };
 
+  const handleRemoveProfileImage = async () => {
+    try {
+      await removeProfileImg();
+      dispatch(fetchUserProfile()); // Refresh the profile
+    } catch (error) {
+      console.error("Failed to remove profile image:", error);
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 md:left-20 bg-white w-full md:w-[calc(100%-5rem)] py-4 px-6 flex items-center justify-between z-50">
       {/* Left Section - Dynamic Title */}
@@ -99,19 +108,37 @@ const profileImageSrc = profilePicture ? `${API_URL}${profilePicture}` : "/publi
                 alt="profile"
                 className="w-20 h-20 rounded-full bg-amber-800"
               />
-              
-              {/* Upload Button */}
-              <label className="absolute bottom-0 right-0 bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center cursor-pointer shadow-lg">
-                <FiPlus size={14} />
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleProfileUpload}
-                />
-              </label>
-            </div>
 
+              {/* Upload/Remove Button */}
+              <div className="absolute bottom-0 right-0">
+                <button
+                  className="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
+                  onClick={() => setShowOptions((prev) => !prev)}
+                >
+                  <FiPlus size={14} />
+                </button>
+
+                {showOptions && (
+                  <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md w-28">
+                    <label className="block px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
+                      Upload Image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleProfileUpload}
+                      />
+                    </label>
+                    <button
+                      className="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-200"
+                      onClick={handleRemoveProfileImage}
+                    >
+                      <FiTrash className="inline mr-2" /> Remove Image
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
             <p className="mt-2 text-lg font-semibold text-center">
               {profileData?.name || user?.name || "User"}
             </p>
