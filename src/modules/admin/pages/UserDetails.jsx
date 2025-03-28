@@ -157,7 +157,7 @@ lastName: selectedUser.last_name || "",
                 : "bg-red-200 text-red-800"
             }`}
           >
-            {userStatus}
+            {selectedUser.userStatus}
           </button>
 </div>
 
