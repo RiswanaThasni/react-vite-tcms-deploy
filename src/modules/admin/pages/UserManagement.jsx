@@ -140,7 +140,7 @@ const UserManagement = () => {
               <th className="text-left p-2">Email</th>
               <th className="text-left p-2">Role</th>
               <th className="text-left p-2">Status</th>
-              <th className="text-left p-2"></th>
+              {/* <th className="text-left p-2"></th> */}
             </tr>
           </thead>
           <tbody>
@@ -157,14 +157,14 @@ const UserManagement = () => {
                 <td className="p-2">{user?.name || "N/A"}</td>
                 <td className="p-2">{user?.email || "N/A"}</td>
                 <td className="p-2">{user?.role || "N/A"}</td>
-                <td
+                {/* <td
                   className={`p-2 font-bold ${
                     user.status === "active" ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {user?.status || "Inactive"}
-                </td>
-                <td className="p-2 relative">
+                </td> */}
+                {/* <td className="p-2 relative">
                   <button onClick={() => toggleMenu(user.id)} className="p-1">
                     <FiMoreVertical size={14} />
                   </button>
@@ -185,7 +185,7 @@ const UserManagement = () => {
                       </button>
                     </div>
                   )}
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

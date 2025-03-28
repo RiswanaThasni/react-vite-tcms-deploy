@@ -103,6 +103,19 @@ lastName: selectedUser.last_name || "",
     setEditedData({ ...editedData, [e.target.name]: e.target.value });
   };
 
+  const handleStatusToggle = async () => {
+  try {
+    const newStatus = editedData.status === "Active" ? "Inactive" : "Active";
+    setEditedData({ ...editedData, status: newStatus });
+
+    await updateUser(userId, { status: newStatus });
+    dispatch(fetchUserDetails(userId)); 
+  } catch (error) {
+    console.error("Status update failed:", error);
+  }
+};
+
+
   return (
     <div className=''>
       <button
@@ -115,16 +128,27 @@ lastName: selectedUser.last_name || "",
       <div className="flex flex-col gap-6 items-start w-full max-w-2xl">
         {/* User Profile Section */}
         <div className="border border-dashed rounded-2xl bg-gray-50 border-gray-200 p-6 flex flex-row items-center w-full">
-          <img
-  src={selectedUser.profile_picture ? `${API_URL}${selectedUser.profile_picture}` : "/default.svg"}
-  alt="Profile"
-            className="w-18 h-18 rounded-full object-cover"
-          />
-          <div className="p-4 text-sm font-medium">
-            <p>{selectedUser.name}</p>
-            <p>{selectedUser.role}</p>
-          </div>
-        </div>
+  <img
+    src={selectedUser.profile_picture ? `${API_URL}${selectedUser.profile_picture}` : "/default.svg"}
+    alt="Profile"
+    className="w-18 h-18 rounded-full object-cover"
+  />
+  
+  <div className="p-4 text-sm font-medium">
+    <p>{selectedUser.name}</p>
+    <p>{selectedUser.role}</p>
+  </div>
+
+  {/* Status Toggle Button */}
+  <button
+    onClick={handleStatusToggle}
+    className={`ml-auto flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+      editedData.status === "Active" ? "bg-green-200 text-green-800" : "bg-red-200 text-red-800"
+    }`}
+  >
+    {editedData.status === "Active" ? "Active" : "Inactive"}
+  </button>
+</div>
 
         {/* User Details Section */}
         <div className='border border-dashed rounded-2xl border-gray-200 p-6 bg-gray-50 w-full'>
@@ -243,23 +267,7 @@ lastName: selectedUser.last_name || "",
               </div>
             )}
 
-            <div>
-              <label className="font-semibold text-sm">Status:</label>
-              {isEditing ? (
-                <select
-                  name="status"
-                  value={editedData.status}
-                  onChange={handleChange}
-                  className="w-full bg-white border rounded-md px-2 py-1"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              ) : (
-                <p className="bg-gray-200 px-2 py-1 rounded-md">{selectedUser.status || "N/A"}</p>
-              )}
-            </div>
+            
           </div>
         </div>
       </div>
