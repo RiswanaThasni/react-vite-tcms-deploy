@@ -23,6 +23,9 @@ const MainSection = () => {
     fetchRecentActivities();
   }, []);
 
+  useEffect(() => {
+    console.log("recntproject",recentProjects)
+  }, [recentProjects]);
   // Fetch summary cards data
   const fetchSummaryData = async () => {
     try {

@@ -1,467 +1,243 @@
-// import React, { useEffect, useState } from 'react';
-// import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-// import { userCount } from '../../../api/userApi';
-
-// // Sample data - replace with your actual data source
-// const monthlyData = [
-//   { month: 'Jan', value: 40 },
-//   { month: 'Feb', value: 30 },
-//   { month: 'Mar', value: 25 },
-//   { month: 'Apr', value: 27 },
-//   { month: 'May', value: 30 },
-//   { month: 'Jun', value: 50 },
-//   { month: 'Jul', value: 35 },
-//   { month: 'Aug', value: 40 },
-//   { month: 'Sep', value: 45 },
-//   { month: 'Oct', value: 30 },
-//   { month: 'Nov', value: 25 },
-//   { month: 'Dec', value: 28 },
-// ];
-
-// const projects = ['Project A', 'Project B', 'Project C', 'Project D'];
-// const teams = ['Development Team', 'QA Team', 'DevOps Team', 'UI/UX Team'];
-// const users = ['John Smith', 'Jane Doe', 'Alex Johnson', 'Maria Garcia'];
-
-// const Report = () => {
-//   const [activeTab, setActiveTab] = useState('project');
-//   const [selectedProject, setSelectedProject] = useState('');
-//   const [selectedTeam, setSelectedTeam] = useState('');
-//   const [selectedUser, setSelectedUser] = useState('');
-//   const [showDetails, setShowDetails] = useState(false);
-
-
-// const [userStats, setUserStats] = useState({
-//   totalUsers: 0,
-//   activeUsers: 0,
-//   inactiveUsers: 0
-// });
-
-// useEffect(() => {
-//   const fetchUserCount = async () => {
-//     try {
-//       const response = await userCount();
-//       setUserStats({
-//         totalUsers: response.total,
-//         activeUsers: response.active,
-//         inactiveUsers: response.total - response.active
-//       });
-//     } catch (error) {
-//       console.error('Failed to fetch user count:', error);
-//       // Optional: Set default or error state
-//       setUserStats({
-//         totalUsers: 127,  // Fallback to existing value
-//         activeUsers: 100,
-//         inactiveUsers: 27
-//       });
-//     }
-//   };
-
-//   fetchUserCount();
-// }, []);
-
-//   // Stats would be fetched based on selection in a real app
-//   const stats = {
-//     totalTestCases: 245,
-//     tasks: 78,
-//     pending: 12,
-//     faults: 8,
-//     bugs: 15,
-//     developers: 6,
-//     testEngineers: 4
-//   };
-
-//   const handleTabChange = (value) => {
-//     setActiveTab(value);
-//     setShowDetails(false);
-//   };
-
-//   const handleSelection = (value, type) => {
-//     if (type === 'project') setSelectedProject(value);
-//     if (type === 'team') setSelectedTeam(value);
-//     if (type === 'user') setSelectedUser(value);
-//     setShowDetails(false);
-//   };
-
-//   const toggleDetails = () => {
-//     setShowDetails(!showDetails);
-//   };
-
-//   return (
-//     <div className="container mx-auto p-4">
-      
-//       <h2 className="text-lg font-semibold mb-2">User Analysis</h2>
-
-      
-//       <div className="bg-white rounded-lg shadow p-4">
-//         <div className="flex border-b mb-4">
-//           <button 
-//             className={`px-4 py-2 ${activeTab === 'project' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-//             onClick={() => handleTabChange('project')}
-//           >
-//             Project Wise
-//           </button>
-//           <button 
-//             className={`px-4 py-2 ${activeTab === 'team' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-//             onClick={() => handleTabChange('team')}
-//           >
-//             Team Wise
-//           </button>
-//           <button 
-//             className={`px-4 py-2 ${activeTab === 'user' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-//             onClick={() => handleTabChange('user')}
-//           >
-//             User Wise
-//           </button>
-//         </div>
-        
-//         {activeTab === 'project' && (
-//           <div className="space-y-4">
-//             <select 
-//               className="w-full p-2 border rounded"
-//               value={selectedProject}
-//               onChange={(e) => handleSelection(e.target.value, 'project')}
-//             >
-//               <option value="">Select Project</option>
-//               {projects.map(project => (
-//                 <option key={project} value={project}>{project}</option>
-//               ))}
-//             </select>
-            
-//             {selectedProject && (
-//               <ProjectAnalysis 
-//                 project={selectedProject} 
-//                 stats={stats} 
-//                 showDetails={showDetails}
-//                 toggleDetails={toggleDetails}
-//               />
-//             )}
-//           </div>
-//         )}
-        
-//         {activeTab === 'team' && (
-//           <div className="space-y-4">
-//             <select 
-//               className="w-full p-2 border rounded"
-//               value={selectedTeam}
-//               onChange={(e) => handleSelection(e.target.value, 'team')}
-//             >
-//               <option value="">Select Team</option>
-//               {teams.map(team => (
-//                 <option key={team} value={team}>{team}</option>
-//               ))}
-//             </select>
-            
-//             {selectedTeam && (
-//               <TeamAnalysis 
-//                 team={selectedTeam} 
-//                 stats={stats} 
-//                 showDetails={showDetails}
-//                 toggleDetails={toggleDetails}
-//               />
-//             )}
-//           </div>
-//         )}
-        
-//         {activeTab === 'user' && (
-//           <div className="space-y-4">
-//             <select 
-//               className="w-full p-2 border rounded"
-//               value={selectedUser}
-//               onChange={(e) => handleSelection(e.target.value, 'user')}
-//             >
-//               <option value="">Select User</option>
-//               {users.map(user => (
-//                 <option key={user} value={user}>{user}</option>
-//               ))}
-//             </select>
-            
-//             {selectedUser && (
-//               <UserAnalysis 
-//                 user={selectedUser} 
-//                 stats={stats} 
-//                 showDetails={showDetails}
-//                 toggleDetails={toggleDetails}
-//               />
-//             )}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// // Project Analysis Component
-// const ProjectAnalysis = ({ project, stats, showDetails, toggleDetails }) => {
-//   return (
-//     <div className="bg-gray-50 p-4 rounded-lg">
-//       <h3 className="text-xl font-semibold mb-4">{project} Analysis</h3>
-      
-//       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-//         <StatCard title="Test Cases" value={stats.totalTestCases} />
-//         <StatCard title="Tasks" value={stats.tasks} />
-//         <StatCard title="Pending" value={stats.pending} />
-//         <StatCard title="Bugs" value={stats.bugs} />
-//       </div>
-      
-//       <div className="flex justify-between mt-4">
-//         <button 
-//           className="flex items-center px-4 py-2 border rounded hover:bg-gray-100"
-//           onClick={toggleDetails}
-//         >
-//           View Details
-//           {showDetails ? 
-//             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg> : 
-//             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-//           }
-//         </button>
-//         <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
-//           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-//           Export
-//         </button>
-//       </div>
-      
-//       {showDetails && (
-//         <div className="mt-4 p-4 bg-white rounded-lg border">
-//           <h4 className="font-semibold mb-2">Detailed Analysis</h4>
-          
-//           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//             <div>
-//               <h5 className="font-medium mb-2">Resources</h5>
-//               <ul className="list-disc pl-5">
-//                 <li>Developers: {stats.developers}</li>
-//                 <li>Test Engineers: {stats.testEngineers}</li>
-//                 <li>Total Man Hours: 1,245</li>
-//               </ul>
-//             </div>
-            
-//             <div>
-//               <h5 className="font-medium mb-2">Status</h5>
-//               <ul className="list-disc pl-5">
-//                 <li>Completed Tasks: {stats.tasks - stats.pending}</li>
-//                 <li>Pending Tasks: {stats.pending}</li>
-//                 <li>Faults Identified: {stats.faults}</li>
-//                 <li>Critical Bugs: {Math.floor(stats.bugs * 0.4)}</li>
-//                 <li>Minor Bugs: {Math.floor(stats.bugs * 0.6)}</li>
-//               </ul>
-//             </div>
-//           </div>
-          
-//           <div className="mt-4">
-//             <h5 className="font-medium mb-2">Weekly Progress</h5>
-//             <div style={{ height: '250px' }}>
-//               <ResponsiveContainer width="100%" height="100%">
-//                 <BarChart data={[
-//                   { month: 'Week 1', completed: 12, pending: 8 },
-//                   { month: 'Week 2', completed: 18, pending: 5 },
-//                   { month: 'Week 3', completed: 15, pending: 3 },
-//                   { month: 'Week 4', completed: 8, pending: 2 }
-//                 ]}>
-//                   <CartesianGrid strokeDasharray="3 3" />
-//                   <XAxis dataKey="month" />
-//                   <YAxis />
-//                   <Tooltip />
-//                   <Bar dataKey="completed" fill="#4ade80" name="Completed" />
-//                   <Bar dataKey="pending" fill="#f87171" name="Pending" />
-//                 </BarChart>
-//               </ResponsiveContainer>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-
-// // User Analysis Component
-// const UserAnalysis = ({ user, stats, showDetails, toggleDetails }) => {
-//   return (
-//     <div className="bg-gray-50 p-4 rounded-lg">
-//       <h3 className="text-xl font-semibold mb-4">{user} Analysis</h3>
-      
-//       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-//         <StatCard title="Assigned Tasks" value={12} />
-//         <StatCard title="Completed" value={9} />
-//         <StatCard title="Pending" value={3} />
-//         <StatCard title="Efficiency" value="85%" />
-//       </div>
-      
-//       <div className="flex justify-between mt-4">
-//         <button 
-//           className="flex items-center px-4 py-2 border rounded hover:bg-gray-100"
-//           onClick={toggleDetails}
-//         >
-//           View Details
-//           {showDetails ? 
-//             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg> : 
-//             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-//           }
-//         </button>
-//         <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
-//           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-//           Export
-//         </button>
-//       </div>
-      
-//       {showDetails && (
-//         <div className="mt-4 p-4 bg-white rounded-lg border">
-//           <h4 className="font-semibold mb-2">Individual Performance</h4>
-          
-//           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//             <div>
-//               <h5 className="font-medium mb-2">Skills & Role</h5>
-//               <ul className="list-disc pl-5">
-//                 <li>Role: Senior Developer</li>
-//                 <li>Primary Skills: React, Node.js</li>
-//                 <li>Secondary Skills: AWS, Docker</li>
-//               </ul>
-//             </div>
-            
-//             <div>
-//               <h5 className="font-medium mb-2">Performance Metrics</h5>
-//               <ul className="list-disc pl-5">
-//                 <li>Average Task Completion: 1.8 days</li>
-//                 <li>Code Quality Score: 94%</li>
-//                 <li>Bug Rate: 0.5 per task</li>
-//               </ul>
-//             </div>
-//           </div>
-          
-//           <div className="mt-4">
-//             <h5 className="font-medium mb-2">Monthly Performance</h5>
-//             <div style={{ height: '250px' }}>
-//               <ResponsiveContainer width="100%" height="100%">
-//                 <BarChart data={[
-//                   { month: 'Jan', tasks: 14, bugs: 3 },
-//                   { month: 'Feb', tasks: 12, bugs: 2 },
-//                   { month: 'Mar', tasks: 15, bugs: 1 },
-//                   { month: 'Apr', tasks: 10, bugs: 1 }
-//                 ]}>
-//                   <CartesianGrid strokeDasharray="3 3" />
-//                   <XAxis dataKey="month" />
-//                   <YAxis />
-//                   <Tooltip />
-//                   <Bar dataKey="tasks" fill="#8b5cf6" name="Tasks Completed" />
-//                   <Bar dataKey="bugs" fill="#ef4444" name="Bugs Introduced" />
-//                 </BarChart>
-//               </ResponsiveContainer>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// // Reusable Stat Card Component
-// const StatCard = ({ title, value }) => (
-//   <div className="bg-white p-4 rounded-lg shadow border text-center">
-//     <h4 className="text-sm text-gray-500 mb-1">{title}</h4>
-//     <p className="text-2xl font-bold">{value}</p>
-//   </div>
-// );
-
-// export default Report;
-
-
-
-
-
-
 import React, { useEffect, useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { userCount } from '../../../api/userApi';
+import UserAnalysisChart from './UserAnalysisChart';
+import { ListProjectAdmin, ProjectDetailsforAnalysis, ProjectSummary } from '../../../api/projectApi';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { fetchUserDetails, fetchUsers } from '../../../api/userApi';
 
-// Sample data - replace with your actual data source
-const monthlyData = [
-  { month: 'Jan', value: 40 },
-  { month: 'Feb', value: 30 },
-  { month: 'Mar', value: 25 },
-  { month: 'Apr', value: 27 },
-  { month: 'May', value: 30 },
-  { month: 'Jun', value: 50 },
-  { month: 'Jul', value: 35 },
-  { month: 'Aug', value: 40 },
-  { month: 'Sep', value: 45 },
-  { month: 'Oct', value: 30 },
-  { month: 'Nov', value: 25 },
-  { month: 'Dec', value: 28 },
-];
-
-const projects = ['Project A', 'Project B', 'Project C', 'Project D'];
-const teams = ['Development Team', 'QA Team', 'DevOps Team', 'UI/UX Team'];
-const users = ['John Smith', 'Jane Doe', 'Alex Johnson', 'Maria Garcia'];
 
 const Report = () => {
   const [activeTab, setActiveTab] = useState('project');
   const [selectedProject, setSelectedProject] = useState('');
-  const [selectedTeam, setSelectedTeam] = useState('');
   const [selectedUser, setSelectedUser] = useState('');
   const [showDetails, setShowDetails] = useState(false);
 
 
-const [userStats, setUserStats] = useState({
-  totalUsers: 0,
-  activeUsers: 0,
-  inactiveUsers: 0
-});
+  const [projects, setProjects] = useState([]);
+  const [projectSummary, setProjectSummary] = useState(null);
+  const [projectDetails, setProjectDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [summaryError, setSummaryError] = useState(null);
+  const [detailsError, setDetailsError] = useState(null);
 
-useEffect(() => {
-  const fetchUserCount = async () => {
-    try {
-      const response = await userCount();
-      setUserStats({
-        totalUsers: response.total,
-        activeUsers: response.active,
-        inactiveUsers: response.total - response.active
-      });
-    } catch (error) {
-      console.error('Failed to fetch user count:', error);
-      // Optional: Set default or error state
-      setUserStats({
-        totalUsers: 127,  // Fallback to existing value
-        activeUsers: 100,
-        inactiveUsers: 27
-      });
+
+  const [users, setUsers] = useState([]);
+  const [isUsersLoading, setIsUsersLoading] = useState(false);
+  const [usersError, setUsersError] = useState(null);
+  
+  // Add state for user details
+  const [userDetails, setUserDetails] = useState(null);
+  const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
+  const [userDetailsError, setUserDetailsError] = useState(null);
+
+
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await ListProjectAdmin();
+        console.log("Full response:", response);
+        
+        // Check if response exists and has data property
+        if (response && response.data) {
+          setProjects(response.data);
+        } else {
+          // If response exists but no data property
+          setProjects([]);
+          setError("No project data received from API");
+        }
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        setError("Failed to load projects. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+  
+  // Fetch project summary when a project is selected
+  useEffect(() => {
+    const fetchProjectSummary = async () => {
+      if (!selectedProject) {
+        setProjectSummary(null);
+        return;
+      }
+      
+      setIsSummaryLoading(true);
+      setSummaryError(null);
+      setProjectDetails(null); // Reset details when new project is selected
+      setShowDetails(false); // Reset showDetails state
+      try {
+        const response = await ProjectSummary(selectedProject);
+        console.log("Project summary response:", response);
+        
+        if (response && response.data) {
+          setProjectSummary(response.data);
+        } else {
+          setProjectSummary(null);
+          setSummaryError("No summary data received from API");
+        }
+      } catch (error) {
+        console.error("Error fetching project summary:", error);
+        setSummaryError("Failed to load project summary. Please try again.");
+        setProjectSummary(null);
+      } finally {
+        setIsSummaryLoading(false);
+      }
+    };
+    
+    fetchProjectSummary();
+  }, [selectedProject]);
+  
+
+
+  useEffect(() => {
+    const getUsersList = async () => {
+      setIsUsersLoading(true);
+      setUsersError(null);
+      try {
+        const userData = await fetchUsers();
+        console.log("Users data:", userData);
+        setUsers(userData || []);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setUsersError("Failed to load users. Please try again.");
+        setUsers([]);
+      } finally {
+        setIsUsersLoading(false);
+      }
+    };
+
+    // Only fetch users when user tab is active
+    if (activeTab === 'user') {
+      getUsersList();
     }
-  };
+  }, [activeTab]);
+  
+  // New effect to fetch user details when a user is selected
+  useEffect(() => {
+    const getUserDetails = async () => {
+      if (!selectedUser) {
+        setUserDetails(null);
+        return;
+      }
+      
+      setIsUserDetailsLoading(true);
+      setUserDetailsError(null);
+      setShowDetails(false); // Reset showDetails state
+      
+      try {
+        const response = await fetchUserDetails(selectedUser);
+        console.log("User details response:", response);
+        
+        if (response && response.data) {
+          setUserDetails(response.data);
+        } else {
+          setUserDetails(null);
+          setUserDetailsError("No user details received from API");
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+        setUserDetailsError("Failed to load user details. Please try again.");
+        setUserDetails(null);
+      } finally {
+        setIsUserDetailsLoading(false);
+      }
+    };
+    
+    getUserDetails();
+  }, [selectedUser]);
 
-  fetchUserCount();
-}, []);
 
-  // Stats would be fetched based on selection in a real app
-  const stats = {
-    totalTestCases: 245,
-    tasks: 78,
-    pending: 12,
-    faults: 8,
-    bugs: 15,
-    developers: 6,
-    testEngineers: 4
-  };
+
+  const [userStats, setUserStats] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    inactiveUsers: 0
+  });
 
   const handleTabChange = (value) => {
     setActiveTab(value);
     setShowDetails(false);
   };
 
+  const [filters, setFilters] = useState({
+    project: '',
+    user: '',
+    team: '',
+  });
+  
   const handleSelection = (value, type) => {
-    if (type === 'project') setSelectedProject(value);
-    if (type === 'team') setSelectedTeam(value);
-    if (type === 'user') setSelectedUser(value);
-    setShowDetails(false);
+    if (type === 'project') {
+      setSelectedProject(value);
+    } else if (type === 'user') {
+      setSelectedUser(value);
+    } 
+    setFilters((prev) => ({ ...prev, [type]: value }));
+  };
+  
+  const fetchProjectDetails = async (projectId) => {
+    if (!projectId) return;
+    
+    setIsDetailsLoading(true);
+    setDetailsError(null);
+    
+    try {
+      const response = await ProjectDetailsforAnalysis(projectId);
+      console.log("Project details response:", response);
+      
+      if (response && response.data) {
+        setProjectDetails(response.data);
+        setShowDetails(true);
+      } else {
+        setProjectDetails(null);
+        setDetailsError("No detailed data received from API");
+      }
+    } catch (error) {
+      console.error("Error fetching project details:", error);
+      setDetailsError("Failed to load project details. Please try again.");
+      setProjectDetails(null);
+    } finally {
+      setIsDetailsLoading(false);
+    }
+  };
+  
+  const toggleDetails = () => {
+    if (showDetails) {
+      // If details are already shown, just hide them
+      setShowDetails(false);
+    } else if (activeTab === 'project' && selectedProject && !projectDetails) {
+      // If project details aren't loaded yet, fetch them
+      fetchProjectDetails(selectedProject);
+    } else {
+      // If details are already loaded, just show them
+      setShowDetails(true);
+    }
   };
 
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
+  const getProjectOptions = () => {
+    if (!projects || projects.length === 0) return [];
+    
+    return projects.map(project => ({
+      id: project.id || '',
+      name: project.project_name || 'Unknown Project'
+    }));
   };
+
+  const projectOptions = getProjectOptions();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto ">
       
       <h2 className="text-lg font-semibold mb-2">User Analysis</h2>
+      <UserAnalysisChart/>
+      <h2 className="text-lg font-semibold mb-2"> Analysis</h2>
 
-      
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex border-b mb-4">
           <button 
@@ -470,12 +246,7 @@ useEffect(() => {
           >
             Project Wise
           </button>
-          <button 
-            className={`px-4 py-2 ${activeTab === 'team' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
-            onClick={() => handleTabChange('team')}
-          >
-            Team Wise
-          </button>
+          
           <button 
             className={`px-4 py-2 ${activeTab === 'user' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
             onClick={() => handleTabChange('user')}
@@ -486,54 +257,52 @@ useEffect(() => {
         
         {activeTab === 'project' && (
           <div className="space-y-4">
-            <select 
-              className="w-full p-2 border rounded"
-              value={selectedProject}
-              onChange={(e) => handleSelection(e.target.value, 'project')}
-            >
-              <option value="">Select Project</option>
-              {projects.map(project => (
-                <option key={project} value={project}>{project}</option>
-              ))}
-            </select>
+            {isLoading ? (
+              <p>Loading projects...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : (
+              <select 
+                className="w-full p-2 border rounded"
+                value={selectedProject}
+                onChange={(e) => handleSelection(e.target.value, 'project')}
+              >
+                <option value="">Select Project</option>
+                {projectOptions.map(project => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+            )}
             
-            {selectedProject && (
+            {isSummaryLoading ? (
+              <p>Loading project summary...</p>
+            ) : summaryError ? (
+              <p className="text-red-500">{summaryError}</p>
+            ) : selectedProject && projectSummary ? (
               <ProjectAnalysis 
-                project={selectedProject} 
-                stats={stats} 
+                project={projectSummary.project_name} 
+                summary={projectSummary}
                 showDetails={showDetails}
                 toggleDetails={toggleDetails}
+                projectDetails={projectDetails}
+                isDetailsLoading={isDetailsLoading}
+                detailsError={detailsError}
               />
-            )}
+            ) : selectedProject ? (
+              <p>No summary data available for this project.</p>
+            ) : null}
           </div>
         )}
         
-        {activeTab === 'team' && (
-          <div className="space-y-4">
-            <select 
-              className="w-full p-2 border rounded"
-              value={selectedTeam}
-              onChange={(e) => handleSelection(e.target.value, 'team')}
-            >
-              <option value="">Select Team</option>
-              {teams.map(team => (
-                <option key={team} value={team}>{team}</option>
-              ))}
-            </select>
-            
-            {selectedTeam && (
-              <TeamAnalysis 
-                team={selectedTeam} 
-                stats={stats} 
-                showDetails={showDetails}
-                toggleDetails={toggleDetails}
-              />
-            )}
-          </div>
-        )}
-        
-        {activeTab === 'user' && (
-          <div className="space-y-4">
+       {activeTab === 'user' && (
+        <div className="space-y-4">
+          {isUsersLoading ? (
+            <p>Loading users...</p>
+          ) : usersError ? (
+            <p className="text-red-500">{usersError}</p>
+          ) : (
             <select 
               className="w-full p-2 border rounded"
               value={selectedUser}
@@ -541,48 +310,62 @@ useEffect(() => {
             >
               <option value="">Select User</option>
               {users.map(user => (
-                <option key={user} value={user}>{user}</option>
+                <option key={user.id} value={user.id}>
+                  {user.name || `${user.first_name} ${user.last_name}`} ({user.role})
+                </option>
               ))}
             </select>
-            
-            {selectedUser && (
-              <UserAnalysis 
-                user={selectedUser} 
-                stats={stats} 
-                showDetails={showDetails}
-                toggleDetails={toggleDetails}
-              />
-            )}
-          </div>
-        )}
+          )}
+          
+          {isUserDetailsLoading ? (
+            <p>Loading user details...</p>
+          ) : userDetailsError ? (
+            <p className="text-red-500">{userDetailsError}</p>
+          ) : selectedUser ? (
+            <UserAnalysis 
+              user={users.find(u => u.id.toString() === selectedUser.toString())} 
+              userDetails={userDetails}
+              showDetails={showDetails}
+              toggleDetails={toggleDetails}
+              isLoading={isUserDetailsLoading}
+            />
+          ) : null}
+        </div>
+      )}
       </div>
     </div>
   );
 };
 
-// Project Analysis Component
-const ProjectAnalysis = ({ project, stats, showDetails, toggleDetails }) => {
+// Project Analysis Component with dynamic data and details
+const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, projectDetails, isDetailsLoading, detailsError }) => {
+  // Calculate completed tasks based on progress
+  const completedTasks = Math.floor(summary.total_tasks * (summary.progress / 100));
+  const pendingTasks = summary.total_tasks - completedTasks;
+
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
       <h3 className="text-xl font-semibold mb-4">{project} Analysis</h3>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <StatCard title="Test Cases" value={stats.totalTestCases} />
-        <StatCard title="Tasks" value={stats.tasks} />
-        <StatCard title="Pending" value={stats.pending} />
-        <StatCard title="Bugs" value={stats.bugs} />
+        <StatCard title="Test Cases" value={summary.total_test_cases} />
+        <StatCard title="Tasks" value={summary.total_tasks} />
+        <StatCard title="Pending" value={pendingTasks} />
+        <StatCard title="Bugs" value={summary.total_bugs} />
       </div>
       
       <div className="flex justify-between mt-4">
         <button 
           className="flex items-center px-4 py-2 border rounded hover:bg-gray-100"
           onClick={toggleDetails}
+          disabled={isDetailsLoading}
         >
-          View Details
-          {showDetails ? 
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg> : 
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          }
+          {isDetailsLoading ? 'Loading...' : 'View Details'}
+          {isDetailsLoading ? null : (
+            showDetails ? 
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg> : 
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          )}
         </button>
         <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -590,29 +373,94 @@ const ProjectAnalysis = ({ project, stats, showDetails, toggleDetails }) => {
         </button>
       </div>
       
-      {showDetails && (
+      {detailsError && <p className="text-red-500 mt-4">{detailsError}</p>}
+      
+      {showDetails && projectDetails && (
         <div className="mt-4 p-4 bg-white rounded-lg border">
           <h4 className="font-semibold mb-2">Detailed Analysis</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h5 className="font-medium mb-2">Resources</h5>
+              <h5 className="font-medium mb-2">Project Overview</h5>
               <ul className="list-disc pl-5">
-                <li>Developers: {stats.developers}</li>
-                <li>Test Engineers: {stats.testEngineers}</li>
-                <li>Total Man Hours: 1,245</li>
+                <li>Project ID: {projectDetails.project_id}</li>
+                <li>Project Lead: {projectDetails.project_lead}</li>
+                <li>Overall Progress: {projectDetails.overall_progress.toFixed(1)}%</li>
+                <li>Total Modules: {projectDetails.modules.length}</li>
               </ul>
             </div>
             
             <div>
-              <h5 className="font-medium mb-2">Status</h5>
+              <h5 className="font-medium mb-2">Team Members</h5>
               <ul className="list-disc pl-5">
-                <li>Completed Tasks: {stats.tasks - stats.pending}</li>
-                <li>Pending Tasks: {stats.pending}</li>
-                <li>Faults Identified: {stats.faults}</li>
-                <li>Critical Bugs: {Math.floor(stats.bugs * 0.4)}</li>
-                <li>Minor Bugs: {Math.floor(stats.bugs * 0.6)}</li>
+                {projectDetails.team.map((member, index) => (
+                  <li key={index}>{member.full_name} - {member.role}</li>
+                ))}
               </ul>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <h5 className="font-medium mb-2">Modules</h5>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-200">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-3 border-b text-left">ID</th>
+                    <th className="py-2 px-3 border-b text-left">Name</th>
+                    <th className="py-2 px-3 border-b text-left">Priority</th>
+                    <th className="py-2 px-3 border-b text-left">Status</th>
+                    <th className="py-2 px-3 border-b text-left">Progress</th>
+                    <th className="py-2 px-3 border-b text-left">Due Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projectDetails.modules.map((module, index) => (
+                    <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                      <td className="py-2 px-3 border-b">{module.Module_id}</td>
+                      <td className="py-2 px-3 border-b">{module.module_name}</td>
+                      <td className="py-2 px-3 border-b">
+                        <span className={`inline-block px-2 py-1 text-xs rounded ${
+                          module.priority === 'high' ? 'bg-red-100 text-red-800' : 
+                          module.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {module.priority}
+                        </span>
+                      </td>
+                      <td className="py-2 px-3 border-b">
+                        <span className={`inline-block px-2 py-1 text-xs rounded ${
+                          module.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          {module.status}
+                        </span>
+                      </td>
+                      <td className="py-2 px-3 border-b">
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div 
+                            className="bg-blue-600 h-2.5 rounded-full" 
+                            style={{ width: `${module.progress}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-xs">{module.progress}%</span>
+                      </td>
+                      <td className="py-2 px-3 border-b">{new Date(module.due_date).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <h5 className="font-medium mb-2">Bug Summary</h5>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <StatCard title="Total Bugs" value={projectDetails.bug_summary.faults_identified} />
+              <StatCard title="Critical" value={projectDetails.bug_summary.critical_bugs} />
+              <StatCard title="Major" value={projectDetails.bug_summary.major_bugs} />
+              <StatCard title="Minor" value={projectDetails.bug_summary.minor_bugs} />
+              <StatCard title="Trivial" value={projectDetails.bug_summary.trivial_bugs} />
             </div>
           </div>
           
@@ -620,18 +468,14 @@ const ProjectAnalysis = ({ project, stats, showDetails, toggleDetails }) => {
             <h5 className="font-medium mb-2">Weekly Progress</h5>
             <div style={{ height: '250px' }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={[
-                  { month: 'Week 1', completed: 12, pending: 8 },
-                  { month: 'Week 2', completed: 18, pending: 5 },
-                  { month: 'Week 3', completed: 15, pending: 3 },
-                  { month: 'Week 4', completed: 8, pending: 2 }
-                ]}>
+                <BarChart data={projectDetails.weekly_progress}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
+                  <XAxis dataKey="week" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="completed" fill="#4ade80" name="Completed" />
-                  <Bar dataKey="pending" fill="#f87171" name="Pending" />
+                  <Bar dataKey="progress" fill="#60a5fa" name="Progress (%)" />
+                  <Bar dataKey="tasks_completed" fill="#4ade80" name="Tasks Completed" />
+                  <Bar dataKey="modules_completed" fill="#8b5cf6" name="Modules Completed" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -642,30 +486,57 @@ const ProjectAnalysis = ({ project, stats, showDetails, toggleDetails }) => {
   );
 };
 
-
-// User Analysis Component
-const UserAnalysis = ({ user, stats, showDetails, toggleDetails }) => {
+// Updated User Analysis Component
+const UserAnalysis = ({ user, userDetails, showDetails, toggleDetails, isLoading }) => {
+  // Only proceed if user is defined
+  if (!user) return null;
+  
+  // Calculate current stats based on userDetails if available
+  const currentMonth = userDetails?.monthly_performance?.length > 0 ? 
+    userDetails.monthly_performance[userDetails.monthly_performance.length - 1] : null;
+  
+  // Calculate efficiency as a percentage
+  const calculateEfficiency = () => {
+    if (!currentMonth) return "0%";
+    if (currentMonth.total === 0) return "0%";
+    return `${currentMonth.efficiency}%`;
+  };
+  
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
-      <h3 className="text-xl font-semibold mb-4">{user} Analysis</h3>
+      <h3 className="text-xl font-semibold mb-4">{user.name || `${user.first_name} ${user.last_name}`} Analysis</h3>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <StatCard title="Assigned Tasks" value={12} />
-        <StatCard title="Completed" value={9} />
-        <StatCard title="Pending" value={3} />
-        <StatCard title="Efficiency" value="85%" />
+        <StatCard 
+          title="Assigned Tasks" 
+          value={currentMonth ? currentMonth.total : 0} 
+        />
+        <StatCard 
+          title="Completed" 
+          value={currentMonth ? currentMonth.completed : 0} 
+        />
+        <StatCard 
+          title="Pending" 
+          value={currentMonth ? (currentMonth.total - currentMonth.completed) : 0} 
+        />
+        <StatCard 
+          title="Efficiency" 
+          value={calculateEfficiency()} 
+        />
       </div>
       
       <div className="flex justify-between mt-4">
         <button 
           className="flex items-center px-4 py-2 border rounded hover:bg-gray-100"
           onClick={toggleDetails}
+          disabled={isLoading}
         >
-          View Details
-          {showDetails ? 
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg> : 
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          }
+          {isLoading ? 'Loading...' : 'View Details'}
+          {isLoading ? null : (
+            showDetails ? 
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 15-6-6-6 6"/></svg> : 
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          )}
         </button>
         <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -673,26 +544,35 @@ const UserAnalysis = ({ user, stats, showDetails, toggleDetails }) => {
         </button>
       </div>
       
-      {showDetails && (
+      {showDetails && userDetails && (
         <div className="mt-4 p-4 bg-white rounded-lg border">
+        {user.profile_picture && (
+            <div className="mt-4 p-4">
+              <h5 className="font-medium mb-2">Profile Picture</h5>
+              <img 
+                src={user.profile_picture} 
+                alt={`${user.name || user.first_name}'s profile`} 
+                className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+              />
+            </div>
+          )}
           <h4 className="font-semibold mb-2">Individual Performance</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <h5 className="font-medium mb-2">Skills & Role</h5>
               <ul className="list-disc pl-5">
-                <li>Role: Senior Developer</li>
-                <li>Primary Skills: React, Node.js</li>
-                <li>Secondary Skills: AWS, Docker</li>
+                <li>Role: {userDetails.user_details.role || 'N/A'}</li>
+                <li>Full Name: {userDetails.user_details.full_name || 'N/A'}</li>
+                <li>Specialization: {userDetails.user_details.specialization || 'N/A'}</li>
+                <li>Status: {userDetails.user_details.status || 'N/A'}</li>
               </ul>
             </div>
             
             <div>
-              <h5 className="font-medium mb-2">Performance Metrics</h5>
+              <h5 className="font-medium mb-2">Contact Information</h5>
               <ul className="list-disc pl-5">
-                <li>Average Task Completion: 1.8 days</li>
-                <li>Code Quality Score: 94%</li>
-                <li>Bug Rate: 0.5 per task</li>
+                <li>Email: {userDetails.user_details.email || 'N/A'}</li>
               </ul>
             </div>
           </div>
@@ -701,22 +581,20 @@ const UserAnalysis = ({ user, stats, showDetails, toggleDetails }) => {
             <h5 className="font-medium mb-2">Monthly Performance</h5>
             <div style={{ height: '250px' }}>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={[
-                  { month: 'Jan', tasks: 14, bugs: 3 },
-                  { month: 'Feb', tasks: 12, bugs: 2 },
-                  { month: 'Mar', tasks: 15, bugs: 1 },
-                  { month: 'Apr', tasks: 10, bugs: 1 }
-                ]}>
+                <BarChart data={userDetails.monthly_performance}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="tasks" fill="#8b5cf6" name="Tasks Completed" />
-                  <Bar dataKey="bugs" fill="#ef4444" name="Bugs Introduced" />
+                  <Bar dataKey="total" fill="#8b5cf6" name="Total Tasks" />
+                  <Bar dataKey="completed" fill="#4ade80" name="Completed Tasks" />
+                  <Bar dataKey="efficiency" fill="#60a5fa" name="Efficiency (%)" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
+          
+          
         </div>
       )}
     </div>
@@ -732,9 +610,3 @@ const StatCard = ({ title, value }) => (
 );
 
 export default Report;
-
-
-
-
-
-

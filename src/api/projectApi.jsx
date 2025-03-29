@@ -1,8 +1,12 @@
 import axios from "axios";
 import { API_URL } from '../utils/constants';
 
+// Make sure your axios instance has these settings for FormData uploads
 const axiosInstance = axios.create({
   baseURL: API_URL,
+  headers: {
+    'Content-Type': 'multipart/form-data'
+  }
 });
 
 const getAccessToken = () => {
@@ -285,7 +289,71 @@ export const fetchProjectManagers = async () => {
 
   
 
+    export const ListProjectAdmin = async () => {
+      try {
+        const response = await axiosInstance.get("/api/admin/recent-projects/", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        
+        return response; // Return the full response object
+      } catch (error) {
+        console.error("Error fetching admin projects:", error.response?.data || error);
+        throw error;
+      }
+    };
 
+    export const ProjectSummary = async(projectId)=>{
+      try{
+        const response = await axiosInstance.get(`${API_URL}/api/project-summary/${projectId}/`)
+        return response
+      }
+      catch(error){
+
+ throw error.response ? error.response.data : new Error("Failed to fetch project details");
+      }
+    }
+
+    export const ProjectDetailsforAnalysis = async(projectId)=>{
+      try{
+        const response = await axiosInstance.get(`${API_URL}/api/admin/project-detail/${projectId}/`)
+        return response
+      }
+      catch(error){
+
+ throw error.response ? error.response.data : new Error("Failed to fetch project details");
+      }
+    }
+
+
+    export const viewProgressByAdmin = async () => {
+      try {
+        const response = await axiosInstance.get("/api/pm-projects-graph/", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        
+        return response; 
+      } catch (error) {
+        console.error("Error fetching  projects progress:", error.response?.data || error);
+        throw error;
+      }
+    };
+
+
+    export const viewDetailedProgressByAdmin = async (projectId) => {
+      try {
+        const response = await axiosInstance.get(`/api/projects/${projectId}/stats/`);
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching detailed progress:", error);
+        throw error;
+      }
+    }
+
+    
 
     
 

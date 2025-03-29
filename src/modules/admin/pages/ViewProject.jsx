@@ -34,6 +34,8 @@ const ViewProject = () => {
     navigate(`/admin_dashboard/project_details/${projectId}`);
   };
 
+  
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-48">
@@ -53,6 +55,19 @@ const ViewProject = () => {
     );
   }
 
+  const getStatusStyle = (status) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'bg-green-100 text-green-800';
+      case 'inprogress':
+        return 'bg-blue-100 text-blue-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
   return (
     <div className="bg-white">
       {projects.length === 0 ? (
@@ -63,14 +78,20 @@ const ViewProject = () => {
         <div className="grid grid-cols-1 gap-3">
           {projects.map((project) => (
             <div
-              key={project.id}
-              className="bg-gray-100 p-3 rounded-md cursor-pointer relative"
-              onClick={() => handleProjectClick(project.id)}
-            >
+  key={project.id}
+  className="bg-gray-100 p-3 rounded-md cursor-pointer relative 
+             transition duration-200 hover:bg-gray-200 hover:shadow-md"
+  onClick={() => handleProjectClick(project.id)}
+>
+
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-xs text-custom1">{project.project_id}</h3>
                 <div className="text-xs font-semibold text-gray-700">
-                  Status: <span className="capitalize text-blue-600">{project.status}</span>
+                <span 
+                  className={`inline-block px-2 py-1 text-xs rounded ${getStatusStyle(project.status)}`}
+                >
+                  {project.status}
+                </span>
                 </div>
               </div>
               <div className="flex justify-between items-center mt-1">

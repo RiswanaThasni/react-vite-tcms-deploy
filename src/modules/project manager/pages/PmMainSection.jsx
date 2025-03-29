@@ -55,8 +55,8 @@ const PmMainSection = () => {
     <div
       key={project.id}
       className="bg-white p-3 rounded shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-shadow text-sm"
-      onClick={handleProjectClick}
-    >
+      onClick={() => handleProjectClick(project.id)}
+      >
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-medium text-gray-700 text-sm">{project.project_name}</h3>
         <MoreHorizontal size={16} className="text-gray-400" />

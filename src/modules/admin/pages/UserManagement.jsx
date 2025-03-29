@@ -6,6 +6,7 @@ import { FiMoreVertical } from "react-icons/fi";
 import { fetchRole } from "../../../api/userApi";
 import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../../utils/constants";
 
 
 
@@ -147,12 +148,14 @@ const UserManagement = () => {
             {filteredUsers.map((user) => (
               <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50" onClick={()=>handleRowClick(user.id)}>
               <td className="p-2">
-  <img
-    src={user?.profile_picture || "/default.svg"}
-    alt="Profile"
-    className="w-7 h-7 rounded-full object-cover"
-  />
+              <img
+  src={user?.profile_picture ? `${API_URL}${user.profile_picture}` : "/default.svg"}
+  alt="Profile"
+  className="w-7 h-7 rounded-full object-cover"
+/>
+
 </td>
+
                 <td className="p-2">{user?.user_id || "N/A"}</td>
                 <td className="p-2">{user?.name || "N/A"}</td>
                 <td className="p-2">{user?.email || "N/A"}</td>
@@ -164,28 +167,7 @@ const UserManagement = () => {
                 >
                   {user?.status || "Inactive"}
                 </td>
-                {/* <td className="p-2 relative">
-                  <button onClick={() => toggleMenu(user.id)} className="p-1">
-                    <FiMoreVertical size={14} />
-                  </button>
-                  {menuOpen === user.id && (
-                    <div className="absolute right-0 mt-1 w-32 bg-white shadow-md rounded-md z-10 text-xs border">
-                      <button
-                        onClick={() => handleEditUser(user.id)}
-                        className="block w-full text-left px-2 py-1.5 hover:bg-gray-100"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="block w-full text-left px-2 py-1.5 text-red-600 hover:bg-gray-100"
-                      >
-                        Inactive User
-                      </button>
-                    </div>
-                  )}
-                </td> */}
+                
               </tr>
             ))}
           </tbody>

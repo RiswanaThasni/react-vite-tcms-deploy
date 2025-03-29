@@ -122,6 +122,18 @@ export const fetchUsers = async () => {
 };
 
 
+ export const fetchUserDetails = async(userId)=>{
+      try{
+        const response = await axiosInstance.get(`${API_URL}/api/admin/user-detail/${userId}/`)
+        return response
+      }
+      catch(error){
+
+ throw error.response ? error.response.data : new Error("Failed to fetch user details");
+      }
+    }
+
+
 export const changePassword = async (passwordData) => {
   try {
     const response = await axiosInstance.put("/api/change_password/", passwordData);
@@ -217,6 +229,21 @@ export const removeProfileImg = async (imageFile) => {
     throw new Error("Failed to remove profile");
   }
 };
+
+
+export const UsersTypeCount = async () => {
+  try {
+    const response = await axiosInstance.get("/api/admin/user-stats/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user Count:", error.response?.data || error.message);
+    throw new Error("Failed to fetch user count");
+  }
+};
+
+
+
+
 
 
 

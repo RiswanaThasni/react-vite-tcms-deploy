@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiMenu, FiX, FiEye, FiEyeOff, FiPlus, FiTrash } from "react-icons/fi";
 import { logoutUser } from "../../../redux/slices/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { fetchUserNotifications } from "../../../redux/slices/notificationSlice";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { changePassword, removeProfileImg, updateProfileImg } from "../../../api/userApi";
@@ -22,6 +22,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
     const profileRef = useRef(null);
     const notificationRef = useRef(null);
 
+    
   
 
   const profileData = useSelector((state) => state.profile.data);
@@ -72,13 +73,6 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
       }
     };
   
-
-  
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
 
   const handleOpenProfile = () => {
     setShowProfile((prev) => !prev);
@@ -472,13 +466,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
               )}
             </div>
           
-            {/* Logout Button */}
-            <button
-              className="mt-6 w-full py-2 text-center bg-custom-dark text-white rounded-md hover:bg-gray-900"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            
           </div>
         </div>
       )}

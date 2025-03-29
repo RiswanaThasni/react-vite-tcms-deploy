@@ -34,13 +34,14 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
   const NavButton = ({ icon, alt, path }) => {
     const isActive = location.pathname.startsWith(path);
-    
+    const [isHovered, setIsHovered] = useState(false);
+  
     return (
-      <div className="relative">
-        <button
+<div className="relative flex flex-col items-center">
+<button
           onClick={() => handleNavigation(path)}
-          onMouseEnter={() => setHoveredItem(path)}
-          onMouseLeave={() => setHoveredItem(null)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className={`flex items-center justify-center p-2 hover:bg-gray-200 relative 
             ${isActive ? 'bg-blue-100' : ''}`}
         >
@@ -49,15 +50,20 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             className="w-5 h-5 cursor-pointer hover:opacity-75" 
             alt={alt} 
           />
-          {hoveredItem === path && (
-            <span className="absolute left-full ml-2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
-              {alt}
-            </span>
-          )}
+          {/* Tooltip should appear when hovered */}
+          {isHovered && (
+  <span className="absolute left-[110%] top-1/2 transform -translate-y-1/2
+                 bg-black text-white text-xs px-2 py-1 rounded shadow-lg 
+                 whitespace-nowrap z-50">
+    {alt}
+  </span>
+)}
+
         </button>
       </div>
     );
   };
+  
 
   return (
     <>
