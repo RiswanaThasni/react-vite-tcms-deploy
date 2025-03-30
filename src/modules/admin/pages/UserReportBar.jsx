@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell } from "recharts";
 import { User } from "lucide-react";
 import { UsersTypeCount } from "../../../api/userApi";
 
-const UserAnalysisChart = () => {
+const UserReportBar = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
   const [inactiveUsers, setInactiveUsers] = useState(0);
@@ -66,7 +66,6 @@ const UserAnalysisChart = () => {
 
   return (
     <div className="top-0  rounded-lg ">
-<p className="text-gray-800  text-sm font-semibold">User Insights</p> 
      <div className="relative flex justify-center items-center ">
         <PieChart width={250} height={150}>
 
@@ -121,27 +120,27 @@ const UserAnalysisChart = () => {
 
         </PieChart>
         {/* User Icon at Center of Half Circle */}
-        <div className="absolute top-18 left-17 flex flex-col items-center">
-          <div className="bg-gray-100 p-2 rounded-full">
-            <User size={24} className="text-black" />
-          </div>
-          <p className="text-xl font-bold text-gray-800">{totalUsers}</p>
-          <p className="text-sm font-semibold text-blue-950">Total Users</p>
-        </div>
-      </div>
-      {/* Active & Inactive Sections */}
-      <div className="flex justify-between items-center ">
-        <div className="flex flex-col items-center p-1 rounded-lg ">
-          <p className="text-sm font-semibold text-green-900">{activeUsers}</p>
-          <p className="text-sm font-semibold text-green-600">Active</p>
-        </div>
-        <div className="flex flex-col items-center p-1 rounded-lg ">
-          <p className="text-sm font-bold text-red-900">{inactiveUsers}</p>
-          <p className="text-sm font-semibold text-red-600">Inactive</p>
-        </div>
-      </div>
-    </div>
+         <div className="absolute top-18 left-130 flex flex-col items-center">
+                  <div className="bg-gray-100 p-2 rounded-full">
+                    <User size={24} className="text-black" />
+                  </div>
+                  <p className="text-xl font-bold text-gray-800">{totalUsers}</p>
+                  <p className="text-sm font-semibold text-blue-950">Total Users</p>
+                </div>
+              </div>
+              {/* Active & Inactive Sections */}
+              <div className="flex gap-30  ">
+                <div className="flex flex-col items-center p-1 ml-112  rounded-lg ">
+                  <p className="text-sm font-semibold text-green-900">{activeUsers}</p>
+                  <p className="text-sm font-semibold text-green-600">Active</p>
+                </div>
+                <div className="flex flex-col items-center p-1 rounded-lg ">
+                  <p className="text-sm font-bold text-red-900">{inactiveUsers}</p>
+                  <p className="text-sm font-semibold text-red-600">Inactive</p>
+                </div>
+              </div>
+            </div>
   );
 };
 
-export default UserAnalysisChart;
+export default UserReportBar;

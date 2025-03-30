@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Search, BarChart2 } from "lucide-react";
+import { Search, BarChart2, User, ChevronLeft, ChevronRight, Clipboard, Clock, CheckCircle } from "lucide-react";
 import { RecentActivityAdmin, SummaryCardsByAdmin } from "../../../api/projectApi";
 import { useNavigate } from "react-router-dom";
+import UserAnalysisChart from '../../admin/pages/UserAnalysisChart'
+import { fetchUsers } from "../../../redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const MainSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,16 +16,28 @@ const MainSection = () => {
     summary: true,
     activities: true
   });
+
+
+  const [visibleUsersCount, setVisibleUsersCount] = useState(4);
+  const [loadingMoreUsers, setLoadingMoreUsers] = useState(false);
+
+  const dispatch = useDispatch()
+  const { users, loading: usersLoading } = useSelector(state => state.user)
+
+
+  
   const [error, setError] = useState({
     summary: null,
     activities: null
   });
 
+  
   // Fetch data on component mount
   useEffect(() => {
     fetchSummaryData();
     fetchRecentActivities();
-  }, []);
+    dispatch(fetchUsers())
+  }, [dispatch]);
 
   useEffect(() => {
     console.log("recntproject",recentProjects)
@@ -37,20 +53,20 @@ const MainSection = () => {
         { 
           label: "Total Projects", 
           count: data.total_projects, 
-          className: "bg-card3",
-          icon: <BarChart2 className="text-white" size={16} />
+          className: "bg-[#D0D4FF]",
+          icon: <Clipboard className="text-blue-700" size={18}   strokeWidth={3}/>
         },
         { 
           label: "Pending Projects", 
           count: data.pending_projects, 
-          className: "bg-card4",
-          icon: <BarChart2 className="text-white" size={16} />
+          className: "bg-[#D0D4FF]",
+          icon: <Clock className="text-red-800 " size={18} strokeWidth={3}/>
         },
         { 
           label: "Completed Projects", 
           count: data.completed_projects, 
-          className: "bg-card2",
-          icon: <BarChart2 className="text-white" size={16} />
+          className: "bg-[#D0D4FF]",
+          icon: <CheckCircle className="text-green-600 " size={18} strokeWidth={3} />
         },
       ];
 
@@ -83,14 +99,35 @@ const MainSection = () => {
     navigate(`/admin_dashboard/project_details/${projectId}`);
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/admin_dashboard/view_user_details/${userId}`)  };
+
   // Filter projects based on search query
   const filteredProjects = recentProjects.filter((project) =>
     project.project_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+
+
+
+  const currentUsers = users && users.length > 0 ? users.slice(0, visibleUsersCount) : [];
+  
+  // Handle loading more users
+  const handleLoadMoreUsers = () => {
+    setLoadingMoreUsers(true);
+    
+    // Simulate loading delay
+    setTimeout(() => {
+      setVisibleUsersCount(prev => prev + 3); // Load 3 more users
+      setLoadingMoreUsers(false);
+    }, 500);
+  };
+
+
+
   return (
-    <div className="p-2 md:p-4">
-      <div className="flex flex-col lg:flex-row gap-2">
+    <div className="p-1 md:p-3 grid grid-cols-8 gap-6">
+      <div className="col-span-6 flex flex-col lg:flex-row gap-2">
         <div className="flex-1">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
@@ -98,17 +135,20 @@ const MainSection = () => {
               <div className="col-span-3 flex justify-center p-2">
               </div>
             ) : error.summary ? (
-              <div className="col-span-3 flex items-center justify-center p-2 bg-red-50 rounded text-red-600">
+              <div className="col-span-3 flex items-center justify-center p-2 bg-red-50 rounded-full text-red-600">
                 {error.summary}
               </div>
             ) : (
-              summaryData.map((item, index) => (
+            summaryData.map((item, index) => (
                 <div 
                   key={index} 
-                  className={`${item.className} p-2 rounded shadow-sm`}
+                  className={`${item.className} p-2 rounded-lg`}
                 >
-                  <h3 className="text-xs font-medium text-white">{item.label}</h3>
-                  <p className="text-lg font-bold text-white">{item.count}</p>
+                  <div className="flex items-center mb-1">
+                    {item.icon}
+                    <h3 className="text-sm font-medium text-custom-sidebar ml-1">{item.label}</h3>
+                  </div>
+                  <p className="text-lg font-semibold text-custom-sidebar">{item.count}</p>
                 </div>
               ))
             )}
@@ -122,14 +162,14 @@ const MainSection = () => {
                 placeholder="Search Projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full p-1.5 pl-8 text-sm bg-gray-100 rounded-md border border-gray-200"
+                className="w-full p-1.5 pl-8 text-sm bg-white rounded-lg  "
               />
               <Search className="absolute left-2 top-2 text-gray-400" size={16} />
             </div>
           </div>
 
           {/* Recent Projects Table */}
-          <div className="bg-white p-3 rounded shadow-sm border border-gray-200">
+          <div className="bg-white p-3 rounded-lg shadow-sm ">
             <h2 className="text-base font-medium mb-2">Recent Projects</h2>
             <div>
               {loading.activities ? (
@@ -194,6 +234,67 @@ const MainSection = () => {
               )}
             </div>
           </div>
+        </div>
+      </div>
+      <div className="col-span-2 rounded-lg p-4  bg-slate-200    ">
+      <div className="p-4 bg-mainsection rounded-lg ">
+     <UserAnalysisChart/>
+      </div>
+      <div className="p-4 bg-white rounded-lg mt-2">
+          <div className="flex justify-between items-center mb-3">
+            <p className="text-sm font-semibold">Recommended Users</p>
+          </div>
+          
+          {usersLoading ? (
+            <div className="flex justify-center items-center h-24">
+              <p className="text-xs text-gray-500">Loading users...</p>
+            </div>
+          ) : currentUsers.length > 0 ? (
+            <>
+              <div className="space-y-3">
+                {currentUsers.map((user) => (
+                  <div 
+                    key={user.id} 
+                    className="flex items-center p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                    onClick={() => handleUserClick(user.id)}
+                  >
+                    {user.profile_picture ? (
+                      <img 
+                        src={user.profile_picture} 
+                        alt={user.name || "User"} 
+                        className="w-8 h-8 rounded-full object-cover mr-2"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+                        <User size={14} className="text-gray-500" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-xs font-medium">{user.name || user.username || "User"}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* View More Users Button */}
+              {users.length > visibleUsersCount && (
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={handleLoadMoreUsers}
+                    disabled={loadingMoreUsers}
+                    className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center justify-center w-full py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    {loadingMoreUsers ? "Loading..." : "View More Users"}
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-24">
+              <User size={16} className="text-gray-400 mb-1" />
+              <p className="text-xs text-gray-500">No users found</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

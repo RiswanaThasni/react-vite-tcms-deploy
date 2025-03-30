@@ -1,9 +1,9 @@
+
 import React, { useEffect, useState } from 'react';
-import UserAnalysisChart from './UserAnalysisChart';
 import { ListProjectAdmin, ProjectDetailsforAnalysis, ProjectSummary } from '../../../api/projectApi';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { fetchUserDetails, fetchUsers } from '../../../api/userApi';
-
+import UserReportBar from './UserReportBar'
 
 const Report = () => {
   const [activeTab, setActiveTab] = useState('project');
@@ -232,14 +232,14 @@ const Report = () => {
   const projectOptions = getProjectOptions();
 
   return (
-    <div className="container mx-auto ">
+    <div className="container p-4 mx-auto ">
       
       <h2 className="text-lg font-semibold mb-2">User Analysis</h2>
-      <UserAnalysisChart/>
-      <h2 className="text-lg font-semibold mb-2"> Analysis</h2>
+<UserReportBar/>   
+   <h2 className="text-lg font-semibold mb-2"> Analysis</h2>
 
       <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex border-b mb-4">
+        <div className="flex  mb-4">
           <button 
             className={`px-4 py-2 ${activeTab === 'project' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
             onClick={() => handleTabChange('project')}
@@ -263,7 +263,7 @@ const Report = () => {
               <p className="text-red-500">{error}</p>
             ) : (
               <select 
-                className="w-full p-2 border rounded"
+                className="w-full p-2 bg-gray-100 rounded"
                 value={selectedProject}
                 onChange={(e) => handleSelection(e.target.value, 'project')}
               >
@@ -304,7 +304,7 @@ const Report = () => {
             <p className="text-red-500">{usersError}</p>
           ) : (
             <select 
-              className="w-full p-2 border rounded"
+              className="w-full p-2 bg-gray-100 rounded"
               value={selectedUser}
               onChange={(e) => handleSelection(e.target.value, 'user')}
             >
@@ -348,15 +348,15 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
       <h3 className="text-xl font-semibold mb-4">{project} Analysis</h3>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-        <StatCard title="Test Cases" value={summary.total_test_cases} />
-        <StatCard title="Tasks" value={summary.total_tasks} />
-        <StatCard title="Pending" value={pendingTasks} />
-        <StatCard title="Bugs" value={summary.total_bugs} />
+        <StatCard title="Test Cases" value={summary.total_test_cases} color="purple" />
+        <StatCard title="Tasks" value={summary.total_tasks} color="blue" />
+        <StatCard title="Pending" value={pendingTasks} color="yellow" />
+        <StatCard title="Bugs" value={summary.total_bugs} color="red" />
       </div>
       
       <div className="flex justify-between mt-4">
         <button 
-          className="flex items-center px-4 py-2 border rounded hover:bg-gray-100"
+          className="flex items-center px-4 py-2 bg-sidebar-hover rounded hover:bg-lime-400"
           onClick={toggleDetails}
           disabled={isDetailsLoading}
         >
@@ -367,7 +367,7 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           )}
         </button>
-        <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
+        <button className="flex items-center px-4 py-2 bg-sidebar-hover rounded hover:bg-lime-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export
         </button>
@@ -376,7 +376,7 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
       {detailsError && <p className="text-red-500 mt-4">{detailsError}</p>}
       
       {showDetails && projectDetails && (
-        <div className="mt-4 p-4 bg-white rounded-lg border">
+        <div className="mt-4 p-4 bg-white rounded-lg ">
           <h4 className="font-semibold mb-2">Detailed Analysis</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -403,7 +403,7 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
           <div className="mt-4">
             <h5 className="font-medium mb-2">Modules</h5>
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-200">
+              <table className="min-w-full bg-white ">
                 <thead>
                   <tr>
                     <th className="py-2 px-3 border-b text-left">ID</th>
@@ -456,11 +456,11 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
           <div className="mt-4">
             <h5 className="font-medium mb-2">Bug Summary</h5>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <StatCard title="Total Bugs" value={projectDetails.bug_summary.faults_identified} />
-              <StatCard title="Critical" value={projectDetails.bug_summary.critical_bugs} />
-              <StatCard title="Major" value={projectDetails.bug_summary.major_bugs} />
-              <StatCard title="Minor" value={projectDetails.bug_summary.minor_bugs} />
-              <StatCard title="Trivial" value={projectDetails.bug_summary.trivial_bugs} />
+              <StatCard title="Total Bugs" value={projectDetails.bug_summary.faults_identified} color="blue"/>
+              <StatCard title="Critical" value={projectDetails.bug_summary.critical_bugs} color="red"/>
+              <StatCard title="Major" value={projectDetails.bug_summary.major_bugs} color="orange"/>
+              <StatCard title="Minor" value={projectDetails.bug_summary.minor_bugs} color="yellow"/>
+              <StatCard title="Trivial" value={projectDetails.bug_summary.trivial_bugs} color="green"/>
             </div>
           </div>
           
@@ -510,24 +510,28 @@ const UserAnalysis = ({ user, userDetails, showDetails, toggleDetails, isLoading
         <StatCard 
           title="Assigned Tasks" 
           value={currentMonth ? currentMonth.total : 0} 
+          color="blue"
         />
         <StatCard 
           title="Completed" 
           value={currentMonth ? currentMonth.completed : 0} 
+          color="green"
         />
         <StatCard 
           title="Pending" 
           value={currentMonth ? (currentMonth.total - currentMonth.completed) : 0} 
+          color="yellow"
         />
         <StatCard 
           title="Efficiency" 
           value={calculateEfficiency()} 
+          color="purple"
         />
       </div>
       
       <div className="flex justify-between mt-4">
         <button 
-          className="flex items-center px-4 py-2 border rounded hover:bg-gray-100"
+          className="flex items-center px-4 py-2  bg-sidebar-hover rounded hover:bg-gray-100"
           onClick={toggleDetails}
           disabled={isLoading}
         >
@@ -538,14 +542,14 @@ const UserAnalysis = ({ user, userDetails, showDetails, toggleDetails, isLoading
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           )}
         </button>
-        <button className="flex items-center px-4 py-2 border rounded hover:bg-gray-100">
+        <button className="flex items-center px-4 py-2  bg-sidebar-hover rounded hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export
         </button>
       </div>
       
       {showDetails && userDetails && (
-        <div className="mt-4 p-4 bg-white rounded-lg border">
+        <div className="mt-4 p-4 bg-white rounded-lg ">
         {user.profile_picture && (
             <div className="mt-4 p-4">
               <h5 className="font-medium mb-2">Profile Picture</h5>
@@ -601,12 +605,24 @@ const UserAnalysis = ({ user, userDetails, showDetails, toggleDetails, isLoading
   );
 };
 
-// Reusable Stat Card Component
-const StatCard = ({ title, value }) => (
-  <div className="bg-white p-4 rounded-lg shadow border text-center">
-    <h4 className="text-sm text-gray-500 mb-1">{title}</h4>
-    <p className="text-2xl font-bold">{value}</p>
-  </div>
-);
+// Reusable Stat Card Component - Updated with color support and no border
+const StatCard = ({ title, value, color = "blue" }) => {
+  // Define color variants 
+  const colorVariants = {
+    blue: "bg-blue-100 text-blue-800",
+    green: "bg-green-100 text-green-800",
+    purple: "bg-purple-100 text-purple-800",
+    red: "bg-red-100 text-red-800",
+    yellow: "bg-yellow-100 text-yellow-800",
+    orange: "bg-orange-100 text-orange-800"
+  };
+  
+  return (
+    <div className={`p-4 rounded-lg shadow ${colorVariants[color] || colorVariants.blue} text-center`}>
+      <h4 className="text-sm opacity-80 mb-1">{title}</h4>
+      <p className="text-2xl font-bold">{value}</p>
+    </div>
+  );
+};
 
 export default Report;

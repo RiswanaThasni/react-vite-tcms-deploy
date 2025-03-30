@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ErrorMessage, Field, Form, Formik } from "formik"
 import { Link, useNavigate } from "react-router-dom"
 import loginValidationSchema from "../validationSchema/loginValidationSchema"
-import logo1 from "../assets/images/logo1.svg"
+import logo from "../assets/images/logo.svg"
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/slices/authSlice";
 
@@ -33,36 +33,36 @@ const Login = () => {
 };
 
   return (
-    <div className="min-h-screen flex-col bg-radial-custom">
+    <div className="min-h-screen flex-col bg-sidebar">
       <div className="p-8">
-        <img src={logo1} alt="Logo" className="w-18 h-auto" />
+        <img src={logo} alt="Logo" className="w-18 h-auto" />
       </div>
       <div className="flex flex-1 flex-col items-center">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
-      <h2 className="text-3xl font-bold text-gray-900 text-center mb-2">Welcome Back!</h2>
-          <p className="mb-6 text-gray-500 font-normal">Please login to your account.</p>
+      <div className=" p-6 bg-white rounded-lg shadow-md w-full max-w-sm">
+      <h2 className=" text-3xl font-bold text-black text-center mb-2">Welcome Back!</h2>
+          <p className="mb-6 text-black font-normal">Please login to your account.</p>
 
           <Formik initialValues={{ username: "", password: "" }} validationSchema={loginValidationSchema} onSubmit={handleLogin}>
             {({status}) => (
               <Form>
                 <div>
-                  <label className="block text-gray-500 text-sm mb-1">Username</label>
+                  <label className="block text-black text-sm mb-1">Username</label>
                   <Field name="username"  type="text" className="w-full border-gray-300  text-sm rounded border py-1.5 px-3 focus:outline-none" />
                   <ErrorMessage name="username" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
                 <div className="mt-5">
-                  <label className="block text-gray-500 text-sm mb-1">Password</label>
+                  <label className="block text-black text-sm mb-1">Password</label>
                   <Field name="password"  type="password" className="w-full border-gray-300  text-sm rounded border py-1.5 px-3 focus:outline-none" />
                   <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
 
                 {status && <div className="text-red-500 text-sm mt-2">{status}</div>}
 
-                <Link to="/forgot_password" className="text-custom font-medium hover:text-slate-500 text-sm">
+                <Link to="/forgot_password" className="text-black font-medium hover:text-slate-500 text-sm">
                   Forgot Password?
                 </Link>
 
-                <button type="submit" disabled={isLoading} className="bg-custom text-white font-semibold mt-4 rounded w-full py-1.5 px-3 text-sm disabled:opacity-50">
+                <button type="submit" disabled={isLoading} className="bg-sidebar-hover text-white font-semibold mt-4 rounded w-full py-1.5 px-3 text-sm disabled:opacity-50">
   {isLoading ? "Signing in..." : "Sign in"}
 </button>
 

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ListProjectByAdmin } from '../../../api/projectApi';
+import randomColor from 'randomcolor'; // Import the randomcolor library
 
 const ViewProject = () => {
   // State for storing projects
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [projectColors, setProjectColors] = useState({});
 
   // Initialize navigate hook for routing
   const navigate = useNavigate();
@@ -18,6 +20,20 @@ const ViewProject = () => {
         setLoading(true);
         const projectData = await ListProjectByAdmin();
         setProjects(projectData);
+        
+        // Generate colors for each project when projects are loaded
+        const colors = {};
+        projectData.forEach(project => {
+          // Generate a base color with randomcolor
+          const baseColor = randomColor({
+            luminosity: 'light', // 'light' ensures we get pastel-like colors
+            hue: 'random'        // random hue for variety
+          });
+          
+          colors[project.id] = baseColor;
+        });
+        
+        setProjectColors(colors);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching projects:", err);
@@ -34,7 +50,47 @@ const ViewProject = () => {
     navigate(`/admin_dashboard/project_details/${projectId}`);
   };
 
-  
+  // Function to generate a darker shade of a given color for accents
+  const getDarkerShade = (color) => {
+    // This is a simple function that darkens a hex color
+    // Remove the # if it exists
+    color = color.replace('#', '');
+    
+    // Convert to RGB
+    let r = parseInt(color.substring(0, 2), 16);
+    let g = parseInt(color.substring(2, 4), 16);
+    let b = parseInt(color.substring(4, 6), 16);
+    
+    // Darken by reducing each component by 20%
+    r = Math.floor(r * 0.8);
+    g = Math.floor(g * 0.8);
+    b = Math.floor(b * 0.8);
+    
+    // Convert back to hex
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  };
+
+  // Function to determine if text should be dark or light based on background
+  const getTextColor = (bgColor) => {
+    // Convert hex to RGB
+    const hex = bgColor.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    // Calculate luminance - formula commonly used to determine text color
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return black for light backgrounds, white for dark backgrounds
+    return luminance > 0.5 ? '#333333' : '#ffffff';
+  };
+
+
+  const getProjectsByStatus = (status) => {
+    return projects.filter(project => project.status.toLowerCase() === status.toLowerCase());
+  };
+
+
 
   if (loading) {
     return (
@@ -68,56 +124,130 @@ const ViewProject = () => {
     }
   };
 
-  return (
-    <div className="bg-white">
-      {projects.length === 0 ? (
-        <div className="text-center py-2 bg-gray-300 rounded-lg">
-          <p className="text-gray-300 text-xs">No projects found.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-3">
-          {projects.map((project) => (
-            <div
-  key={project.id}
-  className="bg-gray-100 p-3 rounded-md cursor-pointer relative 
-             transition duration-200 hover:bg-gray-200 hover:shadow-md"
-  onClick={() => handleProjectClick(project.id)}
->
 
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs text-custom1">{project.project_id}</h3>
-                <div className="text-xs font-semibold text-gray-700">
-                <span 
-                  className={`inline-block px-2 py-1 text-xs rounded ${getStatusStyle(project.status)}`}
-                >
-                  {project.status}
-                </span>
-                </div>
-              </div>
-              <div className="flex justify-between items-center mt-1">
-                <div className="inline-block px-2 py-0.5 rounded-full font-medium text-xs text-custom1">
-                  {project.project_name}
-                </div>
-              </div>
-              <div className="mt-2 p-2 bg-gray-00 bg-opacity-40 rounded text-xs">
-                <p className="text-custom1 text-xs line-clamp-2">{project.project_description}</p>
-              </div>
+  const pendingProjects = getProjectsByStatus('pending');
+  const completedProjects = getProjectsByStatus('completed');
+
+  return (
+    <div className='grid grid-cols-8'>
+      <div className="p-4 col-span-6">
+        {projects.length === 0 ? (
+          <div className="text-center py-2 bg-gray-300 rounded-lg">
+            <p className="text-gray-300 text-xs">No projects found.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {projects.map((project) => {
+              const baseColor = projectColors[project.id] || '#f8f9fa';
+              const accentColor = getDarkerShade(baseColor);
+              const textColor = getTextColor(baseColor);
               
-              {/* Profile images positioned at the right bottom corner */}
-              <div className="absolute bottom-2 right-2 mt-3 flex -space-x-2">
-              {project.project_team.map((member) => (
-                  <img
-                    key={member.id}
-                    src={member.user_details.profile_picture || "/default.svg"}
-                    alt={member.user_details.name}
-                    className="w-8 h-8 rounded-full border border-gray-300"
-                  />
+              return (
+                <div
+                  key={project.id}
+                  className="shadow-sm rounded-lg overflow-hidden cursor-pointer 
+                            transition duration-200 hover:shadow-md border border-gray-100"
+                  onClick={() => handleProjectClick(project.id)}
+                  style={{ backgroundColor: baseColor }}
+                >
+                  {/* Card header with project ID and status */}
+                  <div 
+  className="px-3 py-2 flex items-center justify-between"
+>
+                    <h3 className="text-xs font-medium" style={{ color: textColor }}>
+                      {project.project_id}
+                    </h3>
+                    <span 
+                      className={`inline-block px-2 py-0.5 text-xs rounded-full ${getStatusStyle(project.status)}`}
+                    >
+                      {project.status}
+                    </span>
+                  </div>
+                  
+                  {/* Card body */}
+                  <div className="p-3">
+                    <div className="font-medium text-sm mb-2" style={{ color: textColor }}>
+                      {project.project_name}
+                    </div>
+                    <p className="text-xs line-clamp-2 h-8" style={{ color: textColor }}>
+                      {project.project_description}
+                    </p>
+                  </div>
+                  
+                  {/* Card footer with team members */}
+                  <div 
+  className="px-3 py-2 flex justify-end">
+                    <div className="flex -space-x-2">
+                      {project.project_team.map((member) => (
+                        <img
+                          key={member.id}
+                          src={member.user_details.profile_picture || "/default.svg"}
+                          alt={member.user_details.name}
+                          className="w-6 h-6 rounded-full border border-white"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      <div className='col-span-2 p-4 bg-slate-200 mt-4.5 rounded-lg'>
+        {/* Projects sidebar organized by status - simplified to show only name and deadline */}
+        <div className="space-y-4">
+          {/* Pending Projects Section */}
+          <div>
+            <h3 className="text-sm font-semibold mb-2 text-gray-700">Projects Pending</h3>
+            {pendingProjects.length === 0 ? (
+              <p className="text-xs text-gray-500">No pending projects</p>
+            ) : (
+              <div className="space-y-2">
+                {pendingProjects.map(project => (
+                  <div 
+                    key={project.id}
+                    className="bg-white p-2 rounded shadow-sm cursor-pointer hover:bg-yellow-50 transition-colors"
+                    onClick={() => handleProjectClick(project.id)}
+                  >
+                    <p className="text-xs font-medium text-gray-800">
+                      {project.project_name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Deadline: {new Date(project.deadline).toLocaleDateString()}
+                    </p>
+                  </div>
                 ))}
               </div>
-            </div>
-          ))}
+            )}
+          </div>
+          
+          {/* Completed Projects Section */}
+          <div>
+            <h3 className="text-sm font-semibold mb-2 text-gray-700">Projects Completed</h3>
+            {completedProjects.length === 0 ? (
+              <p className="text-xs text-gray-500">No completed projects</p>
+            ) : (
+              <div className="space-y-2">
+                {completedProjects.map(project => (
+                  <div 
+                    key={project.id}
+                    className="bg-white p-2 rounded shadow-sm cursor-pointer hover:bg-green-50 transition-colors"
+                    onClick={() => handleProjectClick(project.id)}
+                  >
+                    <p className="text-xs font-medium text-gray-800">
+                      {project.project_name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Deadline: {new Date(project.deadline).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

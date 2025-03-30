@@ -1,10 +1,12 @@
 
 import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, RefreshCw, Search, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../../../redux/slices/projectSlice";
 import CreateProject from "./CreateProject";
+import { deleteProject, restoreProject } from "../../../api/projectApi";
+
 
 const ProjectManagement = () => {
   const navigate = useNavigate();
@@ -58,6 +60,44 @@ const ProjectManagement = () => {
   if (showCreateProject) {
     return <CreateProject onBack={() => setShowCreateProject(false)} />;
   }
+
+
+  const handleDeleteProject = async (e, projectId) => {
+    e.stopPropagation(); // Prevent row click event
+    try {
+      if (window.confirm("Are you sure you want to archive this project?")) {
+        await deleteProject(projectId);
+        // Refresh projects list after deletion
+        const token = localStorage.getItem("access_token");
+        if (token) {
+          dispatch(getProjects(token));
+        }
+      }
+    } catch (error) {
+      console.error("Error archiving project:", error);
+      alert("Failed to archive project. Please try again.");
+    }
+  };
+
+
+  const handleRestoreProject = async (e, projectId) => {
+    e.stopPropagation(); // Prevent row click event
+    try {
+      if (window.confirm("Are you sure you want to restore this project?")) {
+        await restoreProject(projectId);
+        // Refresh projects list after restoration
+        const token = localStorage.getItem("access_token");
+        if (token) {
+          dispatch(getProjects(token));
+        }
+        alert("Project restored successfully.");
+      }
+    } catch (error) {
+      console.error("Error restoring project:", error);
+      alert("Failed to restore project. Please try again.");
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -121,6 +161,8 @@ const ProjectManagement = () => {
       <th className="p-2">Start Date</th>
       <th className="p-2">End Date</th>
       <th className="p-2">Issues</th>
+      <th className="p-2"></th>
+
     </tr>
   </thead>
   <tbody>
@@ -165,6 +207,24 @@ const ProjectManagement = () => {
         <td className="p-2">{project.created_at.split("T")[0]}</td>
         <td className="p-2">{project.deadline}</td>
         <td className="p-2 text-center">{project.issues_count || "No Issues"}</td>
+        <td className="p-2">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={(e) => handleDeleteProject(e, project.id || project.project_id)}
+                            className="text-red-500 hover:text-red-700 focus:outline-none"
+                            title="Archive Project"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                          <button
+              onClick={(e) => handleRestoreProject(e, project.id || project.project_id)}
+              className="text-green-500 hover:text-green-700 focus:outline-none"
+              title="Restore Project"
+            >
+              <RefreshCw size={16} />
+            </button>
+                        </div>
+                      </td>
       </tr>
     ))}
   </tbody>

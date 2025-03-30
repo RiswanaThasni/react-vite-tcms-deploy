@@ -10,6 +10,19 @@
   .bg-custom{
       background-color: #7A7EA1;
   }
+  .bg-mainsection{
+    background-color:  #F8F8F6;
+  }
+ 
+  .bg-sidebar{
+    background-color: #201F31;
+  }
+  .text-custom-sidebar{
+    color: #201F31;
+}
+  .bg-sidebar-hover{
+    background-color: #D8F278;
+  }
   .bg-custom-dark{
       background-color: #474b5c;
   }

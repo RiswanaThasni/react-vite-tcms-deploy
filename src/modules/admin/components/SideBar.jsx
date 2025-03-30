@@ -1,24 +1,16 @@
-import React, { useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
+import React from "react";
+import { FiMenu, FiX, FiUsers, FiFileText, FiBarChart2, FiLogOut, FiGrid } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
-import home from "../../../assets/images/home.svg";
-import reportanalysis from "../../../assets/images/reportanalysis.svg";
 import logo from "../../../assets/images/logo.svg";
-import usermanagement from "../../../assets/images/usermanagement.svg";
-import overview from "../../../assets/images/overview.svg";
-import logout from "../../../assets/images/logout.svg";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/slices/userSlice";
 
 
 
 const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [hoveredItem, setHoveredItem] = useState(null);
-  const [hoverLogout, setHoverLogout] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation()
+  const location = useLocation();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -32,111 +24,98 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     navigate("/");
   };
 
-  const NavButton = ({ icon, alt, path }) => {
-    const isActive = location.pathname.startsWith(path);
-    const [isHovered, setIsHovered] = useState(false);
-  
+  const NavButton = ({ Icon, alt, path }) => {
+    const isActive = 
+      path === "/admin_dashboard" 
+        ? ["/admin_dashboard", "/admin_dashboard/", "/admin_dashboard/mainsection"].includes(location.pathname)
+        : location.pathname === path;
+    
     return (
-<div className="relative flex flex-col items-center">
-<button
+      <div className="w-full mb-4">
+        <button
           onClick={() => handleNavigation(path)}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          className={`flex items-center justify-center p-2 hover:bg-gray-200 relative 
-            ${isActive ? 'bg-blue-100' : ''}`}
+          className={`flex items-center w-full p-2 rounded-full transition-colors duration-200 ${
+            isActive ? 'bg-sidebar-hover' : 'hover:bg-sidebar-hover'
+          }`}
         >
-          <img 
-            src={icon} 
-            className="w-5 h-5 cursor-pointer hover:opacity-75" 
-            alt={alt} 
+          <Icon 
+            className={`w-5 h-5 ${
+              isActive ? 'text-black' : 'text-white'
+            }`}
           />
-          {/* Tooltip should appear when hovered */}
-          {isHovered && (
-  <span className="absolute left-[110%] top-1/2 transform -translate-y-1/2
-                 bg-black text-white text-xs px-2 py-1 rounded shadow-lg 
-                 whitespace-nowrap z-50">
-    {alt}
-  </span>
-)}
-
+          <span className={`ml-2 text-sm ${
+            isActive ? 'text-black font-medium' : 'text-white'
+          }`}>{alt}</span>
         </button>
       </div>
     );
   };
-  
 
   return (
     <>
       {/* Sidebar for Large Screens */}
-      <div className="hidden md:flex flex-col items-center bg-gray-100 fixed left-0 top-0 h-full w-20 py-6
-              ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-">
-        <img src={logo} className="w-18 h-18 mb-18" alt="logo" />
-        
-        {/* Navigation Buttons */}
-        <div className="flex flex-col flex-grow items-center gap-4">
-          <NavButton icon={home} alt="Home" page="Dashboard" path="/admin_dashboard" />
-          <NavButton icon={usermanagement} alt="User Management" page="User Management" path="/admin_dashboard/user_management" />
-          <NavButton icon={overview} alt="View project" page="View Project" path="/admin_dashboard/overview" />
-          <NavButton icon={reportanalysis} alt="Report Analysis" page="Report" path="/admin_dashboard/report_analysis" />
+      <div className={`hidden md:flex flex-col justify-between rounded-2xl p-4 bg-sidebar fixed top-3.5 left-3 h-[95vh] ${
+        isSidebarOpen ? 'w-50' : 'w-16'
+      } py-6 shadow-lg z-50 transition-all duration-300`}>
+        <div className="flex flex-col items-center">
+          <img src={logo} className="w-16 h-16 mb-8" alt="logo" />
+          
+          {/* Navigation Buttons */}
+          <div className="flex flex-col flex-grow items-start w-full">
+            <NavButton Icon={FiGrid} alt="Dashboard" path="/admin_dashboard" />
+            <NavButton Icon={FiUsers} alt="User " path="/admin_dashboard/user_management" />
+            <NavButton Icon={FiFileText} alt="Project" path="/admin_dashboard/overview" />
+            <NavButton Icon={FiBarChart2} alt="Report " path="/admin_dashboard/report_analysis" />
+          </div>
         </div>
 
         {/* Logout Button at Bottom */}
-        <div className="mt-auto ">
+        <div className="mt-auto w-full">
           <button
             onClick={handleLogout}
-            onMouseEnter={() => setHoverLogout(true)}
-            onMouseLeave={() => setHoverLogout(false)}
-            className="flex items-center justify-center p-2 hover:bg-gray-200 relative"
+            className="flex items-center w-full p-2 rounded-md transition-colors duration-200 hover:bg-sidebar-hover group"
           >
-            <img src={logout} className="w-5 h-5 cursor-pointer hover:opacity-75" alt="Logout" />
-            {hoverLogout && (
-              <span className="absolute left-full ml-2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                Logout
-              </span>
-            )}
+            <FiLogOut className="w-5 h-5 text-white group-hover:text-lime-300" />
+            <span className="ml-2 text-sm text-white group-hover:text-lime-300">Logout</span>
           </button>
         </div>
       </div>
 
       {/* Mobile Sidebar */}
       <div className="md:hidden">
-        <button className="fixed top-4 left-4 z-[1000] p-2 bg-white rounded-md"          
-         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
->
+        <button 
+          className="fixed top-4 left-4 z-[1000] p-2 bg-white rounded-md"          
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
           {isSidebarOpen ? <FiX size={24} className="text-custom" /> : <FiMenu size={24} className="text-custom" />}
-          </button>
+        </button>
 
-          {isSidebarOpen && (
+        {isSidebarOpen && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-40" 
             onClick={() => setIsSidebarOpen(false)}
           ></div>
         )}
+        
         <div
-          className={`fixed top-0 left-0 h-full w-20 bg-white shadow-lg transition-transform duration-300 z-50 
-         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          `}        >
-          <div className="flex flex-col flex-grow items-center gap-4">
-            <NavButton icon={home} alt="Home" page="Dashboard" path="/admin_dashboard" />
-            <NavButton icon={usermanagement} alt="Project Management" page="Project Management" path="/admin_dashboard/user_management" />
-            <NavButton icon={overview} alt="Task Management" page="Task Management" path="/admin_dashboard/overview" />
-            <NavButton icon={reportanalysis} alt="Report Analysis" page="Report Analysis" path="/admin_dashboard/report_analysis" />
+          className={`fixed top-0 left-0 h-full w-auto bg-white shadow-lg transition-transform duration-300 z-50 p-4 ${
+            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex flex-col items-start gap-4 mt-16">
+            <NavButton Icon={FiGrid} alt="Dashboard" path="/admin_dashboard" />
+            <NavButton Icon={FiUsers} alt="User " path="/admin_dashboard/user_management" />
+            <NavButton Icon={FiFileText} alt="Project" path="/admin_dashboard/overview" />
+            <NavButton Icon={FiBarChart2} alt="Report " path="/admin_dashboard/report_analysis" />
           </div>
 
           {/* Logout Button at Bottom */}
           <button
             onClick={handleLogout}
-            onMouseEnter={() => setHoverLogout(true)}
-            onMouseLeave={() => setHoverLogout(false)}
-            className="mt-auto mb-4 flex items-center justify-center p-2 hover:bg-gray-200 relative"
+            className="mt-auto flex items-center p-2 rounded-md w-full fixed bottom-4 left-4 right-4 transition-colors duration-200 hover:bg-sidebar-hover group"
           >
-            <img src={logout} className="w-5 h-5 cursor-pointer hover:opacity-75" alt="Logout" />
-            {hoverLogout && (
-              <span className="absolute left-full ml-2 bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap">
-                Logout
-              </span>
-            )}
+            <FiLogOut className="w-5 h-5 text-gray-700 group-hover:text-black" />
+            <span className="ml-2 text-sm text-gray-700 group-hover:text-black">Logout</span>
           </button>
         </div>
       </div>

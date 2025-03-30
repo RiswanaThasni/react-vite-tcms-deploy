@@ -241,6 +241,29 @@ export const fetchProjectManagers = async () => {
       }
     }
 
+    export const deleteProject = async(projectId)=>{
+      try{
+        const response = await axiosInstance.delete(`${API_URL}/api/project/${projectId}/archive/`)
+        return response
+      }
+      catch(error){
+
+ throw error.response ? error.response.data : new Error("Failed to archive project ");
+      }
+    }
+
+
+    export const restoreProject = async(projectId)=>{
+      try{
+        const response = await axiosInstance.post(`${API_URL}/api/project/${projectId}/restore/`)
+        return response
+      }
+      catch(error){
+
+ throw error.response ? error.response.data : new Error("Failed to restoring project ");
+      }
+    }
+
     export const viewProject = async(projectId)=>{
       try{
         const response = await axiosInstance.get(`${API_URL}/api/project/details/${projectId}/`)

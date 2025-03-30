@@ -174,13 +174,12 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 md:left-20 bg-white w-full md:w-[calc(100%-5rem)] py-4 px-6 flex items-center justify-between z-50">
-      {/* Left Section - Dynamic Title */}
+<div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">      {/* Left Section - Dynamic Title */}
       <div className="flex items-center space-x-3">
         <button className="md:hidden p-2" onClick={toggleSidebar}>
           <FiMenu size={24} className="text-custom-dark text-[#4c6bdd]" />
         </button>
-        <span className="text-xl font-bold text-custom1">{selectedPage}</span>
+        <span className="text-xl font-bold text-custom-sidebar">{selectedPage}</span>
       </div>
 
       {/* Right Section */}
@@ -197,9 +196,9 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
       {showProfile && (
         <div
           ref={profileRef}
-          className="fixed top-0 right-0 h-min w-50 rounded-lg bg-white shadow-lg p-6 transition-transform transform translate-x-0 z-50"
+          className="fixed top-2 right-2 h-min w-50 rounded-lg bg-mainsection shadow-lg p-6 transition-transform transform translate-x-0 z-50"
         >
-          <div className="flex flex-col items-center mt-6">
+          <div className="flex flex-col items-center mt-3">
             <div className="relative">
               <img
                 src={profileImageSrc}
