@@ -110,15 +110,15 @@ const ReportAnalysis = () => {
   };
 
   return (
-    <div className="bg-gray-50 p-2 rounded-lg shadow-sm">
+    <div className="  rounded-lg ">
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className=" rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
         <>
           {/* Projects Progress Bar Chart */}
-          <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
+          <div className="bg-slate-200 p-4 rounded-lg shadow-sm mb-4">
             <h3 className="text-lg font-semibold text-gray-700 mb-2">Projects Progress Overview</h3>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
@@ -175,7 +175,7 @@ const ReportAnalysis = () => {
               
               {isLoadingDetails ? (
                 <div className="flex justify-center items-center h-24">
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                  <div className=" rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
               ) : detailedData ? (
                 <div>

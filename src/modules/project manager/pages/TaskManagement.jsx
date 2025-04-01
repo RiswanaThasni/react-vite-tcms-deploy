@@ -206,11 +206,11 @@ const TaskManagement = () => {
       
       <div className="relative w-80 mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
-        <input type="text" placeholder="Search Test Cases..." className="w-full p-2 pl-10 bg-gray-100 rounded-md" />
+        <input type="text" placeholder="Search Test Cases..." className="w-full p-2 pl-10 bg-white rounded-lg" />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="col-span-1 bg-gray-50 p-4 rounded-lg shadow-sm">
+        <div className="col-span-1 bg-slate-200 p-4 rounded-lg shadow-sm">
           <h2 className="text-sm font-semibold mb-4">Projects</h2>
           
           {projectsLoading && <p className="text-sm text-gray-500">Loading projects...</p>}
@@ -221,8 +221,8 @@ const TaskManagement = () => {
               projects.map((project) => (
                 <button
                   key={project.id}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
-                    selectedProject === project.id ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
+                  className={`w-full font-medium text-left px-3 py-2 rounded-md ${
+                    selectedProject === project.id ? 'bg-gray-50 text-' : 'hover:bg-gray-100'
                   }`}
                   onClick={() => handleProjectSelect(project.id)}
                 >
@@ -235,12 +235,12 @@ const TaskManagement = () => {
           </div>
         </div>
         
-        <div className="col-span-1 bg-gray-50 p-4 rounded-lg shadow-sm">
+        <div className="col-span-1 bg-slate-200 p-4 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Modules</h2>
+            <h2 className="text-sm font-semibold">Modules</h2>
             {selectedProject && (
               <button 
-                className="text-sm px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="text-sm px-2 py-1 bg-sidebar-hover text-white font-medium rounded-md hover:bg-lime-300"
                 onClick={() => setIsAddingModule(!isAddingModule)}
               >
                 + Add Module
@@ -308,13 +308,13 @@ const TaskManagement = () => {
           ) : modulesError ? (
             <p className="text-sm text-red-500">{modulesError}</p>
           ) : selectedProject ? (
-            <div className="space-y-2">
+            <div className="space-y-2 ">
               {modules.length > 0 ? (
                 modules.map((module) => (
                   <button
                     key={module.id}
                     className={`w-full text-left px-3 py-2 rounded-md ${
-                      selectedModule === module.id ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
+                      selectedModule === module.id ? 'bg-white text-black' : 'hover:bg-gray-100'
                     }`}
                     onClick={() => handleModuleSelect(module.id)}
                   >
@@ -331,12 +331,12 @@ const TaskManagement = () => {
           )}
         </div>
         
-        <div className="col-span-2 bg-gray-50 p-4 rounded-lg shadow-sm">
+        <div className="col-span-2 bg-slate-200 p-4 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Tasks</h2>
+            <h2 className="text-sm font-semibold">Tasks</h2>
             {selectedModule && (
               <button 
-                className="text-sm px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="text-sm px-2 py-1 bg-sidebar-hover text-white font-medium rounded-md hover:bg-lime-300"
                 onClick={() => setIsAddingTask(!isAddingTask)}
               >
                 + Add Task
@@ -345,7 +345,7 @@ const TaskManagement = () => {
           </div>
           
           {isAddingTask && (
-  <div className="mb-4 p-3 border rounded-md bg-white">
+  <div className="mb-4 p-3  rounded-md bg-white">
     <h3 className="font-medium mb-2">New Task</h3>
     <input
       type="text"
@@ -500,7 +500,7 @@ const TaskManagement = () => {
   <div className="space-y-3 max-h-96 overflow-y-auto">
     {tasks.length > 0 ? (
       tasks.map((task) => (
-        <div key={task.id} className="p-3 border rounded-md bg-white">
+        <div key={task.id} className="p-3  rounded-md bg-white">
           <div className="flex justify-between">
             <h3 className="font-medium"> <span className="text-gray-500 text-xs">{task.task_id} </span> 
             {task.task_name}</h3>
@@ -523,7 +523,7 @@ const TaskManagement = () => {
           
           {/* Display Comments Section */}
           {task.comments && task.comments.length > 0 ? (
-            <div className="mt-3 border-t pt-2">
+            <div className="mt-3  pt-2">
               <h4 className="text-xs font-medium text-gray-600 mb-1">Comments:</h4>
               <ul className="space-y-2">
                 {task.comments.map((comment, index) => (

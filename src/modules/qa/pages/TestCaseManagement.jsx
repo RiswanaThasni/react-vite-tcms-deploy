@@ -7,7 +7,6 @@ import { fetchTestCases } from '../../../redux/slices/testCaseSlice';
 import { addTestByModuleId, addTestType, fetchTestEngineers, fetchTestTypes } from '../../../api/projectApi';
 import { FiMoreHorizontal } from "react-icons/fi"
 
-
 const TestCaseManagement = () => {
   const dispatch = useDispatch();
   const [selectedProject, setSelectedProject] = useState(null);
@@ -17,7 +16,6 @@ const TestCaseManagement = () => {
   const [newTestType, setNewTestType] = useState(""); 
   const [testTypes, setTestTypes] = useState([]);
   const [testEngineers, setTestEngineers] = useState([]);
-
 
   const initialTestCaseState = { 
     test_id: '',  
@@ -38,11 +36,8 @@ const TestCaseManagement = () => {
   const [testSteps, setTestSteps] = useState([{ step_number: 1, step_description: '', expected_result: '', status: 'not_run' }]);
 
   const { projects, loading: projectsLoading, error: projectsError } = useSelector(state => state.projects);
-  
   const { modules, loading: modulesLoading, error: modulesError } = useSelector(state => state.modules);
-  
   const { tests, loading: testsLoading, error: testsError } = useSelector(state => state.tests);
-  
   const { developers, loading: developersLoading } = useSelector(state => state.developers || { developers: [], loading: false });
 
   useEffect(() => {
@@ -71,7 +66,6 @@ const TestCaseManagement = () => {
     }
   }, [selectedModule, dispatch]);
 
-
   useEffect(() => {
     const loadTestTypes = async () => {
       try {
@@ -86,9 +80,6 @@ const TestCaseManagement = () => {
     };
     loadTestTypes();
   }, []);
-
-
-  
 
   const handleProjectSelect = (projectId) => {
     setSelectedProject(projectId);
@@ -183,7 +174,6 @@ const TestCaseManagement = () => {
     setIsAddingTestCase(false);
   };
 
-
   const handleAddTestType = async () => {
     if (!newTestType.trim()) {
       alert("Test type name cannot be empty!");
@@ -203,7 +193,6 @@ const TestCaseManagement = () => {
     }
   };
   
-
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case 'Passed':
@@ -253,24 +242,24 @@ const TestCaseManagement = () => {
     if (!steps || steps.length === 0) return <p className="text-sm text-gray-500">No steps defined</p>;
     
     return (
-      <div className="mt-1 text-sm text-gray-700 bg-gray-50 p-2 rounded">
+      <div className="mt-2 text-sm text-gray-700 bg-gray-50 p-2 rounded">
         <table className="w-full border-collapse">
           <thead>
             <tr className="text-left">
-              <th className="text-xs font-medium pr-2">#</th>
-              <th className="text-xs font-medium pr-2">Step</th>
-              <th className="text-xs font-medium">Expected Result</th>
-              <th className="text-xs font-medium w-16">Status</th>
+              <th className="text-sm font-medium pr-2">#</th>
+              <th className="text-sm font-medium pr-2">Step</th>
+              <th className="text-sm font-medium">Expected Result</th>
+              <th className="text-sm font-medium w-20">Status</th>
             </tr>
           </thead>
           <tbody>
             {steps.map((step) => (
               <tr key={step.id || step.step_number} className="border-t border-gray-200">
-                <td className="py-1 pr-2 text-xs">{step.step_number}</td>
-                <td className="py-1 pr-2 text-xs">{step.step_description}</td>
-                <td className="py-1 pr-2 text-xs">{step.expected_result}</td>
+                <td className="py-1 pr-2 text-sm">{step.step_number}</td>
+                <td className="py-1 pr-2 text-sm">{step.step_description}</td>
+                <td className="py-1 pr-2 text-sm">{step.expected_result}</td>
                 <td className="py-1">
-                  <span className={`text-xs px-1.5 py-0.5 rounded-full ${getStatusBadgeClass(step.status)}`}>
+                  <span className={`text-sm px-2 py-1 rounded-full ${getStatusBadgeClass(step.status)}`}>
                     {step.status === 'not_run' ? 'Not Run' : 
                      step.status === 'passed' ? 'Passed' : 
                      step.status === 'failed' ? 'Failed' : step.status}
@@ -285,16 +274,15 @@ const TestCaseManagement = () => {
   };
 
   return (
-    <div className=" mx-auto">
-      
-      <div className="relative w-80 mb-4">
+    <div className="max-w-6xl mx-auto p-4">
+      <div className="relative w-72 mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
-        <input type="text" placeholder="Search Test Cases..." className="w-full p-2 pl-10 bg-gray-100 rounded-md" />
+        <input type="text" placeholder="Search Test Cases..." className="w-full p-2 pl-10 bg-white rounded-md text-sm" />
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="col-span-1 bg-gray-50 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Projects</h2>
+        <div className="col-span-1 bg-slate-200 p-3 rounded-md shadow-sm">
+          <h2 className="text-base font-semibold mb-3">Projects</h2>
           
           {projectsLoading && <p className="text-sm text-gray-500">Loading projects...</p>}
           {projectsError && <p className="text-sm text-red-500">{projectsError}</p>}
@@ -304,7 +292,7 @@ const TestCaseManagement = () => {
               projects.map((project) => (
                 <button
                   key={project.id}
-                  className={`w-full text-left px-3 py-2 rounded-md ${
+                  className={`w-full text-left px-3 py-2 rounded text-sm ${
                     selectedProject === project.id ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
                   }`}
                   onClick={() => handleProjectSelect(project.id)}
@@ -318,8 +306,8 @@ const TestCaseManagement = () => {
           </div>
         </div>
         
-        <div className="col-span-1 bg-gray-50 p-4 rounded-lg shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Modules</h2>
+        <div className="col-span-1 bg-slate-200 p-3 rounded-md shadow-sm">
+          <h2 className="text-base font-semibold mb-3">Modules</h2>
           
           {modulesLoading ? (
             <p className="text-sm text-gray-500">Loading modules...</p>
@@ -331,13 +319,13 @@ const TestCaseManagement = () => {
                 modules.map((module) => (
                   <button
                     key={module.id}
-                    className={`w-full text-left px-3 py-2 rounded-md ${
+                    className={`w-full text-left px-3 py-2 rounded ${
                       selectedModule === module.id ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'
                     }`}
                     onClick={() => handleModuleSelect(module.id)}
                   >
-                    <div className="font-medium">{module.module_name}</div>
-                    <div className="text-xs text-gray-500 truncate">{module.module_description}</div>
+                    <div className="font-medium text-sm">{module.module_name}</div>
+                    <div className="text-sm text-gray-500 truncate">{module.module_description}</div>
                   </button>
                 ))
               ) : (
@@ -349,12 +337,12 @@ const TestCaseManagement = () => {
           )}
         </div>
         
-        <div className="col-span-2 bg-gray-50 p-4 rounded-lg shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Test Cases</h2>
+        <div className="col-span-2 bg-slate-200 p-3 rounded-md shadow-sm">
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-base font-semibold">Test Cases</h2>
             {selectedModule && (
               <button 
-                className="text-sm px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="text-sm px-3 py-1 bg-sidebar-hover font-medium text-white rounded hover:bg-lime-300"
                 onClick={() => setIsAddingTestCase(!isAddingTestCase)}
               >
                 + Add Test Case
@@ -363,56 +351,56 @@ const TestCaseManagement = () => {
           </div>
           
           {isAddingTestCase && (
-            <div className="mb-4 p-3 border rounded-md bg-white">
-              <h3 className="font-medium mb-2">New Test Case</h3>
+            <div className="mb-4 p-3 rounded bg-white">
+              <h3 className="text-sm font-medium mb-2">New Test Case</h3>
               
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <input
                   type="text"
                   placeholder="Test Case ID"
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 border rounded text-sm"
                   value={newTestCase.test_id}
                   onChange={(e) => setNewTestCase({ ...newTestCase, test_id: e.target.value })}
                 />
                 <select
-              className="w-full p-2 border rounded"
-              value={newTestCase.test_type}
-              onChange={(e) => setNewTestCase({ ...newTestCase, test_type: parseInt(e.target.value) })}
-            >
-              {testTypes.map(testType => (
-                <option key={testType.id} value={testType.id}>
-                  {testType.name}
-                </option>
-              ))}
-            </select>
-            <div className="flex items-center mt-2">
-  <input
-    type="text"
-    placeholder="New Test Type"
-    className="w-full p-2 border rounded mr-2"
-    value={newTestType}
-    onChange={(e) => setNewTestType(e.target.value)}
-  />
-  <button 
-    className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-    onClick={handleAddTestType}
-  >
-    Add Type
-  </button>
-</div>
+                  className="w-full p-2 border rounded text-sm"
+                  value={newTestCase.test_type}
+                  onChange={(e) => setNewTestCase({ ...newTestCase, test_type: parseInt(e.target.value) })}
+                >
+                  {testTypes.map(testType => (
+                    <option key={testType.id} value={testType.id}>
+                      {testType.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="flex items-center mt-2 col-span-2">
+                  <input
+                    type="text"
+                    placeholder="New Test Type"
+                    className="w-full p-2 border rounded mr-2 text-sm"
+                    value={newTestType}
+                    onChange={(e) => setNewTestType(e.target.value)}
+                  />
+                  <button 
+                    className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                    onClick={handleAddTestType}
+                  >
+                    Add Type
+                  </button>
+                </div>
               </div>
               
               <input
                 type="text"
                 placeholder="Test Case Title"
-                className="w-full mb-2 p-2 border rounded"
+                className="w-full mb-2 p-2 border rounded text-sm"
                 value={newTestCase.test_title}
                 onChange={(e) => setNewTestCase({ ...newTestCase, test_title: e.target.value })}
               />
               
               <textarea
                 placeholder="Test Description"
-                className="w-full mb-2 p-2 border rounded"
+                className="w-full mb-2 p-2 border rounded text-sm"
                 value={newTestCase.test_description}
                 onChange={(e) => setNewTestCase({ ...newTestCase, test_description: e.target.value })}
                 rows={2}
@@ -423,7 +411,7 @@ const TestCaseManagement = () => {
                   <label className="block text-sm font-medium mb-1">Precondition</label>
                   <textarea
                     placeholder="Precondition"
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-sm"
                     value={newTestCase.precondition}
                     onChange={(e) => setNewTestCase({ ...newTestCase, precondition: e.target.value })}
                     rows={2}
@@ -433,7 +421,7 @@ const TestCaseManagement = () => {
                   <label className="block text-sm font-medium mb-1">Postcondition</label>
                   <textarea
                     placeholder="Postcondition"
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-sm"
                     value={newTestCase.postcondition}
                     onChange={(e) => setNewTestCase({ ...newTestCase, postcondition: e.target.value })}
                     rows={2}
@@ -445,7 +433,7 @@ const TestCaseManagement = () => {
                 <div className="flex items-center justify-between mb-1">
                   <label className="block text-sm font-medium">Test Steps</label>
                   <button 
-                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded" 
+                    className="text-sm bg-blue-500 text-white px-3 py-1 rounded" 
                     onClick={addTestStep}
                   >
                     + Add Step
@@ -458,7 +446,7 @@ const TestCaseManagement = () => {
                       <span className="text-sm font-medium">Step {step.step_number}</span>
                       {testSteps.length > 1 && (
                         <button 
-                          className="text-xs text-red-500"
+                          className="text-sm text-red-500"
                           onClick={() => removeTestStep(index)}
                         >
                           Remove
@@ -471,14 +459,14 @@ const TestCaseManagement = () => {
                         className="w-full p-2 border rounded text-sm"
                         value={step.step_description}
                         onChange={(e) => handleTestStepChange(index, 'step_description', e.target.value)}
-                        rows={2}
+                        rows={1}
                       />
                       <textarea
                         placeholder="Expected Result"
                         className="w-full p-2 border rounded text-sm"
                         value={step.expected_result}
                         onChange={(e) => handleTestStepChange(index, 'expected_result', e.target.value)}
-                        rows={2}
+                        rows={1}
                       />
                     </div>
                   </div>
@@ -490,7 +478,7 @@ const TestCaseManagement = () => {
                   <label className="block text-sm font-medium mb-1">Due Date</label>
                   <input
                     type="date"
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-sm"
                     value={newTestCase.due_date}
                     onChange={(e) => setNewTestCase({ ...newTestCase, due_date: e.target.value })}
                   />
@@ -498,7 +486,7 @@ const TestCaseManagement = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Priority</label>
                   <select
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded text-sm"
                     value={newTestCase.priority}
                     onChange={(e) => setNewTestCase({ ...newTestCase, priority: e.target.value })}
                   >
@@ -510,28 +498,28 @@ const TestCaseManagement = () => {
               </div>
               
               <div className="mt-2">
-            <label className="block text-sm font-medium mb-1">Assign to Test Engineers</label>
-            {testEngineers.length === 0 ? (
-              <p className="text-sm text-gray-500">Loading test engineers...</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-2">
-              {testEngineers.map((engineer) => (
-  <div key={engineer.user_id} className="flex items-center gap-2">
-    <input
-      type="checkbox"
-      id={`engineer-${engineer.user_id}`}
-      checked={newTestCase.assignedUsers.includes(engineer.user_id)}
-      onChange={() => handleUserSelect(engineer.user_id)}
-      className="cursor-pointer"
-    />
-    <label htmlFor={`engineer-${engineer.user_id}`} className="cursor-pointer text-sm">
-      {engineer.full_name}
-    </label>
-  </div>
-))}
+                <label className="block text-sm font-medium mb-1">Assign to Test Engineers</label>
+                {testEngineers.length === 0 ? (
+                  <p className="text-sm text-gray-500">Loading test engineers...</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {testEngineers.map((engineer) => (
+                      <div key={engineer.user_id} className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          id={`engineer-${engineer.user_id}`}
+                          checked={newTestCase.assignedUsers.includes(engineer.user_id)}
+                          onChange={() => handleUserSelect(engineer.user_id)}
+                          className="cursor-pointer w-4 h-4"
+                        />
+                        <label htmlFor={`engineer-${engineer.user_id}`} className="cursor-pointer text-sm">
+                          {engineer.full_name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
               
               <div className="flex justify-end gap-2 mt-3">
                 <button 
@@ -555,34 +543,31 @@ const TestCaseManagement = () => {
           ) : testsError ? (
             <p className="text-sm text-red-500">{testsError}</p>
           ) : selectedModule ? (
-            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="space-y-3 max-h-[calc(100vh-180px)] overflow-y-auto">
               {tests && tests.length > 0 ? (
                 tests.map((testCase) => (
-                  <div key={testCase.id} className="p-4 border  rounded-md bg-white">
-
-    <FiMoreHorizontal size={20} className="text-gray-500  hover:text-gray-700 cursor-pointer" />
-  <div className="flex justify-between items-start">
-                   
+                  <div key={testCase.id} className="p-3 border rounded bg-white">
+                    <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-medium text-lg flex items-center gap-2">
-                          <span className="text-gray-500 text-xs">{testCase.test_id}</span>
+                        <h3 className="font-medium text-base flex items-center gap-2">
+                          <span className="text-gray-500 text-sm">{testCase.test_id}</span>
                           {testCase.test_title}
                         </h3>
-                       
                       </div>
-                      <div className="flex gap-2">
-                        <span className={`text-xs px-2 py-1 rounded-full ${getPriorityBadgeClass(testCase.priority)}`}>
+                      <div className="flex gap-2 items-center">
+                        <span className={`text-sm px-2 py-1 rounded-full ${getPriorityBadgeClass(testCase.priority)}`}>
                           {testCase.priority}
                         </span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusBadgeClass(testCase.status)}`}>
+                        <span className={`text-sm px-2 py-1 rounded-full ${getStatusBadgeClass(testCase.status)}`}>
                           {testCase.status}
                         </span>
+                        <FiMoreHorizontal size={20} className="text-gray-500 hover:text-gray-700 cursor-pointer ml-2" />
                       </div>
                     </div>
                     
                     {typeof testCase.progress !== 'undefined' && (
                       <div className="mt-2">
-                        <div className="flex justify-between items-center text-xs mb-1">
+                        <div className="flex justify-between items-center text-sm mb-1">
                           <span>Progress</span>
                           <span>{testCase.progress}%</span>
                         </div>
@@ -599,12 +584,12 @@ const TestCaseManagement = () => {
                       <p className="text-gray-700">{testCase.test_description}</p>
                     </div>
                     
-                    <div className="mt-4">
+                    <div className="mt-3">
                       <h4 className="text-sm font-medium">Test Steps</h4>
                       {testCase.test_steps ? renderTestSteps(testCase.test_steps) : renderTestSteps([])}
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="grid grid-cols-2 gap-3 mt-3">
                       <div>
                         <h4 className="text-sm font-medium">Precondition</h4>
                         <div className="mt-1 text-sm text-gray-700">
@@ -619,28 +604,28 @@ const TestCaseManagement = () => {
                       </div>
                     </div>
                     
-                    <div className="mt-4 flex justify-between">
+                    <div className="mt-3 flex justify-between">
                       <div>
                         <h4 className="text-sm font-medium">Assigned To</h4>
-                        <div className="flex flex-wrap gap-1 mt-1">
+                        <div className="flex flex-wrap gap-2 mt-1">
                           {testCase.assigned_users && testCase.assigned_users.length > 0 ? (
                             testCase.assigned_users.map((user) => (
-                              <span key={user.user_id} className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-full flex items-center gap-1">
+                              <span key={user.user_id} className="text-sm bg-blue-50 text-blue-600 px-3 py-1 rounded-full flex items-center gap-1">
                                 {user.username}
                                 <span className={`w-2 h-2 rounded-full ${getStatusBadgeClass(user.status)}`}></span>
                               </span>
                             ))
                           ) : (
-                            <span className="text-xs text-gray-500">Not assigned</span>
+                            <span className="text-sm text-gray-500">Not assigned</span>
                           )}
                         </div>
                       </div>
                       <div className="text-right">
                         <h4 className="text-sm font-medium">Due Date</h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-gray-600">{testCase.due_date || "Not set"}</span>
+                          <span className="text-sm text-gray-600">{testCase.due_date || "Not set"}</span>
                           {testCase.due_status && (
-                            <span className={`text-xs px-2 py-1 rounded-full ${getDueDateStatusBadgeClass(testCase.due_status)}`}>
+                            <span className={`text-sm px-2 py-1 rounded-full ${getDueDateStatusBadgeClass(testCase.due_status)}`}>
                               {testCase.due_status}
                             </span>
                           )}
@@ -649,14 +634,13 @@ const TestCaseManagement = () => {
                     </div>
                     
                     {testCase.test_comments && testCase.test_comments.length > 0 && (
-                      <div className="mt-4 border-t pt-3">
+                      <div className="mt-3 border-t pt-2">
                         <h4 className="text-sm font-medium">Comments</h4>
                         <div className="space-y-2 mt-2">
                           {testCase.test_comments.map((comment) => (
                             <div key={comment.id} className="bg-gray-50 p-2 rounded text-sm">
                               <div className="flex justify-between">
-                                <span className="text-xs text-gray-500">
-                                </span>
+                                <span className="text-sm text-gray-500"></span>
                               </div>
                               <p className="mt-1 text-gray-700">{comment.content}</p>
                             </div>
@@ -664,10 +648,6 @@ const TestCaseManagement = () => {
                         </div>
                       </div>
                     )}
-                    
-                    <div className="mt-4 flex justify-end gap-2">
-                     
-                    </div>
                   </div>
                 ))
               ) : (

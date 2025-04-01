@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/slices/userSlice";
 
 
-
+ 
 const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -68,7 +68,7 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <NavButton Icon={FiBarChart2} alt="Report " path="/admin_dashboard/report_analysis" />
           </div>
         </div>
-
+   
         {/* Logout Button at Bottom */}
         <div className="mt-auto w-full">
           <button

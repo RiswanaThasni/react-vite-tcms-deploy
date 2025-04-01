@@ -121,12 +121,11 @@ export const DetailedBug = async(bugId)=>{
 
 export const ReportBug = async (testId, bugData) => {
   let accessToken = localStorage.getItem("access_token");
-
+  
   try {
     const response = await axios.post(`${API_URL}/api/qa-report-bug/${testId}/`, bugData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
       },
     });
 

@@ -10,7 +10,7 @@ import { changePassword, removeProfileImg, updateProfileImg } from "../../../api
 const NavBar = ({ selectedPage, toggleSidebar }) => {
   const { loggedInUser } = useSelector((state) => state.user);
   const [showProfile, setShowProfile] = useState(false);
-  const [showOptions, setShowOptions] = useState(false); // State to toggle upload/delete options
+  const [showOptions, setShowOptions] = useState(false); 
   const profileRef = useRef(null);
 
   const [showPasswordFields, setShowPasswordFields] = useState(false);
@@ -174,12 +174,13 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
   };
 
   return (
-<div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">      {/* Left Section - Dynamic Title */}
+<div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">     
+ {/* Left Section - Dynamic Title */}
       <div className="flex items-center space-x-3">
         <button className="md:hidden p-2" onClick={toggleSidebar}>
           <FiMenu size={24} className="text-custom-dark text-[#4c6bdd]" />
         </button>
-        <span className="text-xl font-bold text-custom-sidebar">{selectedPage}</span>
+        <span className="text-md font-semibold text-custom-sidebar">{selectedPage}</span>
       </div>
 
       {/* Right Section */}
@@ -203,7 +204,7 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
               <img
                 src={profileImageSrc}
                 alt="profile"
-                className="w-20 h-20 rounded-full bg-amber-800"
+                className="w-15 h-15 rounded-full bg-amber-800"
               />
 
               {/* Upload/Remove Button */}
@@ -212,7 +213,7 @@ const NavBar = ({ selectedPage, toggleSidebar }) => {
                   className="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
                   onClick={() => setShowOptions((prev) => !prev)}
                 >
-                  <FiPlus size={14} />
+                  <FiPlus size={9} />
                 </button>
 
                 {showOptions && (

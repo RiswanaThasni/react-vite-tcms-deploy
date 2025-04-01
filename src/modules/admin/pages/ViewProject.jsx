@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ListProjectByAdmin } from '../../../api/projectApi';
-import randomColor from 'randomcolor'; // Import the randomcolor library
+import randomColor from 'randomcolor'; 
 
 const ViewProject = () => {
   // State for storing projects

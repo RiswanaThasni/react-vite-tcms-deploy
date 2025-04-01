@@ -345,7 +345,7 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
 
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
-      <h3 className="text-xl font-semibold mb-4">{project} Analysis</h3>
+      <h3 className="text-xl font-semibold mb-4">{project} </h3>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <StatCard title="Test Cases" value={summary.total_test_cases} color="purple" />
@@ -504,7 +504,7 @@ const UserAnalysis = ({ user, userDetails, showDetails, toggleDetails, isLoading
   
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
-      <h3 className="text-xl font-semibold mb-4">{user.name || `${user.first_name} ${user.last_name}`} Analysis</h3>
+      <h3 className="text-xl font-semibold mb-4">{user.name || `${user.first_name} ${user.last_name}`} </h3>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <StatCard 

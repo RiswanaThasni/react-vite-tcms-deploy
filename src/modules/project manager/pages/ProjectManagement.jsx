@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from "react";
-import { ChevronDown, ChevronUp, RefreshCw, Search, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil, RefreshCw, Search, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../../../redux/slices/projectSlice";
 import CreateProject from "./CreateProject";
-import { deleteProject, restoreProject } from "../../../api/projectApi";
+import { deleteProject, editProject, restoreProject } from "../../../api/projectApi";
+import EditProject from "./EditProject";
 
 
 const ProjectManagement = () => {
@@ -14,6 +15,8 @@ const ProjectManagement = () => {
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [searchTerm, setSearchTerm] = useState(""); // Search input state
   const [sortByNearestDue, setSortByNearestDue] = useState(false); // Sorting state
+  const [showEditProject, setShowEditProject] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   // Get projects from Redux store
   const { projects, loading, error } = useSelector((state) => state.projects);
@@ -60,6 +63,21 @@ const ProjectManagement = () => {
   if (showCreateProject) {
     return <CreateProject onBack={() => setShowCreateProject(false)} />;
   }
+  if (showEditProject && selectedProject) {
+    return <EditProject 
+      project={selectedProject} 
+      onBack={() => {
+        setShowEditProject(false);
+        setSelectedProject(null);
+      }} 
+    />;
+  }
+
+  const handleEditProject = (e, project) => {
+    e.stopPropagation(); // Prevent row click event
+    setSelectedProject(project);
+    setShowEditProject(true);
+  };
 
 
   const handleDeleteProject = async (e, projectId) => {
@@ -100,28 +118,29 @@ const ProjectManagement = () => {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-mainsection">
       {/* Search Bar */}
       <div className="relative w-80 items-center mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
         <input
           type="text"
           placeholder="Search Projects..."
-          className="w-full p-2 pl-10  bg-gray-100 rounded-md"
+          className="w-full p-2 pl-10  bg-white rounded-md"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-
+      
+      <div className="bg-slate-200 rounded-lg">
       <div className="border-1 border-dashed border-gray-100 mx-auto rounded-lg w-full">
         <div className="justify-end flex gap-4 p-4">
-          <select className="p-1 text-sm w-28 border border-gray-300 text-gray-700 rounded-md focus:outline-none">
+          <select className="p-1 text-sm w-28 border border-gray-300 bg-white text-gray-700 rounded-md focus:outline-none">
             <option>Filter by</option>
           </select>
           
           {/* Sort by Nearest Due Date */}
           <button
-            className="flex items-center gap-1 p-1 text-sm border border-gray-300 text-gray-700 rounded-md focus:outline-none"
+            className="flex items-center gap-1 p-1 text-sm border bg-white border-gray-300 text-gray-700 rounded-md focus:outline-none"
             onClick={() => setSortByNearestDue(!sortByNearestDue)}
           >
             <span>Nearest Due Date</span>
@@ -133,7 +152,7 @@ const ProjectManagement = () => {
 
           {/* Create Project Button */}
           <button
-            className="flex items-center gap-1 p-1 text-medium border font-serif text-white bg-yellow-500 rounded-md focus:outline-none"
+            className="flex items-center gap-1 p-1 text-medium  font-serif text-white bg-sidebar-hover rounded-md focus:outline-none"
             onClick={() => setShowCreateProject(true)}
           >
             <span>+ </span> Create Project
@@ -208,23 +227,30 @@ const ProjectManagement = () => {
         <td className="p-2">{project.deadline}</td>
         <td className="p-2 text-center">{project.issues_count || "No Issues"}</td>
         <td className="p-2">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={(e) => handleDeleteProject(e, project.id || project.project_id)}
-                            className="text-red-500 hover:text-red-700 focus:outline-none"
-                            title="Archive Project"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                          <button
+          <div className="flex space-x-2">
+            <button
+              onClick={(e) => handleEditProject(e, project)}
+              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+              title="Edit Project"
+            >
+              <Pencil size={16} />
+            </button>
+            <button
+              onClick={(e) => handleDeleteProject(e, project.id || project.project_id)}
+              className="text-red-500 hover:text-red-700 focus:outline-none"
+              title="Archive Project"
+            >
+              <Trash2 size={16} />
+            </button>
+            <button
               onClick={(e) => handleRestoreProject(e, project.id || project.project_id)}
               className="text-green-500 hover:text-green-700 focus:outline-none"
               title="Restore Project"
             >
               <RefreshCw size={16} />
             </button>
-                        </div>
-                      </td>
+          </div>
+        </td>
       </tr>
     ))}
   </tbody>
@@ -234,6 +260,11 @@ const ProjectManagement = () => {
           </div>
         </div>
       </div>
+
+
+      </div>
+
+      
     </div>
   );
 };

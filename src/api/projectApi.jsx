@@ -241,6 +241,15 @@ export const fetchProjectManagers = async () => {
       }
     }
 
+    export const editProject = async(projectId, projectData) => {
+  try {
+    const response = await axiosInstance.put(`${API_URL}/api/projects/${projectId}/update/`, projectData);
+    return response;
+  } catch(error) {
+    throw error.response ? error.response.data : new Error("Failed to edit project");
+  }
+};
+
     export const deleteProject = async(projectId)=>{
       try{
         const response = await axiosInstance.delete(`${API_URL}/api/project/${projectId}/archive/`)

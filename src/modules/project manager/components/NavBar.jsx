@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FiMenu, FiX, FiEye, FiEyeOff, FiPlus, FiTrash } from "react-icons/fi";
-import { logoutUser } from "../../../redux/slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchUserNotifications } from "../../../redux/slices/notificationSlice";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
@@ -10,7 +9,7 @@ import { FaBell } from "react-icons/fa";
 import {  markNotificationsRead } from "../../../redux/slices/notificationSlice";
 import { API_URL } from "../../../utils/constants";
 
-
+  
 
 const NavBar = ({ toggleSidebar, selectedPage }) => {
   const dispatch = useDispatch();
@@ -218,13 +217,13 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
       };
 
   return (
-    <div className="fixed top-0 left-0 md:left-20 bg-white w-full md:w-[calc(100%-5rem)] py-4 px-6 flex items-center justify-between z-50">
-      {/* Left Section - Dynamic Title */}
+<div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">     
+{/* Left Section - Dynamic Title */}
       <div className="flex items-center space-x-3">
         <button className="md:hidden p-2" onClick={toggleSidebar}>
           <FiMenu size={24} className="text-custom-dark !text-[#4c6bdd]" />
         </button>
-        <span className="text-xl font-bold mb-4 text-custom1">
+        <span className="text-md font-semibold text-custom-sidebar">
           {selectedPage} {/*  Display Dynamic Page Title */}
         </span>
       </div>
@@ -269,7 +268,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                 <img 
   src={profileImageSrc} 
   alt="profile" 
-  className="w-10 h-10 rounded-full bg-gray-400 cursor-pointer" 
+  className="w-8 h-8 rounded-full bg-gray-400 cursor-pointer" 
   onClick={handleOpenProfile} 
 />
       </div>
@@ -278,7 +277,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
       {showProfile && (
         <div
           ref={profileRef}
-          className="fixed top-0 right-0 h-min w-72 bg-white shadow-lg p-6 transition-transform transform translate-x-0 z-50"
+          className="fixed top-2 right-2 rounded-lg h-min w-64  bg-white shadow-lg p-2 transition-transform transform translate-x-0 z-50"
         >
           <button onClick={() => setShowProfile(false)} className="absolute top-4 right-4">
             <FiX size={24} className="text-gray-600" />
@@ -289,7 +288,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                          <img
                            src={profileImageSrc}
                            alt="profile"
-                           className="w-20 h-20 rounded-full bg-amber-800"
+                           className="w-15 h-15 rounded-full bg-neutral-300"
                          />
            
                          {/* Upload/Remove Button */}

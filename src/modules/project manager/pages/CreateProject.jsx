@@ -91,12 +91,12 @@ const handleSubmit = async (values) => {
 
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen  ">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 font-medium text-gray-400 hover:text-gray-700 transition duration-200 mb-4"
+        className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-700 transition duration-200 mb-4"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={15} />
         <span>Back to Project Management</span>
       </button>
 
@@ -200,7 +200,7 @@ const handleSubmit = async (values) => {
 )}
 
 
-              <button type="submit" className="w-full p-2 bg-yellow-400 text-white rounded hover:bg-yellow-600 transition duration-200">
+              <button type="submit" className="w-full p-2 bg-sidebar-hover font-semibold  text-black rounded hover:bg-lime-300 transition duration-200">
                 Create Project
               </button>
             </Form>

@@ -1,7 +1,6 @@
-// AdminDashboard.jsx - Updated
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import SideBar from "../components/SideBar";
+import SideBar from "../components/SideBar";  
 import NavBar from "../components/NavBar";
 
 const AdminDashboard = () => {
@@ -18,7 +17,6 @@ const AdminDashboard = () => {
   };
   
   const getPageTitle = () => {
-    // Check for exact matches first
     const exactMatch = Object.keys(pageTitles).find(path => 
       location.pathname === path.replace(':userId', '') ||
       location.pathname === path.replace(':projectId', '')
@@ -26,7 +24,6 @@ const AdminDashboard = () => {
     
     if (exactMatch) return pageTitles[exactMatch];
     
-    // Check for routes with dynamic segments
     const dynamicRoutes = [
       { pattern: /^\/admin_dashboard\/view_user_details\/\d+$/, title: "User Details" },
       { pattern: /^\/admin_dashboard\/project_details\/\d+$/, title: "Project Details" }
