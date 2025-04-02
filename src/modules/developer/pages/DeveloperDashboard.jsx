@@ -6,7 +6,6 @@ import NavBar from "../components/NavBar";
 const DeveloperDashboard = () => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [selectedPage, setSelectedPage] = useState("Dashboard");
   
   // Define page titles based on routes for developer dashboard
   const pageTitles = {
@@ -21,35 +20,36 @@ const DeveloperDashboard = () => {
     { pattern: /^\/dev_dashboard\/tasks\/\d+$/, title: "Task Details" }
   ];
 
-  // Update selected page based on current route
-  useEffect(() => {
-    let title = pageTitles[location.pathname];
+  // Function to get the page title based on current route
+  const getPageTitle = () => {
+    const exactMatch = pageTitles[location.pathname];
+    
+    if (exactMatch) return exactMatch;
     
     // If no exact match, check for dynamic routes
-    if (!title) {
-      const dynamicMatch = dynamicRoutes.find(route => 
-        route.pattern.test(location.pathname)
-      );
-      
-      if (dynamicMatch) {
-        title = dynamicMatch.title;
-      } else {
-        // Default fallback
-        title = "Dashboard";
-      }
-    }
+    const dynamicMatch = dynamicRoutes.find(route =>
+      route.pattern.test(location.pathname)
+    );
     
-    setSelectedPage(title);
-  }, [location.pathname]);
+    return dynamicMatch ? dynamicMatch.title : "Dashboard";
+  };
+
+  const selectedPage = getPageTitle();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
-
+  
   return (
     <div className="flex min-h-screen bg-mainsection">
-      <SideBar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+      {/* Sidebar */}
+      <div className={`fixed top-0 h-full z-50 transition-all duration-300 ${
+        isSidebarOpen ? "w-52" : "w-16"
+      }`}>
+        <SideBar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+      </div>
       
+      {/* Main Content */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${
         isSidebarOpen ? "ml-52" : "ml-16"
       }`}>
@@ -57,13 +57,12 @@ const DeveloperDashboard = () => {
           selectedPage={selectedPage}
           toggleSidebar={toggleSidebar}
         />
-        <main className="flex-1 p-6 mt-16 rounded-lg">
+        <main className="flex-1 p-3 mt-14 rounded-lg">
           <Outlet />
         </main>
       </div>
     </div>
   );
 };
-
 
 export default DeveloperDashboard;

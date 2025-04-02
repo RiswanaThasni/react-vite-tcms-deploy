@@ -12,10 +12,10 @@ const TrackTask = () => {
   // Function to determine priority color
   const getPriorityColor = (priority) => {
     switch (priority.toLowerCase()) {
-      case "high": return "bg-red-500";
-      case "medium": return "bg-yellow-500";
-      case "low": return "bg-green-500";
-      default: return "bg-blue-500";
+      case "high": return "bg-red-500 text-white px-2 py-0.5 rounded text-xs";
+      case "medium": return "bg-yellow-500 text-white px-2 py-0.5 rounded text-xs";
+      case "low": return "bg-green-500 text-white px-2 py-0.5 rounded text-xs";
+      default: return "bg-blue-500 text-white px-2 py-0.5 rounded text-xs";
     }
   };
 
@@ -45,52 +45,55 @@ const TrackTask = () => {
   const sortedTasks = [...inProgressTasks].sort((a, b) => b.progress - a.progress);
 
   return (
-    <div className="p-1 w-full mx-auto bg-white">
-      <div className="relative w-80 flex items-center mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+    <div className="p-2 w-full mx-auto bg-mainsection">
+      <div className="relative w-64 flex items-center mb-3">
+        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
         <input
           type="text"
           placeholder="Search Tasks..."
-          className="w-full p-2 pl-10 bg-gray-100 rounded-md"
+          className="w-full p-1.5 pl-8 bg-white rounded-md text-sm"
         />
       </div>
 
       {/* Loading and error states */}
-      {loading && <p>Loading tasks...</p>}
-      {error && <p className="text-red-600">{error}</p>}
+      {loading && <p className="text-sm">Loading tasks...</p>}
+      {error && <p className="text-red-600 text-sm">{error}</p>}
 
       {/* Tasks Progress Line */}
-      <div className="bg-gray-50 p-6 rounded-lg shadow-sm mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium text-gray-700">Tasks Progress</h2>
+      <div className="bg-slate-200 p-3 rounded-lg shadow-sm mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-base font-medium text-gray-700">Tasks Progress</h2>
           <div className="flex space-x-2">
-            <span className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-full">
+            <span className="px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded-full">
               {inProgressTasks.length} Tasks In Progress
             </span>
           </div>
         </div>
 
         {/* Progress Lines */}
-        <div className="space-y-6">
+        <div className="space-y-2">
           {sortedTasks.map((task) => (
-            <div key={task.id} className="bg-white p-4 rounded-md shadow-sm">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+            <div 
+              key={task.id} 
+              className="bg-white p-2 rounded-md shadow-sm transition-colors duration-200 hover:bg-gray-100"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
                 <div className="flex-1">
                   <div className="flex items-center">
-                    <h3 className="text-md font-medium text-gray-800">{task.task_name}</h3>
+                    <h3 className="text-sm font-medium text-gray-800">{task.task_name}</h3>
                   </div>
-                  <p className="text-sm text-gray-500 mt-1">{task.project_name}</p>
+                  <p className="text-xs text-gray-500">{task.project_name}</p>
                 </div>
 
-                <div className="flex flex-wrap gap-3 mt-2 md:mt-0">
+                <div className="flex flex-wrap gap-2 mt-1 md:mt-0">
                   <div className="flex items-center text-xs text-gray-600">
-                    <Calendar size={14} className="mr-1" />
+                    <Calendar size={12} className="mr-1" />
                     <span className={getDueDateStatus(task.due_date).class}>
                       {task.due_status || 'No due date set'}
                     </span>
                   </div>
-                  <div className="flex items-center text-xs text-gray-600">
-                    <AlertCircle size={14} className="mr-1" />
+                  <div className="flex items-center text-xs">
+                    <AlertCircle size={12} className="mr-1 text-gray-600" />
                     <span className={getPriorityColor(task.priority)}>
                       {task.priority}
                     </span>
@@ -99,14 +102,14 @@ const TrackTask = () => {
               </div>
 
               {/* Progress bar */}
-              <div className="mt-3">
-                <div className="flex justify-between mb-1">
-                  <span className="text-sm font-medium text-gray-700">{task.progress}% complete</span>
-                  <span className="text-sm text-gray-500">{task.created_by}</span>
+              <div className="mt-2">
+                <div className="flex justify-between mb-0.5">
+                  <span className="text-xs font-medium text-gray-700">{task.progress}% complete</span>
+                  <span className="text-xs text-gray-500">{task.created_by}</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
                   <div
-                    className={`h-2.5 rounded-full ${
+                    className={`h-1.5 rounded-full ${
                       task.progress >= 75 ? "bg-green-500" :
                       task.progress >= 50 ? "bg-blue-500" :
                       task.progress >= 25 ? "bg-yellow-500" : "bg-red-500"

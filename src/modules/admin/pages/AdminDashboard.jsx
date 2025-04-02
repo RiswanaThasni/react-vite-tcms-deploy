@@ -27,7 +27,7 @@ const AdminDashboard = () => {
     const dynamicRoutes = [
       { pattern: /^\/admin_dashboard\/view_user_details\/\d+$/, title: "User Details" },
       { pattern: /^\/admin_dashboard\/project_details\/\d+$/, title: "Project Details" }
-    ];
+    ];  
     
     const dynamicMatch = dynamicRoutes.find(route =>
       route.pattern.test(location.pathname)

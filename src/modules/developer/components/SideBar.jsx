@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { FiMenu, FiX, FiLogOut, FiGrid, FiList, FiActivity } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../redux/slices/userSlice"; // Make sure this path is correct
 import logo from "../../../assets/images/logo.svg";
 
-const SideBar = ({ setSelectedPage }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const SideBar = ({isSidebarOpen, setIsSidebarOpen}) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const handleNavigation = (page, path) => {
-    setSelectedPage(page);
+   const dispatch = useDispatch();
+   const location = useLocation();
+ 
+   const handleNavigation = (path) => {
     navigate(path);
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
@@ -18,52 +18,52 @@ const SideBar = ({ setSelectedPage }) => {
   };
 
   const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
-
-  const NavButton = ({ Icon, alt, page, path }) => {
-    const isActive = location.pathname === path || 
-      (path === "/dev_dashboard" && 
-        ["/dev_dashboard", "/dev_dashboard/", "/dev_dashboard/mainsection"].includes(location.pathname));
-    
-    return (
-      <div className="w-full mb-4">
-        <button
-          onClick={() => handleNavigation(page, path)}
-          className={`flex items-center w-full p-2 rounded-full transition-colors duration-200 ${
-            isActive ? 'bg-sidebar-hover' : 'hover:bg-sidebar-hover'
+      dispatch(logoutUser());
+      navigate("/");
+    };
+  
+  // In SideBar.js
+const NavButton = ({ Icon, alt, path }) => {
+  const isActive = location.pathname === path || 
+    (path === "/dev_dashboard" && 
+      ["/dev_dashboard", "/dev_dashboard/", "/dev_dashboard/mainsection"].includes(location.pathname));
+  
+  return (
+    <div className="w-full mb-4">
+      <button
+        onClick={() => handleNavigation(path)}
+        className={`flex items-center w-full p-2 rounded-full transition-colors duration-200 ${
+          isActive ? 'bg-sidebar-hover' : 'hover:bg-sidebar-hover'
+        }`}
+      >
+        <Icon 
+          className={`w-5 h-5 ${
+            isActive ? 'text-black' : 'text-white'
           }`}
-        >
-          <Icon 
-            className={`w-5 h-5 ${
-              isActive ? 'text-black' : 'text-white'
-            }`}
-          />
-          <span className={`ml-2 text-sm ${
-            isActive ? 'text-black font-medium' : 'text-white'
-          }`}>{alt}</span>
-        </button>
-      </div>
-    );
-  };
-
+        />
+        <span className={`ml-2 text-sm ${
+          isActive ? 'text-black font-medium' : 'text-white'
+        }`}>{alt}</span>
+      </button>
+    </div>
+  );
+};
   return (
     <>
       {/* Sidebar for Large Screens */}
-       <div className={`hidden md:flex flex-col justify-between rounded-2xl p-4 bg-sidebar fixed top-3.5 left-3 h-[95vh] ${
-              isSidebarOpen ? 'w-50' : 'w-16'
-            } py-6 shadow-lg z-50 transition-all duration-300`}>
-              <div className="flex flex-col items-center">
-                <img src={logo} className="w-16 h-16 mb-8" alt="logo" />
+      <div className={`hidden md:flex flex-col justify-between rounded-2xl p-4 bg-sidebar fixed top-3.5 left-3 h-[95vh] ${
+        isSidebarOpen ? 'w-50' : 'w-16'
+      } py-6 shadow-lg z-50 transition-all duration-300`}>
+        <div className="flex flex-col items-center">
+        <img src={logo} className="w-16 h-16 mb-8" alt="logo" />
                 
                 
           
           {/* Navigation Buttons */}
           <div className="flex flex-col flex-grow items-start w-full">
-            <NavButton Icon={FiGrid} alt="Dashboard" page="Dashboard" path="/dev_dashboard" />
-            <NavButton Icon={FiList} alt="Task Details" page="Task Details" path="/dev_dashboard/task_details" />
-            <NavButton Icon={FiActivity} alt="Track Task" page="Track Task" path="/dev_dashboard/track_task" />
+          <NavButton Icon={FiGrid} alt="Dashboard" path="/dev_dashboard" />
+<NavButton Icon={FiList} alt="Task Details" path="/dev_dashboard/task_details" />
+<NavButton Icon={FiActivity} alt="Track Task" path="/dev_dashboard/track_task" />
           </div>
         </div>
    
@@ -81,14 +81,14 @@ const SideBar = ({ setSelectedPage }) => {
 
       {/* Mobile Sidebar */}
       <div className="md:hidden">
-        <button 
-          className="fixed top-4 left-4 z-[1000] p-2 bg-white rounded-md"          
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          {isSidebarOpen ? <FiX size={24} className="text-custom" /> : <FiMenu size={24} className="text-custom" />}
-        </button>
+       <button 
+                 className="fixed top-4 left-4 z-[1000] p-2 bg-white rounded-md"          
+                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+               >
+                 {isSidebarOpen ? <FiX size={24} className="text-custom" /> : <FiMenu size={24} className="text-custom" />}
+               </button>
 
-        {isSidebarOpen && (
+               {isSidebarOpen && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-40" 
             onClick={() => setIsSidebarOpen(false)}
@@ -101,9 +101,9 @@ const SideBar = ({ setSelectedPage }) => {
           }`}
         >
           <div className="flex flex-col items-start gap-4 mt-16">
-            <NavButton Icon={FiGrid} alt="Dashboard" page="Dashboard" path="/dev_dashboard" />
-            <NavButton Icon={FiList} alt="Task Details" page="Task Details" path="/dev_dashboard/task_details" />
-            <NavButton Icon={FiActivity} alt="Track Task" page="Track Task" path="/dev_dashboard/track_task" />
+            <NavButton Icon={FiGrid} alt="Dashboard"  path="/dev_dashboard" />
+            <NavButton Icon={FiList} alt="Task Details"  path="/dev_dashboard/task_details" />
+            <NavButton Icon={FiActivity} alt="Track Task"  path="/dev_dashboard/track_task" />
           </div>
 
           {/* Logout Button at Bottom */}

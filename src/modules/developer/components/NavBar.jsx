@@ -9,7 +9,7 @@ import { changePassword, removeProfileImg, updateProfileImg } from "../../../api
 import { logoutUser } from "../../../redux/slices/userSlice";
 import { API_URL } from "../../../utils/constants";
 
-const NavBar = ({ toggleSidebar, selectedPage }) => {
+const NavBar = ({ selectedPage, toggleSidebar}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -65,10 +65,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
+
 
   const handleOpenProfile = () => {
     setShowProfile((prev) => !prev);
@@ -208,8 +205,8 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   };
 
   return (
-    <div className="fixed  top-0 left-45 md:left-45 w-full md:w-[calc(100%-10rem)]  py-3 px-6 flex items-center justify-between z-50 ">
-      {/* Left Section - Dynamic Title with better styling */}
+<div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">     
+{/* Left Section - Dynamic Title with better styling */}
       <div className="flex items-center space-x-4">
         <button className="md:hidden p-2 hover:bg-blue-100 rounded-lg transition-colors" onClick={toggleSidebar}>
           <FiMenu size={22} className="text-indigo-600" />
@@ -218,9 +215,9 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
           <span className="text-lg font-semibold text-gray-800">
             {selectedPage}
           </span>
-          <span className="text-xs text-gray-500 hidden md:block">
+          {/* <span className="text-xs text-gray-500 hidden md:block">
             {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-          </span>
+          </span> */}
         </div>
       </div>
 
@@ -372,7 +369,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
               {showPasswordFields && (
                 <div className="mt-2 px-2 pb-2">
                   {changeSuccess ? (
-                    <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md mb-3 text-sm">
+                    <div className="bg-slate-200 border border-green-200 text-green-600 px-4 py-3 rounded-md mb-3 text-sm">
                       Password changed successfully! Redirecting to login...
                     </div>
                   ) : (
@@ -478,7 +475,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                       
                       <button
                         type="submit"
-                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm transition-colors"
+                        className="w-full   text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm transition-colors"
                         disabled={isLoading}
                       >
                         {isLoading ? "Changing..." : "Change Password"}
@@ -491,13 +488,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
           
             {/* Logout Button */}
             <div className="py-3 border-t border-gray-100 mt-2">
-              <button
-                className="w-full py-2 text-center text-red-600 hover:bg-red-50 rounded-md transition-colors flex items-center justify-center"
-                onClick={handleLogout}
-              >
-                <FiLogOut className="mr-2" size={16} />
-                <span className="font-medium text-sm">Logout</span>
-              </button>
+             
             </div>
           </div>
         </div>
