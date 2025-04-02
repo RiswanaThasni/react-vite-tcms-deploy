@@ -61,33 +61,22 @@ const TestTrack = () => {
     .sort((a, b) => b.completionPercentage - a.completionPercentage);
 
   return (
-    <div className="w-full mx-auto bg-white">
-      <div className="relative w-80 flex items-center mb-4">
+    <div className='p-2'>
+    <div className="relative w-80 flex items-center mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
         <input
           type="text"
           placeholder="Search Tests..."
-          className="w-full p-2 pl-10 bg-gray-100 rounded-md"
+          className="w-full p-2 pl-10 bg-white rounded-lg"
           value={searchTerm}
           onChange={handleSearchChange}
         />
       </div>
+<div className="w-full mx-auto bg-white">
+      
     
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        {/* Uncomment this if you want to use the filter dropdown */}
-        {/* <div className="flex items-center gap-2">
-          <Filter size={18} className="text-gray-500" />
-          <select 
-            className="p-2 border border-gray-300 rounded-md bg-white"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">All Priorities</option>
-            <option value="high">High Priority</option>
-            <option value="medium">Medium Priority</option>
-            <option value="low">Low Priority</option>
-          </select>
-        </div> */}
+       
       </div>
 
       {/* Loading State */}
@@ -172,6 +161,8 @@ const TestTrack = () => {
         </div>
       )}
     </div>
+    </div>
+    
   );
 };
 

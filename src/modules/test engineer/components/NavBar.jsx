@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FiMenu, FiX, FiEye, FiEyeOff, FiPlus, FiTrash } from "react-icons/fi";
+import { FiMenu, FiX, FiEye, FiEyeOff, FiPlus, FiTrash, FiUser } from "react-icons/fi";
 import { logoutUser } from "../../../redux/slices/userSlice";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
 
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-    const [showOptions, setShowOptions] = useState(false); // State to toggle upload/delete options
+  const [showOptions, setShowOptions] = useState(false); // State to toggle upload/delete options
   
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState({
@@ -44,7 +44,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
   const notificationRef = useRef(null);
 
   const profilePicture = profileData?.profile_picture || user?.profile_picture;
-    const profileImageSrc = profilePicture ? `${API_URL}${profilePicture}` : "/public/default.svg"
+  const profileImageSrc = profilePicture ? `${API_URL}${profilePicture}` : "/public/default.svg";
     
 
   useEffect(() => {
@@ -179,7 +179,6 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
       if (profileRef.current && !profileRef.current.contains(event.target) && !event.target.closest(".profile-toggle")) {
         setShowProfile(false);
         setShowOptions(false);
-
       }
       if (notificationRef.current && !notificationRef.current.contains(event.target) && !event.target.closest(".notification-toggle")) {
         setShowNotifications(false);
@@ -192,69 +191,81 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
     };
   }, [isLoading]);
 
- const handleProfileUpload = async (event) => {
-     const file = event.target.files[0];
-     if (file) {
-       try {
-         await updateProfileImg(file);
-         dispatch(fetchUserProfile());
-       } catch (error) {
-         console.error("Failed to upload profile image:", error);
-       }
-     }
-   };
+  const handleProfileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        await updateProfileImg(file);
+        dispatch(fetchUserProfile());
+      } catch (error) {
+        console.error("Failed to upload profile image:", error);
+      }
+    }
+  };
  
-   const handleRemoveProfileImage = async () => {
-     try {
-       await removeProfileImg();
-       dispatch(fetchUserProfile()); // Refresh the profile
-     } catch (error) {
-       console.error("Failed to remove profile image:", error);
-     }
-   };
+  const handleRemoveProfileImage = async () => {
+    try {
+      await removeProfileImg();
+      dispatch(fetchUserProfile()); // Refresh the profile
+    } catch (error) {
+      console.error("Failed to remove profile image:", error);
+    }
+  };
 
   return (
-    <div className="fixed top-0 left-45 bg-white md:left-45 w-full md:w-[calc(100%-10rem)] py-4 px-6 flex items-center justify-between z-50">
-      {/* Left Section - Dynamic Title */}
-      <div className="flex items-center space-x-3">
-        <button className="md:hidden p-2" onClick={toggleSidebar}>
-          <FiMenu size={24} className="text-custom-dark !text-[#4c6bdd]" />
+<div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">     
+{/* Left Section - Dynamic Title with better styling */}
+      <div className="flex items-center space-x-4">
+        <button className="md:hidden p-2 hover:bg-blue-100 rounded-lg transition-colors" onClick={toggleSidebar}>
+          <FiMenu size={22} className="text-indigo-600" />
         </button>
-        <span className="text-2xl font-bold mb-4 text-custom1">
-          {selectedPage} {/*  Display Dynamic Page Title */}
-        </span>
+        <div className="flex flex-col">
+          <span className="text-lg font-semibold text-gray-800">
+            {selectedPage}
+          </span>
+        </div>
       </div>
 
-      {/* Right Section */}
-      <div className="absolute right-6 top-4 flex items-center space-x-8">
+      {/* Right Section with improved spacing */}
+      <div className="flex items-center space-x-5">
+        {/* Notification Bell with improved styling */}
         <div className="relative">
-          <FaBell
-            size={24}
-            className="cursor-pointer text-gray-700 hover:text-gray-400 notification-toggle"
+          <button 
+            className="p-2 hover:bg-blue-100 rounded-full transition-all notification-toggle flex items-center justify-center"
             onClick={handleOpenNotifications}
-          />
-          {unreadCount > 0 && (
-            <span className="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-              {unreadCount}
-            </span>
-          )}
+          >
+            <FaBell size={20} className="text-gray-600" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                {unreadCount}
+              </span>
+            )}
+          </button>
 
-          {/* Notification Dropdown */}
+          {/* Notification Dropdown with improved styling */}
           {showNotifications && (
             <div
               ref={notificationRef}
-              className="absolute right-0 top-10 w-64 bg-white shadow-lg rounded-lg p-4 z-50 max-h-64 overflow-y-auto"
+              className="absolute right-0 top-12 w-72 bg-white rounded-lg p-3 z-50 max-h-80 overflow-y-auto shadow-lg border border-gray-100"
             >
-              <h3 className="text-md font-bold mb-2">Notifications</h3>
+              <div className="flex justify-between items-center mb-2 pb-2 border-b">
+                <h3 className="text-md font-bold text-gray-800">Notifications</h3>
+                <span className="text-xs text-blue-600 font-medium">{notifications.length} messages</span>
+              </div>
               {notifications.length === 0 ? (
-                <p className="text-gray-500 text-sm">No new notifications</p>
+                <div className="py-6 text-center">
+                  <p className="text-gray-500 text-sm">No new notifications</p>
+                </div>
               ) : (
-                <ul>
+                <ul className="divide-y divide-gray-100">
                   {notifications.map((notif) => (
-                    <li key={notif.id} className="py-2 border-b text-sm">
-                      <a href={notif.link} className="text-blue-900 ">
+                    <li key={notif.id} className="py-3 hover:bg-gray-50 rounded px-2">
+                      <a href={notif.link} className="text-gray-700 text-sm block hover:text-blue-600">
                         {notif.message}
                       </a>
+                      <span className="text-xs text-gray-400 mt-1 block">
+                        {new Date(notif.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -262,100 +273,120 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
             </div>
           )}  
         </div>
-        <img 
-  src={profileImageSrc} 
-  alt="profile" 
-  className="w-10 h-10 rounded-full bg-gray-400 cursor-pointer" 
-  onClick={handleOpenProfile} 
-/>
+        
+        {/* Profile Image with improved styling */}
+        <button 
+          className="profile-toggle flex items-center space-x-2 hover:bg-blue-100 rounded-full p-1 transition-colors"
+          onClick={handleOpenProfile}
+        >
+          <img 
+            src={profileImageSrc} 
+            alt="profile" 
+            className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" 
+          />
+        </button>
       </div>
 
-      {/* Side Profile Popup */}
+      {/* Profile Popup with improved styling */}
       {showProfile && (
         <div
           ref={profileRef}
-          className="fixed top-0 right-0 h-min w-72 bg-white shadow-lg p-6 transition-transform transform translate-x-0 z-50"
+          className="fixed top-2 right-2 w-72 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 z-50"
         >
-          <button onClick={() => setShowProfile(false)} className="absolute top-4 right-4">
-            <FiX size={24} className="text-gray-600" />
-          </button>
-
-          <div className="flex flex-col items-center mt-8">
-            <div className="relative">
-                          <img
-                            src={profileImageSrc}
-                            alt="profile"
-                            className="w-20 h-20 rounded-full bg-amber-800"
-                          />
-            
-                          {/* Upload/Remove Button */}
-                          <div className="absolute bottom-0 right-0">
-                            <button
-                              className="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg"
-                              onClick={() => setShowOptions((prev) => !prev)}
-                            >
-                              <FiPlus size={14} />
-                            </button>
-            
-                            {showOptions && (
-                              <div className="absolute right-0 mt-2 bg-white shadow-md rounded-md w-28">
-                                <label className="block px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-200">
-                                  Upload Image
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={handleProfileUpload}
-                                  />
-                                </label>
-                                <button
-                                  className="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-200"
-                                  onClick={handleRemoveProfileImage}
-                                >
-                                  <FiTrash className="inline mr-2" /> Remove Image
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-            <p className="mt-2 text-lg font-semibold text-center">
-              {profileData?.name || user?.name || "User"}
-            </p>
-            <p className="text-sm text-gray-600 text-center mb-6">
-              {profileData?.email || user?.email || "user@example.com"}
-            </p>
+          {/* Profile Header */}
+          <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 pt-5 pb-12 px-4">
+            <button 
+              onClick={() => setShowProfile(false)} 
+              className="absolute top-2 right-2 bg-white/20 p-1 rounded-full hover:bg-white/30 text-white transition-colors"
+            >
+              <FiX size={16} />
+            </button>
+          </div>
           
+          {/* Profile Content */}
+          <div className="px-6 -mt-8">
+            <div className="flex flex-col items-center">
+              {/* Profile Image with Upload/Remove options */}
+              <div className="relative mb-2">
+                <div className="rounded-full p-1 bg-white shadow-md">
+                  <img
+                    src={profileImageSrc}
+                    alt="profile"
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                </div>
+                
+                {/* Upload/Remove Button */}
+                <div className="absolute bottom-0 right-0">
+                  <button
+                    className="bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-700 transition-colors"
+                    onClick={() => setShowOptions((prev) => !prev)}
+                  >
+                    <FiPlus size={14} />
+                  </button>
+                  
+                  {showOptions && (
+                    <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-md w-32 border border-gray-100 overflow-hidden">
+                      <label className="block px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors flex items-center">
+                        <FiUser className="mr-2 text-gray-500" size={14} />
+                        Upload Image
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleProfileUpload}
+                        />
+                      </label>
+                      <button
+                        className="block w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors flex items-center"
+                        onClick={handleRemoveProfileImage}
+                      >
+                        <FiTrash className="mr-2" size={14} /> Remove Image
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <p className="text-lg font-semibold text-gray-800">
+                {profileData?.name || user?.name || "User"}
+              </p>
+              <p className="text-sm text-gray-500 mb-4">
+                {profileData?.email || user?.email || "user@example.com"}
+              </p>
+            </div>
+            
             {/* Change Password Section */}
-            <div className="w-full border-t border-gray-200 pt-4">
+            <div className="border-t border-gray-100 pt-3 pb-2 mt-1">
               <button
-                className="w-full py-2 text-left font-medium text-custom flex items-center justify-between"
+                className="w-full py-2 px-3 text-left text-gray-700 flex items-center justify-between rounded-md hover:bg-gray-50 transition-colors"
                 onClick={togglePasswordFields}
               >
-                <span>Change Password</span>
+                <span className="font-medium text-sm">Change Password</span>
                 {showPasswordFields ? (
-                  <FiX size={18} className="text-custom" />
+                  <FiX size={16} className="text-gray-500" />
                 ) : (
-                  <span className="text-xl">+</span>
+                  <FiPlus size={16} className="text-gray-500" />
                 )}
               </button>
               
-              {/* Password Change Fields - Appears in the same profile dropdown */}
+              {/* Password Change Fields */}
               {showPasswordFields && (
-                <div className="mt-3 transition-all duration-300 ease-in-out">
+                <div className="mt-2 px-2 pb-2">
                   {changeSuccess ? (
-                    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
+                    <div className="bg-green-100 border border-green-200 text-green-600 px-4 py-3 rounded-md mb-3 text-sm">
                       Password changed successfully! Redirecting to login...
                     </div>
                   ) : (
-                    <form onSubmit={handlePasswordChange}>
+                    <form onSubmit={handlePasswordChange} className="space-y-3">
                       {errors.general && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-3 text-xs">
+                        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-md mb-2 text-xs">
                           {errors.general}
                         </div>
                       )}
                       
-                      <div className="mb-3">
-                        <label className="block text-gray-700 text-xs font-bold mb-1">
+                      <div>
+                        <label className="block text-gray-700 text-xs font-medium mb-1">
                           Current Password
                         </label>
                         <div className="relative">
@@ -364,9 +395,9 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                             name="old_password"
                             value={passwordData.old_password}
                             onChange={handleInputChange}
-                            className={`shadow appearance-none border ${
-                              errors.old_password ? "border-red-500" : "border-gray-300"
-                            } rounded w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline`}
+                            className={`appearance-none border ${
+                              errors.old_password ? "border-red-300 bg-red-50" : "border-gray-200"
+                            } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
                           />
                           <button
                             type="button"
@@ -374,19 +405,19 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                             onClick={() => togglePasswordVisibility('old')}
                           >
                             {passwordVisible.old ? (
-                              <FiEyeOff className="text-gray-500" size={16} />
+                              <FiEyeOff className="text-gray-400 hover:text-gray-600" size={16} />
                             ) : (
-                              <FiEye className="text-gray-500" size={16} />
+                              <FiEye className="text-gray-400 hover:text-gray-600" size={16} />
                             )}
                           </button>
                         </div>
                         {errors.old_password && (
-                          <p className="text-red-500 text-xs italic">{errors.old_password}</p>
+                          <p className="text-red-500 text-xs mt-1">{errors.old_password}</p>
                         )}
                       </div>
                       
-                      <div className="mb-3">
-                        <label className="block text-gray-700 text-xs font-bold mb-1">
+                      <div>
+                        <label className="block text-gray-700 text-xs font-medium mb-1">
                           New Password
                         </label>
                         <div className="relative">
@@ -395,9 +426,9 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                             name="new_password"
                             value={passwordData.new_password}
                             onChange={handleInputChange}
-                            className={`shadow appearance-none border ${
-                              errors.new_password ? "border-red-500" : "border-gray-300"
-                            } rounded w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline`}
+                            className={`appearance-none border ${
+                              errors.new_password ? "border-red-300 bg-red-50" : "border-gray-200"
+                            } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
                           />
                           <button
                             type="button"
@@ -405,19 +436,19 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                             onClick={() => togglePasswordVisibility('new')}
                           >
                             {passwordVisible.new ? (
-                              <FiEyeOff className="text-gray-500" size={16} />
+                              <FiEyeOff className="text-gray-400 hover:text-gray-600" size={16} />
                             ) : (
-                              <FiEye className="text-gray-500" size={16} />
+                              <FiEye className="text-gray-400 hover:text-gray-600" size={16} />
                             )}
                           </button>
                         </div>
                         {errors.new_password && (
-                          <p className="text-red-500 text-xs italic">{errors.new_password}</p>
+                          <p className="text-red-500 text-xs mt-1">{errors.new_password}</p>
                         )}
                       </div>
                       
-                      <div className="mb-4">
-                        <label className="block text-gray-700 text-xs font-bold mb-1">
+                      <div>
+                        <label className="block text-gray-700 text-xs font-medium mb-1">
                           Confirm New Password
                         </label>
                         <div className="relative">
@@ -426,9 +457,9 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                             name="confirm_new_password"
                             value={passwordData.confirm_new_password}
                             onChange={handleInputChange}
-                            className={`shadow appearance-none border ${
-                              errors.confirm_new_password ? "border-red-500" : "border-gray-300"
-                            } rounded w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline`}
+                            className={`appearance-none border ${
+                              errors.confirm_new_password ? "border-red-300 bg-red-50" : "border-gray-200"
+                            } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
                           />
                           <button
                             type="button"
@@ -436,26 +467,24 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
                             onClick={() => togglePasswordVisibility('confirm')}
                           >
                             {passwordVisible.confirm ? (
-                              <FiEyeOff className="text-gray-500" size={16} />
+                              <FiEyeOff className="text-gray-400 hover:text-gray-600" size={16} />
                             ) : (
-                              <FiEye className="text-gray-500" size={16} />
+                              <FiEye className="text-gray-400 hover:text-gray-600" size={16} />
                             )}
                           </button>
                         </div>
                         {errors.confirm_new_password && (
-                          <p className="text-red-500 text-xs italic">{errors.confirm_new_password}</p>
+                          <p className="text-red-500 text-xs mt-1">{errors.confirm_new_password}</p>
                         )}
                       </div>
                       
-                      <div className="flex items-center justify-center">
-                        <button
-                          type="submit"
-                          className="bg-custom hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full text-sm"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? "Changing..." : "Change Password"}
-                        </button>
-                      </div>
+                      <button
+                        type="submit"
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm transition-colors"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Changing..." : "Change Password"}
+                      </button>
                     </form>
                   )}
                 </div>
@@ -463,12 +492,14 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
             </div>
           
             {/* Logout Button */}
-            <button
-              className="mt-6 w-full py-2 text-center bg-custom-dark text-white rounded-md hover:bg-gray-900"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            <div className="py-3 border-t border-gray-100 mt-2">
+              <button
+                className="w-full py-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors text-sm font-medium"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -4,25 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTestCaseByTestEngineer } from '../../../redux/slices/testEngineerTestSlice';
 
-
 const TestDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
   const [statusFilter, setStatusFilter] = useState("");
-
-
   const { tests = [], loading, error } = useSelector((state) => state.testDetails || {});
-  console.log("Redux Tests State:", tests);
-
-   const [searchTerm, setSearchTerm] = useState("");
-    const [projectFilter, setProjectFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [projectFilter, setProjectFilter] = useState("");
 
   useEffect(() => {
-      dispatch(fetchTestCaseByTestEngineer());
-    }, [dispatch]);
-
- 
-  
+    dispatch(fetchTestCaseByTestEngineer());
+  }, [dispatch]);
 
   // Get unique projects and statuses for filter dropdowns
   const projects = [...new Set(tests.map((test) => test.project_name))];
@@ -61,90 +53,91 @@ const TestDetails = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-white rounded-lg">
-      <div className="relative w-80 items-center mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+    <div className='p-1'>
+      <div className="relative w-64 items-center mb-2">
+        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
         <input
           type="text"
           placeholder="Search Test Cases..."
-          className="w-full p-2 pl-10 bg-gray-100 rounded-md"
+          className="w-full p-1 pl-8 bg-white rounded-md text-sm"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       
-      <div className="border-1 border-dashed border-gray-100 mx-auto rounded-lg w-full">
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          {/* Filters */}
-          <div className="w-full flex mt-6 justify-end space-x-4">
-            <select
-              className="p-2 border border-gray-300 focus:outline-none rounded-md"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">All Statuses</option>
-              {statuses.map((status) => (
-                <option key={status} value={status}>{status}</option>
-              ))}
-            </select>
-            
-            <select
-              className="p-2 border border-gray-300 focus:outline-none rounded-md"
-              value={projectFilter}
-              onChange={(e) => setProjectFilter(e.target.value)}
-            >
-              <option value="">All Projects</option>
-              {projects.map((project) => (
-                <option key={project} value={project}>{project}</option>
-              ))}
-            </select>
+      <div className="p-1 max-w-6xl mx-auto rounded-lg">
+        <div className="border-1 border-dashed bg-slate-100 border-gray-100 mx-auto rounded-lg w-full">
+          <div className="flex flex-col sm:flex-row gap-2 mb-3">
+            {/* Filters */}
+            <div className="w-full flex mt-3 justify-end space-x-2 px-2">
+              <select
+                className="p-1 border bg-white border-gray-300 focus:outline-none rounded-md text-xs"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="">All Statuses</option>
+                {statuses.map((status) => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+              
+              <select
+                className="p-1 border bg-white border-gray-300 focus:outline-none rounded-md text-xs"
+                value={projectFilter}
+                onChange={(e) => setProjectFilter(e.target.value)}
+              >
+                <option value="">All Projects</option>
+                {projects.map((project) => (
+                  <option key={project} value={project}>{project}</option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
-        
-        <hr className="border-dashed border-gray-300 mt-2 mx-auto" />
+          
+          <hr className="border-dashed border-gray-300 mt-1 mx-auto" />
 
-        {/* Test Cases Table */}
-        <div className='mt-4 p-3'>
-          <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="min-w-full bg-white">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="py-3 px-4 text-left font-medium text-gray-500 border-b">Test Case</th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-500 border-b">Project</th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-500 border-b">Status</th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-500 border-b">Priority</th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-500 border-b">Assignee</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-  {filteredTestCases.length > 0 ? (
-    filteredTestCases.map(test => (
-      <tr key={test.id} onClick={() => handleRowClick(test.id)} className="hover:bg-gray-50 cursor-pointer">
-        <td className="py-3 px-4">{test.test_title}</td>
-        <td className="py-3 px-4">{test.project_name}</td>
-        <td className="py-3 px-4">
-          <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(test.status)}`}>
-            {test.status}
-          </span>
-        </td>
-        <td className="py-3 px-4">
-          <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(test.priority)}`}>
-            {test.priority}
-          </span>
-        </td>
-        <td className="py-3 px-4">{test.created_by}</td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" className="py-4 px-4 text-center text-gray-500">
-        {loading ? "Loading test cases..." : "No test cases found"}
-      </td>
-    </tr>
-  )}
-</tbody>
-
-            </table>
+          {/* Test Cases Table */}
+          <div className='mt-2 p-2'>
+            <div className="overflow-x-auto rounded-md border border-gray-200">
+              <table className="min-w-full bg-white text-xs">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="py-2 px-3 text-left font-medium text-gray-500 border-b">Test Case</th>
+                    <th className="py-2 px-3 text-left font-medium text-gray-500 border-b">Project</th>
+                    <th className="py-2 px-3 text-left font-medium text-gray-500 border-b">Status</th>
+                    <th className="py-2 px-3 text-left font-medium text-gray-500 border-b">Priority</th>
+                    <th className="py-2 px-3 text-left font-medium text-gray-500 border-b">Assignee</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredTestCases.length > 0 ? (
+                    filteredTestCases.map(test => (
+                      <tr key={test.id} onClick={() => handleRowClick(test.id)} className="hover:bg-gray-50 cursor-pointer">
+                        <td className="py-2 px-3">{test.test_title}</td>
+                        <td className="py-2 px-3">{test.project_name}</td>
+                        <td className="py-2 px-3">
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${getStatusColor(test.status)}`}>
+                            {test.status}
+                          </span>
+                        </td>
+                        <td className="py-2 px-3">
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${getPriorityColor(test.priority)}`}>
+                            {test.priority}
+                          </span>
+                        </td>
+                        <td className="py-2 px-3">{test.created_by}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="py-3 px-3 text-center text-gray-500">
+                        {loading ? "Loading test cases..." : "No test cases found"}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
