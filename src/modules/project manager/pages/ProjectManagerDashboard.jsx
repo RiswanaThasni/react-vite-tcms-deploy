@@ -13,6 +13,7 @@ const ProjectManagerDashboard = () => {
     "/projectmanager_dashboard/create_project": "Create Project",
     "/projectmanager_dashboard/project_details/:projectId": "Project Details",
     "/projectmanager_dashboard/task_management": "Task Management",
+    "/projectmanager_dashboard/bug_assignment": "Reassign Bug",
     "/projectmanager_dashboard/report_analysis": "Report",
   };
   

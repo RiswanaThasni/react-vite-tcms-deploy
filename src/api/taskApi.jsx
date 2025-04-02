@@ -84,6 +84,49 @@ export const getTaskById = async (taskId) => {
 };
 
 
+
+export const listTaskByBug = async () => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/dev/tasks-with-bugs/`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken(); 
+        const retryResponse = await axios.get(`${API_URL}/api/dev/tasks-with-bugs/`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        return retryResponse.data;
+      } catch (refreshError) {
+        throw new Error("Session expired. Please log in again.");
+      }
+    }
+    throw error;
+  }
+};
+
+
+export const getBugDetail = async (taskId) => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/dev/task-bugs/${taskId}/`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Failed to fetch task details");
+  }
+};
+
+
+
 export const updateTaskStatus = async (taskId, newStatus) => {
   let accessToken = localStorage.getItem("access_token");
 
@@ -130,6 +173,106 @@ export const updateTaskStatus = async (taskId, newStatus) => {
 };
 
 
+
+
+// export const updateFixedTaskStatus = async (bugId, newStatus) => {
+//   let accessToken = localStorage.getItem("access_token");
+
+//   try {
+//     const response = await axios.patch(
+//       `${API_URL}/api/dev/bugs/update/${bugId}/`,
+//       { status: newStatus },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${accessToken}`,
+//         },
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     if (error.response && error.response.status === 401) {
+//       try {
+//         // Refresh token
+//         accessToken = await refreshAccessToken();
+//         localStorage.setItem("access_token", accessToken); // Store new token
+
+//         // Retry the request
+//         const retryResponse = await axios.patch(
+//           `${API_URL}/api/dev/bugs/update/${bugId}/`,
+//           { status: newStatus },
+//           {
+//             headers: {
+//               "Content-Type": "application/json",
+//               Authorization: `Bearer ${accessToken}`,
+//             },
+//           }
+//         );
+//         return retryResponse.data;
+//       } catch (refreshError) {
+//         console.error("Token refresh failed:", refreshError);
+//         throw new Error("Session expired. Please log in again.");
+//       }
+//     } else {
+//       console.error("Error updating task status:", error.response?.data || error.message);
+//       throw new Error("Failed to update task status.");
+//     }
+//   }
+// };
+
+
+
+export const updateFixedTaskStatus = async (bugId, newStatus, resolutionNotes = "") => {
+  let accessToken = localStorage.getItem("access_token");
+  
+  try {
+    // Use bug.id instead of bug.bug_id for the API call
+    const response = await axios.patch(
+      `${API_URL}/api/dev/bugs/update/${bugId}/`, // Keep the original URL pattern
+      { 
+        fix_status: newStatus,
+        resolution_notes: resolutionNotes 
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        // Refresh token
+        accessToken = await refreshAccessToken();
+        localStorage.setItem("access_token", accessToken);
+        
+        // Retry with the same URL
+        const retryResponse = await axios.patch(
+          `${API_URL}/api/dev/bugs/update/${bugId}/`,
+          { 
+            fix_status: newStatus,
+            resolution_notes: resolutionNotes 
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        return retryResponse.data;
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error updating bug status:", error.response?.data || error.message);
+      throw new Error(`Failed to update bug status: ${error.response?.data?.error || error.message}`);
+    }
+  }
+};
 
 // Function to fetch tasks
 export const getTasks = async () => {

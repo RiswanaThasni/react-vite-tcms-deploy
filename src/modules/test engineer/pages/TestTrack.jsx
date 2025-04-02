@@ -61,108 +61,130 @@ const TestTrack = () => {
     .sort((a, b) => b.completionPercentage - a.completionPercentage);
 
   return (
-    <div className='p-2'>
-    <div className="relative w-80 flex items-center mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+    <div className='p-3'>
+      <div className="relative w-64 items-center mb-2">
+        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
         <input
           type="text"
           placeholder="Search Tests..."
-          className="w-full p-2 pl-10 bg-white rounded-lg"
+          className="w-full p-1 pl-8 bg-white rounded-md text-sm"
           value={searchTerm}
           onChange={handleSearchChange}
         />
       </div>
-<div className="w-full mx-auto bg-white">
-      
-    
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-       
-      </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8">
-          <p className="text-gray-600">Loading tests...</p>
-        </div>
-      )}
-      
-      {/* Error State */}
-      {error && (
-        <div className="bg-red-100 p-4 rounded-lg mb-6">
-          <p className="text-red-700">Error: {error}</p>
-        </div>
-      )}
-      
-      {/* Tests Progress Line */}
-      {!loading && !error && (
-        <div className="bg-gray-50 p-6 rounded-lg shadow-sm mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-medium text-gray-700">Test Progress</h2>
-            <div className="flex space-x-2">
-              <span className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-full">
-                {filteredTests.length} Tests
-              </span>
+      <div className="p-1 max-w-6xl mx-auto rounded-lg">
+        <div className="border-1 border-dashed bg-slate-100 border-gray-100 mx-auto rounded-lg w-full">
+          <div className="flex flex-col sm:flex-row gap-2 mb-3">
+            {/* Filter options could go here */}
+            <div className="w-full flex mt-3 justify-end space-x-2 px-2">
+              <select
+                className="p-1 border bg-white border-gray-300 focus:outline-none rounded-md text-xs"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="all">All Priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
             </div>
           </div>
+          
+          <hr className="border-dashed border-gray-300 mt-1 mx-auto" />
 
-          {/* Progress Lines */}
-          <div className="space-y-4">
-            {filteredTests.length > 0 ? (
-              filteredTests.map((test) => (
-                <div key={test.id} className="bg-white p-4 rounded-md shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
-                    <div className="flex-1">
-                      <div className="flex items-center">
-                        <div className={`w-2 h-2 rounded-full ${getPriorityColor(test.priority)} mr-2`}></div>
-                        <h3 className="text-md font-medium text-gray-800">{test.name}</h3>
-                      </div>
-                      <p className="text-sm text-gray-500 mt-1">{test.module}</p>
-                    </div>
-                    
-                    <div className="flex flex-wrap gap-3 mt-2 md:mt-0">
-                      <div className="flex items-center text-xs text-gray-600">
-                        <Calendar size={14} className="mr-1" />
-                        <span className={getDueDateStatus(test.dueDate).class}>
-                          {getDueDateStatus(test.dueDate).text}
-                        </span>
-                      </div>
-                      <div className="flex items-center text-xs text-gray-600">
-                        <AlertCircle size={14} className="mr-1" />
-                        <span>{test.priority}</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Progress bar */}
-                  <div className="mt-3">
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-700">{test.completionPercentage}% complete</span>
-                      <span className="text-sm text-gray-500">{test.tester}</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div 
-                        className={`h-2.5 rounded-full ${
-                          test.completionPercentage >= 75 ? "bg-green-500" : 
-                          test.completionPercentage >= 50 ? "bg-blue-500" : 
-                          test.completionPercentage >= 25 ? "bg-yellow-500" : "bg-red-500"
-                        }`} 
-                        style={{width: `${test.completionPercentage}%`}}
-                      ></div>
-                    </div>
-                  </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-4">
+              <p className="text-gray-600 text-sm">Loading tests...</p>
+            </div>
+          )}
+          
+          {/* Error State */}
+          {error && (
+            <div className="bg-red-100 p-2 rounded-lg mb-3 mx-2">
+              <p className="text-red-700 text-sm">Error: {error}</p>
+            </div>
+          )}
+          
+          {/* Tests Progress Line */}
+          {!loading && !error && (
+            <div className="mt-2 p-2">
+              <div className="flex justify-between items-center mb-2 px-1">
+                <h2 className="text-sm font-medium text-gray-700">Test Progress</h2>
+                <div className="flex space-x-1">
+                  <span className="px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded-full">
+                    {filteredTests.length} Tests
+                  </span>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                No tests match your current filters
               </div>
-            )}
-          </div>
+
+              {/* Progress Lines */}
+              <div className="space-y-2">
+                {filteredTests.length > 0 ? (
+                  filteredTests.map((test) => (
+                    <div key={test.id} className="bg-white p-2 rounded-md shadow-sm hover:shadow-md transition-shadow border border-gray-200">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
+                        <div className="flex-1">
+                          <div className="flex items-center">
+                            <div className={`w-1.5 h-1.5 rounded-full ${getPriorityColor(test.priority)} mr-1`}></div>
+                            <h3 className="text-sm font-medium text-gray-800">{test.name}</h3>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-0.5">{test.module}</p>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2 mt-1 md:mt-0">
+                          <div className="flex items-center text-xs text-gray-600">
+                            <Calendar size={14} className="mr-1" />
+                            <span className={getDueDateStatus(test.dueDate).class + " text-xs"}>
+                              {getDueDateStatus(test.dueDate).text}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-xs text-gray-600">
+                            <AlertCircle size={14} className="mr-1" />
+                            <span className="text-xs">
+                              <span className={`px-2 py-0.5 text-xs rounded-full ${
+                                test.priority.toLowerCase() === "high" ? "bg-red-100 text-red-800" : 
+                                test.priority.toLowerCase() === "medium" ? "bg-orange-100 text-orange-800" : 
+                                "bg-green-100 text-green-800"
+                              }`}>
+                                {test.priority}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Progress bar */}
+                      <div className="mt-2">
+                        <div className="flex justify-between mb-0.5">
+                          <span className="text-xs font-medium text-gray-700">{test.completionPercentage}% complete</span>
+                          <span className="text-xs text-gray-500">{test.tester}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-1.5">
+                          <div 
+                            className={`h-1.5 rounded-full ${
+                              test.completionPercentage >= 75 ? "bg-green-500" : 
+                              test.completionPercentage >= 50 ? "bg-blue-500" : 
+                              test.completionPercentage >= 25 ? "bg-yellow-500" : "bg-red-500"
+                            }`} 
+                            style={{width: `${test.completionPercentage}%`}}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-4 bg-white rounded-md border border-gray-200">
+                    <p className="text-gray-500 text-sm">No tests match your current filters</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
-    </div>
-    
   );
 };
 

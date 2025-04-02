@@ -61,8 +61,8 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           
           {/* Navigation Buttons */}
           <div className="flex flex-col flex-grow items-start w-full">
-            <NavButton Icon={FiGrid} alt="Home" path="/testengineer_dashboard" />
-            <NavButton Icon={FiList} alt="Test Details" path="/testengineer_dashboard/test_details" />
+            <NavButton Icon={FiGrid} alt="Dashboard" path="/testengineer_dashboard" />
+            <NavButton Icon={FiList} alt="Test " path="/testengineer_dashboard/test_details" />
             <NavButton Icon={GiProgression} alt="Track Test" path="/testengineer_dashboard/test_track" />
           </div>
         </div>

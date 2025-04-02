@@ -4,6 +4,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/slices/userSlice"; // Make sure this path is correct
 import logo from "../../../assets/images/logo.svg";
+import { FaSyncAlt } from "react-icons/fa";
+
+
+
 
 const SideBar = ({isSidebarOpen, setIsSidebarOpen}) => {
   const navigate = useNavigate();
@@ -64,6 +68,8 @@ const NavButton = ({ Icon, alt, path }) => {
           <NavButton Icon={FiGrid} alt="Dashboard" path="/dev_dashboard" />
 <NavButton Icon={FiList} alt="Task Details" path="/dev_dashboard/task_details" />
 <NavButton Icon={FiActivity} alt="Track Task" path="/dev_dashboard/track_task" />
+<NavButton Icon={FaSyncAlt} alt="Fix Bug" path="/dev_dashboard/reassign_task" />
+
           </div>
         </div>
    
@@ -104,6 +110,8 @@ const NavButton = ({ Icon, alt, path }) => {
             <NavButton Icon={FiGrid} alt="Dashboard"  path="/dev_dashboard" />
             <NavButton Icon={FiList} alt="Task Details"  path="/dev_dashboard/task_details" />
             <NavButton Icon={FiActivity} alt="Track Task"  path="/dev_dashboard/track_task" />
+            <NavButton Icon={FaSyncAlt} alt="Fix Bug" path="/dev_dashboard/reassign_task" />
+
           </div>
 
           {/* Logout Button at Bottom */}

@@ -68,10 +68,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    navigate("/");
-  };
+  
 
   const handleOpenProfile = () => {
     setShowProfile((prev) => !prev);
@@ -491,15 +488,7 @@ const NavBar = ({ toggleSidebar, selectedPage }) => {
               )}
             </div>
           
-            {/* Logout Button */}
-            <div className="py-3 border-t border-gray-100 mt-2">
-              <button
-                className="w-full py-2 px-4 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors text-sm font-medium"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
+           
           </div>
         </div>
       )}

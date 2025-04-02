@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/logo.svg";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/slices/userSlice";
+import { BugOff } from "lucide-react";
 
 
 
@@ -66,7 +67,9 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             <NavButton Icon={FiGrid} alt="Dashboard" path="/projectmanager_dashboard/mainsection" />
             <NavButton Icon={FiFileText} alt="Project " path="/projectmanager_dashboard/project_management" />
             <NavButton Icon={FiFileText} alt="Task" path="/projectmanager_dashboard/task_management" />
+            <NavButton Icon={BugOff} alt="Bug Assignment " path="/projectmanager_dashboard/bug_assignment" />
             <NavButton Icon={FiBarChart2} alt="Report " path="/projectmanager_dashboard/report_analysis" />
+
           </div>
         </div>
    
@@ -104,10 +107,11 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           }`}
         >
           <div className="flex flex-col items-start gap-4 mt-16">
-            <NavButton Icon={FiGrid} alt="Dashboard" path="/admin_dashboard" />
-            <NavButton Icon={FiUsers} alt="User " path="/admin_dashboard/user_management" />
-            <NavButton Icon={FiFileText} alt="Project" path="/admin_dashboard/overview" />
-            <NavButton Icon={FiBarChart2} alt="Report " path="/admin_dashboard/report_analysis" />
+          <NavButton Icon={FiGrid} alt="Dashboard" path="/projectmanager_dashboard/mainsection" />
+            <NavButton Icon={FiFileText} alt="Project " path="/projectmanager_dashboard/project_management" />
+            <NavButton Icon={FiFileText} alt="Task" path="/projectmanager_dashboard/task_management" />
+            <NavButton Icon={BugOff} alt="Bug Assignment " path="/projectmanager_dashboard/bug_assignment" />
+            <NavButton Icon={FiBarChart2} alt="Report " path="/projectmanager_dashboard/report_analysis" />
           </div>
 
           {/* Logout Button at Bottom */}

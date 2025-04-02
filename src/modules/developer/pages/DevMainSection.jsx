@@ -103,7 +103,7 @@ const generateColorPalette = () => {
           <input
             type="text" 
             placeholder="Search project, Task"
-            className="w-full p-1.5 pl-8 bg-white rounded text-sm"
+            className="w-full p-1.5 pl-8 bg-white rounded-lg text-sm"
           />
           <Search className="absolute left-2 top-2 text-gray-400" size={16} />
         </div>
@@ -139,7 +139,7 @@ const generateColorPalette = () => {
             </div>
 
             {/* Recent Activities - Reduced padding */}
-            <div className="bg-white p-3 rounded shadow-sm border border-gray-200 mb-4">
+            <div className="bg-white p-3 rounded-lg mb-4">
               <h2 className="text-base font-medium mb-2">Recent activities</h2>
               <RecentActivitiesTable 
                 activities={recentActivities} 

@@ -594,3 +594,76 @@ export const fetchTestByModule = async (moduleId) => {
     }
   }
 };
+
+
+export const QaSummaryReport = async () => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/qa-dashboard-report/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken();
+
+        // Retry API request with new token
+        const retryResponse = await axios.get(`${API_URL}/api/qa-dashboard-report/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        return retryResponse.data;
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error fetching summary:", error.response?.data || error.message);
+      throw new Error("Failed to load summary. Please try again.");
+    }
+  }
+};
+
+
+
+export const QaFailedTestReport = async () => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/qa/failed-testcases/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken();
+
+        // Retry API request with new token
+        const retryResponse = await axios.get(`${API_URL}/api/qa/failed-testcases/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        return retryResponse.data;
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error fetching failed testcase:", error.response?.data || error.message);
+      throw new Error("Failed to load failed testcase. Please try again.");
+    }
+  }
+};

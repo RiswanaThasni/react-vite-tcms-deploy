@@ -36,6 +36,9 @@ import ProjectDetails from '../modules/project manager/pages/ProjectDetails'
 import Bugs from '../modules/test engineer/pages/Bugs'
 import AdminProjectDetails from '../modules/admin/pages/AdminProjectDetails'
 import UserDetails from '../modules/admin/pages/UserDetails'
+import BugAssignment from '../modules/project manager/pages/BugAssignment'
+import ReassignTask from '../modules/developer/pages/ReassignTask'
+import FixBugs from '../modules/developer/pages/FixBugs'
 
 
 const AppRouter = () => {
@@ -71,7 +74,7 @@ const AppRouter = () => {
 <Route path='/projectmanager_dashboard/task_management' element={<TaskManagement/>}/>
 <Route path='/projectmanager_dashboard/report_analysis' element={<ReportAnalysis/>}/> 
 <Route path='/projectmanager_dashboard/create_project' element={<CreateProject/>}/>
-
+<Route path='/projectmanager_dashboard/bug_assignment' element={<BugAssignment/>}/> 
 </Route>
 </Route>
 
@@ -93,9 +96,10 @@ const AppRouter = () => {
   <Route path='/dev_dashboard/task_details' element={<TaskDetails/>}/> 
   <Route path='/dev_dashboard/track_task' element={<TrackTask/>}/>
   <Route path='/dev_dashboard/tasks/:taskId' element={<Tasks/>}/>
-</Route>
+  <Route path='/dev_dashboard/reassign_task' element={<ReassignTask/>}/>
+  <Route path='/dev_dashboard/fix_bugs/:taskId' element={<FixBugs/>}/>
 
-  
+</Route>
  </Route>
  
 
@@ -110,6 +114,7 @@ const AppRouter = () => {
   <Route path='/testengineer_dashboard/test_track' element={<TestTrack/>}/>
   <Route path='/testengineer_dashboard/tests/:testId' element={<Tests/>}/>
     <Route path='testengineer_dashboard/tests/bugs/:testId' element={<Bugs/>}/> 
+
     </Route>
   
  

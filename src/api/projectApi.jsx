@@ -106,6 +106,32 @@ export const fetchModulesByProjectId = async (projectId) => {
   }
 }
 
+
+export const fetchbugsByModuleId = async (moduleId) => {
+  try {
+    const response = await axiosInstance.get(`/api/modules/${moduleId}/bugs/`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching bugs by module ID:", error);
+    throw error;
+  }
+}
+
+
+export const reassignBug = async (payload) => {
+  try {
+    const response = await axiosInstance.post(`/api/pm/bugs/assign/`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error assign the bug to developer:", error);
+    throw error;
+  }
+};
+
 export const fetchCompletedModulesByProjectId = async (projectId) => {
   try {
     const response = await axiosInstance.get(`/api/projects/${projectId}/completed_modules/`);
