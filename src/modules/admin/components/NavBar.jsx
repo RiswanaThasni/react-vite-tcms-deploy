@@ -319,7 +319,7 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
             className="p-2 hover:bg-blue-100 rounded-full transition-all notification-toggle flex items-center justify-center"
             onClick={handleOpenNotifications}
           >
-            <FaBell size={20} className="text-gray-600" />
+            {/* <FaBell size={20} className="text-gray-600" /> */}
             {unreadCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                 {unreadCount}

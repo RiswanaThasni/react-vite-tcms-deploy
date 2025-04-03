@@ -247,7 +247,7 @@ const UserManagement = () => {
         </div>
 
         <div className="flex flex-row gap-2 self-end md:self-auto">
-          <select
+          {/* <select
             className="bg-white text-xs rounded-lg border border-gray-200 p-2"
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
@@ -258,7 +258,7 @@ const UserManagement = () => {
                 {roles.role_name}
               </option>
             ))}
-          </select>
+          </select> */}
 
           <select
             className="bg-white text-xs rounded-lg border border-gray-200 p-2"
