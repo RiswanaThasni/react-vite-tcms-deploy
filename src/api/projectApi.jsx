@@ -210,15 +210,36 @@ export const addTasksByModuleId = async (moduleId, taskData) => {
 };
 
 
+// export const addTestByModuleId = async (moduleId, testData) => {
+//   try {
+//     const response = await axiosInstance.post(`/api/modules/${moduleId}/testcases/`, testData);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error adding testcases by module ID:", error);
+//     throw error;
+//   }
+// }
+
 export const addTestByModuleId = async (moduleId, testData) => {
   try {
-    const response = await axiosInstance.post(`/api/modules/${moduleId}/testcases/`, testData);
+    // Option 1: If your backend expects JSON data
+    const response = await axiosInstance.post(
+      `/api/modules/${moduleId}/testcases/`, 
+      testData,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error adding testcases by module ID:", error);
     throw error;
   }
-}
+};
+
+
 
 // In projectApi.jsx
 export const addTestType = async (typeName) => {
