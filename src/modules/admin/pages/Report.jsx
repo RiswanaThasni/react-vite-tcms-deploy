@@ -367,10 +367,10 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           )}
         </button>
-        <button className="flex items-center px-4 py-2 bg-sidebar-hover rounded hover:bg-lime-400">
+        {/* <button className="flex items-center px-4 py-2 bg-sidebar-hover rounded hover:bg-lime-400">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export
-        </button>
+        </button> */}
       </div>
       
       {detailsError && <p className="text-red-500 mt-4">{detailsError}</p>}
@@ -542,10 +542,10 @@ const UserAnalysis = ({ user, userDetails, showDetails, toggleDetails, isLoading
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
           )}
         </button>
-        <button className="flex items-center px-4 py-2  bg-sidebar-hover rounded hover:bg-gray-100">
+        {/* <button className="flex items-center px-4 py-2  bg-sidebar-hover rounded hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export
-        </button>
+        </button> */}
       </div>
       
       {showDetails && userDetails && (

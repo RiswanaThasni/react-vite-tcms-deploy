@@ -1,13 +1,14 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FiMenu, FiX, FiEye, FiEyeOff, FiPlus, FiTrash, FiUser, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiX, FiEye, FiEyeOff, FiPlus, FiTrash, FiUser, FiLogOut, FiEdit, FiSave } from "react-icons/fi";
 import { FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { fetchUserNotifications, markNotificationsRead } from "../../../redux/slices/notificationSlice";
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
-import { changePassword, removeProfileImg, updateProfileImg } from "../../../api/userApi";
-import { logoutUser } from "../../../redux/slices/userSlice";
+import { changePassword, removeProfileImg, updateProfileImg, userProfileUpdate } from "../../../api/userApi";
 import { API_URL } from "../../../utils/constants";
+
 
 const NavBar = ({ selectedPage, toggleSidebar}) => {
   const dispatch = useDispatch();
@@ -34,6 +35,18 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
     confirm_new_password: ""
   });
   
+  // Profile editing states
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileFormData, setProfileFormData] = useState({
+    username: "",
+    first_name: "",
+    last_name: "",
+    email: ""
+  });
+  const [profileUpdateErrors, setProfileUpdateErrors] = useState({});
+  const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
+  const [isProfileUpdating, setIsProfileUpdating] = useState(false);
+  
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [changeSuccess, setChangeSuccess] = useState(false);
@@ -48,6 +61,21 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
     dispatch(fetchUserNotifications());
     dispatch(fetchUserProfile());
   }, [dispatch]);
+
+  // Initialize profile form data from profile data
+  useEffect(() => {
+    if (profileData) {
+      const firstName = profileData.name ? profileData.name.split(' ')[0] : '';
+      const lastName = profileData.name ? profileData.name.split(' ').slice(1).join(' ') : '';
+      
+      setProfileFormData({
+        username: profileData.username || user?.username || '',
+        first_name: firstName,
+        last_name: lastName,
+        email: profileData.email || user?.email || ''
+      });
+    }
+  }, [profileData, user]);
 
   const handleOpenNotifications = () => {
     setShowNotifications((prev) => !prev);
@@ -65,8 +93,6 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
     }
   };
 
-
-
   const handleOpenProfile = () => {
     setShowProfile((prev) => !prev);
     
@@ -81,6 +107,9 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
       });
       setErrors({});
       setChangeSuccess(false);
+      setIsEditingProfile(false);
+      setProfileUpdateErrors({});
+      setProfileUpdateSuccess(false);
     }
   };
 
@@ -166,6 +195,65 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
     }));
   };
 
+  // Handle profile edit toggle
+  const toggleProfileEdit = () => {
+    if (isEditingProfile) {
+      // If canceling edit, reset form to original data
+      const firstName = profileData.name ? profileData.name.split(' ')[0] : '';
+      const lastName = profileData.name ? profileData.name.split(' ').slice(1).join(' ') : '';
+      
+      setProfileFormData({
+        username: profileData.username || user?.username || '',
+        first_name: firstName,
+        last_name: lastName,
+        email: profileData.email || user?.email || ''
+      });
+      setProfileUpdateErrors({});
+    }
+    setIsEditingProfile(!isEditingProfile);
+    setProfileUpdateSuccess(false);
+  };
+
+  // Handle profile form input changes
+  const handleProfileInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfileFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle profile update submission
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    setProfileUpdateErrors({});
+    setIsProfileUpdating(true);
+    
+    try {
+      await userProfileUpdate(profileFormData);
+      setProfileUpdateSuccess(true);
+      setIsEditingProfile(false);
+      
+      // Refresh profile data
+      dispatch(fetchUserProfile());
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setProfileUpdateSuccess(false);
+      }, 3000);
+      
+    } catch (error) {
+      // Handle API error responses
+      if (error.response && error.response.data) {
+        setProfileUpdateErrors(error.response.data);
+      } else {
+        setProfileUpdateErrors({ general: "Failed to update profile. Please try again." });
+      }
+    } finally {
+      setIsProfileUpdating(false);
+    }
+  };
+
   // Close profile popup when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -203,6 +291,8 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
       console.error("Failed to remove profile image:", error);
     }
   };
+
+  
 
   return (
 <div className="fixed top-0 right-0 left-[13rem] bg-mainsection py-4 px-6 flex items-center justify-between z-40">     
@@ -289,7 +379,7 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
           className="fixed top-2 right-2 w-72 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 z-50"
         >
           {/* Profile Header */}
-          <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 pt-5 pb-12 px-4">
+          <div className="relative  pt-5 pb-12 px-4">
             <button 
               onClick={() => setShowProfile(false)} 
               className="absolute top-2 right-2 bg-white/20 p-1 rounded-full hover:bg-white/30 text-white transition-colors"
@@ -343,12 +433,135 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
                 </div>
               </div>
               
-              <p className="text-lg font-semibold text-gray-800">
-                {profileData?.name || user?.name || "User"}
-              </p>
-              <p className="text-sm text-gray-500 mb-4">
-                {profileData?.email || user?.email || "user@example.com"}
-              </p>
+              {/* Profile Details Section - Now Editable */}
+              {profileUpdateSuccess && (
+                <div className="w-full bg-green-50 border border-green-200 text-green-600 px-3 py-2 rounded text-xs mb-3">
+                  Profile updated successfully!
+                </div>
+              )}
+              
+              {profileUpdateErrors.general && (
+                <div className="w-full bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded text-xs mb-3">
+                  {profileUpdateErrors.general}
+                </div>
+              )}
+              
+              {isEditingProfile ? (
+                <form onSubmit={handleProfileUpdate} className="w-full">
+                  <div className="mb-3">
+                    <label className="block text-gray-700 text-xs font-medium mb-1">
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      name="username"
+                      value={profileFormData.username}
+                      onChange={handleProfileInputChange}
+                      className={`appearance-none border ${
+                        profileUpdateErrors.username ? "border-red-300 bg-red-50" : "border-gray-200"
+                      } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
+                    />
+                    {profileUpdateErrors.username && (
+                      <p className="text-red-500 text-xs mt-1">{profileUpdateErrors.username}</p>
+                    )}
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label className="block text-gray-700 text-xs font-medium mb-1">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={profileFormData.first_name}
+                      onChange={handleProfileInputChange}
+                      className={`appearance-none border ${
+                        profileUpdateErrors.first_name ? "border-red-300 bg-red-50" : "border-gray-200"
+                      } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
+                    />
+                    {profileUpdateErrors.first_name && (
+                      <p className="text-red-500 text-xs mt-1">{profileUpdateErrors.first_name}</p>
+                    )}
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label className="block text-gray-700 text-xs font-medium mb-1">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={profileFormData.last_name}
+                      onChange={handleProfileInputChange}
+                      className={`appearance-none border ${
+                        profileUpdateErrors.last_name ? "border-red-300 bg-red-50" : "border-gray-200"
+                      } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
+                    />
+                    {profileUpdateErrors.last_name && (
+                      <p className="text-red-500 text-xs mt-1">{profileUpdateErrors.last_name}</p>
+                    )}
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label className="block text-gray-700 text-xs font-medium mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={profileFormData.email}
+                      onChange={handleProfileInputChange}
+                      className={`appearance-none border ${
+                        profileUpdateErrors.email ? "border-red-300 bg-red-50" : "border-gray-200"
+                      } rounded-md w-full py-2 px-3 text-gray-700 text-sm leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500`}
+                    />
+                    {profileUpdateErrors.email && (
+                      <p className="text-red-500 text-xs mt-1">{profileUpdateErrors.email}</p>
+                    )}
+                  </div>
+                  
+                  <div className="flex space-x-2 mb-3">
+                    <button
+                      type="submit"
+                      className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors flex items-center justify-center"
+                      disabled={isProfileUpdating}
+                    >
+                      {isProfileUpdating ? (
+                        "Saving..."
+                      ) : (
+                        <>
+                          <FiSave className="mr-1" size={14} /> Save
+                        </>
+                      )}
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={toggleProfileEdit}
+                      className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="w-full mb-4 relative">
+                  <div className="text-center">
+                    <p className="text-lg font-semibold text-gray-800">
+                      {profileData?.name || user?.name || "User"}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {profileData?.email || user?.email || "user@example.com"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={toggleProfileEdit}
+                    className="absolute top-0 right-0 p-1 text-gray-500 hover:text-indigo-600 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <FiEdit size={16} />
+                  </button>
+                </div>
+              )}
             </div>
             
             {/* Change Password Section */}
@@ -475,7 +688,7 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
                       
                       <button
                         type="submit"
-                        className="w-full   text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm transition-colors"
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-sm transition-colors"
                         disabled={isLoading}
                       >
                         {isLoading ? "Changing..." : "Change Password"}
@@ -486,10 +699,7 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
               )}
             </div>
           
-            {/* Logout Button */}
-            <div className="py-3 border-t border-gray-100 mt-2">
-             
-            </div>
+          
           </div>
         </div>
       )}

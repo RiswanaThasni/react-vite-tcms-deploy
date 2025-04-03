@@ -107,9 +107,21 @@ export const fetchModulesByProjectId = async (projectId) => {
 }
 
 
+// export const fetchbugsByModuleId = async (moduleId) => {
+//   try {
+//     const response = await axiosInstance.get(`/api/modules/${moduleId}/unassigned-bugs/`);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching bugs by module ID:", error);
+//     throw error;
+//   }
+// }
+
+
+
 export const fetchbugsByModuleId = async (moduleId) => {
   try {
-    const response = await axiosInstance.get(`/api/modules/${moduleId}/bugs/`);
+    const response = await axiosInstance.get(`/api/modules/${moduleId}/unassigned-bugs/`);
     return response.data;
   } catch (error) {
     console.error("Error fetching bugs by module ID:", error);
@@ -267,11 +279,31 @@ export const fetchProjectManagers = async () => {
       }
     }
 
-    export const editProject = async(projectId, projectData) => {
+//    
+
+
+export const editProject = async(projectId, projectData) => {
   try {
-    const response = await axiosInstance.put(`${API_URL}/api/projects/${projectId}/update/`, projectData);
-    return response;
+    // Make sure we're using the correct content type
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    
+    // Log what's being sent
+    console.log(`Sending update to: ${API_URL}/api/projects/${projectId}/update/`);
+    console.log("With data:", JSON.stringify(projectData));
+    
+    const response = await axiosInstance.put(
+      `${API_URL}/api/projects/${projectId}/update/`, 
+      projectData,
+      config
+    );
+    
+    return response.data;
   } catch(error) {
+    console.error("API Error:", error);
     throw error.response ? error.response.data : new Error("Failed to edit project");
   }
 };

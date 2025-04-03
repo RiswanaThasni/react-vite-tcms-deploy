@@ -246,6 +246,13 @@ lastName: selectedUser.last_name || "",
             </div>
 
             <div>
+              <label className="font-semibold text-sm">Last Login:</label>
+              
+                <p className="bg-gray-200 px-2 py-1 rounded-md">{selectedUser.last_login}</p>
+              
+            </div>
+
+            <div>
               <label className="font-semibold text-sm">Role:</label>
               {isEditing ? (
                   <select
@@ -280,8 +287,10 @@ lastName: selectedUser.last_name || "",
                   />
                 ) : (
                   <p className="bg-gray-200 px-2 py-1 rounded-md">{selectedUser.specialization || "N/A"}</p>
+
                 )}
               </div>
+
             )}
 
             

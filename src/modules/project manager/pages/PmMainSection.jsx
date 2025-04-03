@@ -171,9 +171,7 @@ useEffect(() => {
         </div>
       <div className='col-span-2  rounded-lg p-4  bg-slate-200  '>
 <OverallReport/>
-<div className='rounded-lg p-4  bg-slate-200 '>
 
-</div>
         </div>
         
       </div>

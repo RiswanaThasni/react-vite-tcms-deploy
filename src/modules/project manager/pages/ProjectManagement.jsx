@@ -134,9 +134,7 @@ const ProjectManagement = () => {
       <div className="bg-slate-200 rounded-lg">
       <div className="border-1 border-dashed border-gray-100 mx-auto rounded-lg w-full">
         <div className="justify-end flex gap-4 p-4">
-          <select className="p-1 text-sm w-28 border border-gray-300 bg-white text-gray-700 rounded-md focus:outline-none">
-            <option>Filter by</option>
-          </select>
+          
           
           {/* Sort by Nearest Due Date */}
           <button
@@ -225,7 +223,7 @@ const ProjectManagement = () => {
         </td>
         <td className="p-2">{project.created_at.split("T")[0]}</td>
         <td className="p-2">{project.deadline}</td>
-        <td className="p-2 text-center">{project.issues_count || "No Issues"}</td>
+        <td className="p-2 text-center">{project.bugs_count || "No Issues"}</td>
         <td className="p-2">
           <div className="flex space-x-2">
             <button

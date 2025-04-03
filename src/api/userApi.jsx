@@ -106,6 +106,16 @@ export const userCount = async () => {
 }
 
 
+export const userProfileUpdate = async (profileData) => {
+  try {
+    const response = await axiosInstance.put("/api/user/update-profile/", profileData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    throw error;
+  }
+};
+
 
 
 
@@ -117,6 +127,18 @@ export const fetchUsers = async () => {
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);
+    throw error;
+  }
+};
+
+
+
+export const fetchUserMainsection = async () => {
+  try {
+    const response = await axiosInstance.get("/api/admin/dashboard/user_list_by_exp/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching frequent users:", error);
     throw error;
   }
 };

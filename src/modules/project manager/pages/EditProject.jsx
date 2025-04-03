@@ -83,44 +83,51 @@ const EditProject = ({ project, onBack }) => {
   };
 
   const handleSubmit = async (values) => {  
-  // Filter out any team members with invalid or missing IDs
-  const validTeamMembers = Object.values(teamMembers)
-    .filter(member => member && member.id)
-    .map(member => ({
-      user: parseInt(member.id, 10) // Ensure ID is a number
-    }));
+    // Filter out any team members with invalid or missing IDs
+    const validTeamMembers = Object.values(teamMembers)
+      .filter(member => member && member.id)
+      .map(member => ({
+        user: parseInt(member.id, 10) // Ensure ID is a number
+      }));
+    
+    const projectData = {
+      project_id: values.projectID,
+      project_name: values.projectName,
+      project_description: values.description,
+      deadline: values.deadline,  
+      project_lead: parseInt(values.projectLead, 10),
+      team_members: validTeamMembers
+    };
   
-  const projectData = {
-    project_id: values.projectID,
-    project_name: values.projectName,
-    project_description: values.description,
-    deadline: values.deadline,  
-    project_lead: parseInt(values.projectLead, 10),
-    team_members: validTeamMembers,
+    // Debug logs to see what's actually being sent
+    console.log("Team members before submission:", validTeamMembers);
+    console.log("Sending Updated Project Data:", JSON.stringify(projectData, null, 2));
+  
+    try {
+      // Make sure the project ID is correct - backend expects the database ID
+      const projectId = project.id || project.project_id;
+      const response = await editProject(projectId, projectData);
+      console.log("Success response:", response);
+      alert("Project Updated Successfully!");
+  
+      // Refresh projects list after update
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        dispatch(getProjects(token));
+      }
+  
+      onBack(); // Go back to project list
+    } catch (error) {
+      console.error("Project Update Failed:", error.response?.data || error);
+      if (error.response && error.response.data) {
+        console.log("Detailed error:", JSON.stringify(error.response.data, null, 2));
+      }
+      alert("Failed to update project.");
+    }
   };
 
-  console.log("Team members before submission:", validTeamMembers);
-  console.log("Sending Updated Project Data:", JSON.stringify(projectData, null, 2));
 
-  try {
-    await editProject(project.id || project.project_id, projectData);
-    alert("Project Updated Successfully!");
-
-    // Refresh projects list after update
-    const token = localStorage.getItem("access_token");
-    if (token) {
-      dispatch(getProjects(token));
-    }
-
-    onBack(); // Go back to project list
-  } catch (error) {
-    console.error("Project Update Failed:", error.response?.data || error);
-    if (error.response && error.response.data) {
-      console.log("Detailed error:", JSON.stringify(error.response.data, null, 2));
-    }
-    alert("Failed to update project.");
-  }
-};
+  
   // Prepare initial values for the form
   const initialValues = {
     projectID: project?.project_id || "",

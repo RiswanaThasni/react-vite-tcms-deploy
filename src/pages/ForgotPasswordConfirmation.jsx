@@ -19,7 +19,7 @@ const ForgotPasswordConfirmation = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-radial-custom">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-sidebar">
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-4 text-center">Check Your Email</h2>
         <p className="text-gray-600 text-center mb-4">
@@ -27,7 +27,7 @@ const ForgotPasswordConfirmation = () => {
         </p>
         <button
           onClick={handleResendEmail}
-          className="w-full mt-4 bg-custom text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-600"
+          className="w-full mt-4 bg-custom text-white font-semibold px-6 py-2 rounded-lg bg-sidebar-hover hover:bg-blue-600"
         >
           Resend Email
         </button>
