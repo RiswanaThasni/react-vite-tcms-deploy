@@ -221,7 +221,7 @@ const TaskManagement = () => {
               projects.map((project) => (
                 <button
                   key={project.id}
-                  className={`w-full font-medium text-left px-3 py-2 rounded-md ${
+                  className={`w-full font-normal text-sm text-left px-3 py-2 rounded-md ${
                     selectedProject === project.id ? 'bg-gray-50 text-' : 'hover:bg-gray-100'
                   }`}
                   onClick={() => handleProjectSelect(project.id)}
@@ -318,7 +318,7 @@ const TaskManagement = () => {
                     }`}
                     onClick={() => handleModuleSelect(module.id)}
                   >
-                    <div className="font-medium">{module.module_name}</div>
+                    <div className="font-normal text-sm">{module.module_name}</div>
                     <div className="text-xs text-gray-500 truncate">{module.module_description}</div>
                   </button>
                 ))

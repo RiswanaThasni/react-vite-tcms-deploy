@@ -194,10 +194,23 @@ export const addUser = async (userData) => {
   }
 };
 
+
+
+
 // API Call: Update User 
 export const updateUser = async (userId, userData) => {
   try {
     const response = await axiosInstance.put(`/api/edit_user/${userId}/`, userData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to update user");
+  }
+};
+
+export const inviteUser = async (projectId, userData) => {
+  try {
+    const response = await axiosInstance.put(`/api/PM/${projectId}/adduser/`, userData);
     return response.data;
   } catch (error) {
     console.error("Error updating user:", error.response?.data || error.message);

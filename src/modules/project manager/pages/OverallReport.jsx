@@ -59,8 +59,8 @@ const OverallReport = () => {
       {
         label: "Project Status",
         data: [statusCounts.completed, statusCounts.inProgress, statusCounts.pending],
-        backgroundColor: ["#27FF14", "#FFEB14", "#FD351B"],
-        borderColor: ["#27FF14", "#FFEB14", "#FD351B"],
+        backgroundColor: ["#27FF14", "#FFEB14", "#F2A6A6"],
+        borderColor: ["#27FF14", "#FFEB14", "#F2A6A6"],
         borderWidth: 1,
         hoverOffset: 4
       }
@@ -101,7 +101,7 @@ const OverallReport = () => {
       
       {isLoading ? (
         <div className="flex justify-center items-center h-32">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          <div className=" rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
         <div className="flex flex-col space-y-2">
