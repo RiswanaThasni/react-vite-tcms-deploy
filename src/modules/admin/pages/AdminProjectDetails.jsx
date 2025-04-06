@@ -139,7 +139,7 @@ const AdminProjectDetails = () => {
         <div className="grid md:grid-cols-3 gap-2">
           {/* Project Overview */}
           <div className="md:col-span-2 bg-white rounded-lg p-4 space-y-2">
-            <h2 className="text-xl font-bold text-gray-800">{project.project_name}</h2>
+            <h2 className="text-md font-semibold text-gray-800">{project.project_name}</h2>
             <p className="text-gray-600 text-sm">{project.project_description}</p>
 
             <div className="grid md:grid-cols-2 gap-2">
@@ -177,7 +177,7 @@ const AdminProjectDetails = () => {
           </div>
 
           {/* Project Team */}
-          <div className="bg-slate-200 rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4">
             <div className="flex items-center mb-2">
               <UsersIcon className="mr-1 text-gray-500" size={18} />
               <h3 className="text-sm font-semibold text-gray-800">Project Team</h3>
@@ -252,7 +252,7 @@ const AdminProjectDetails = () => {
           {selectedModule && (
             <div className="md:col-span-3 bg-blue-100 p-4 rounded-lg border border-blue-300 mt-2">
               <div className="flex justify-between items-start mb-2">
-                <h4 className="text-lg font-bold text-gray-800">Selected: {selectedModule.module_name}</h4>
+                <h4 className="text-md font-semibold text-gray-800">Selected: {selectedModule.module_name}</h4>
                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium 
                   ${selectedModule.priority === 'high' ? 'bg-red-100 text-red-800' :
                     selectedModule.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :

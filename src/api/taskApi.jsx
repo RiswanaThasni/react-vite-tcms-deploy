@@ -21,7 +21,7 @@ export const fetchDevelopersByProject = async (projectId) => {
         accessToken = await refreshAccessToken();
         
         // Retry API request with new token
-        const retryResponse = await axios.get(`${API_URL}/projects/${projectId}/developers/`, {
+        const retryResponse = await axios.get(`${API_URL}/api/projects/${projectId}/developers/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

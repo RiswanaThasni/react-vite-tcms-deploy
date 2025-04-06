@@ -136,7 +136,7 @@ const TestEngineerDashboard = () => {
   const pageTitles = {
     "/testengineer_dashboard": "Dashboard",
     "/testengineer_dashboard/mainsection": "Dashboard",
-    "/testengineer_dashboard/test_details": "Test Details",
+    "/testengineer_dashboard/test_details": "Tests",
     "/testengineer_dashboard/test_track": "Track Test"
   };
   

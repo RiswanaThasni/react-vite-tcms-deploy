@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QaSummaryReport, QaFailedTestReport } from '../../../api/testApi';
 
+
 const ReportQa = () => {
   const [testData, setTestData] = useState({
     summary: {
@@ -391,9 +392,9 @@ const ReportQa = () => {
         <div className="bg-white p-3 rounded shadow border border-gray-100">
           <div className="flex justify-between mb-2">
             <h2 className="text-sm font-semibold text-gray-800">Failed Tests</h2>
-            <button className="bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600">
+            {/* <button className="bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600">
               Export Report
-            </button>
+            </button> */}
           </div>
           
           {detailedFailures.length === 0 ? (
@@ -406,7 +407,7 @@ const ReportQa = () => {
                   <th className="text-left py-1 text-gray-700">Test Name</th>
                   <th className="text-left py-1 text-gray-700">Project</th>
                   <th className="text-left py-1 text-gray-700">Module</th>
-                  <th className="text-left py-1 text-gray-700">Severity</th>
+                  {/* <th className="text-left py-1 text-gray-700">Severity</th> */}
                   <th className="text-left py-1 text-gray-700">Due Date</th>
                   <th className="text-left py-1 text-gray-700">Actions</th>
                 </tr>
@@ -421,11 +422,11 @@ const ReportQa = () => {
                     </td>
                     <td className="py-1 text-gray-600">{test.project}</td>
                     <td className="py-1 text-gray-600">{test.component}</td>
-                    <td className="py-1">
+                    {/* <td className="py-1">
                       <span className={`${getSeverityColor(test.severity)} text-white text-xs px-1 py-0.5 rounded-full`}>
                         {test.severity}
                       </span>
-                    </td>
+                    </td> */}
                     <td className="py-1 text-gray-600">{test.dueDate}</td>
                     <td className="py-1">
                       <button 
@@ -434,9 +435,9 @@ const ReportQa = () => {
                       >
                         Details
                       </button>
-                      <button className="text-gray-600 hover:text-gray-800 text-xs">
+                      {/* <button className="text-gray-600 hover:text-gray-800 text-xs">
                         Assign
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))}

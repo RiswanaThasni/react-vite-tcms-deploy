@@ -28,6 +28,8 @@
     "axios": "^1.7.9",
     "chart.js": "^4.4.8",
     "formik": "^2.4.6",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.475.0",
     "postcss": "^8.5.2",
     "randomcolor": "^0.6.2",

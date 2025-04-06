@@ -1,5 +1,7 @@
 
 
+
+
 // import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 // import { fetchUsers, deleteUser } from "../../../redux/slices/userSlice";
@@ -7,7 +9,6 @@
 // import { Search, UserPlus } from "lucide-react";
 // import { useNavigate } from "react-router-dom";
 // import { fetchRole } from "../../../api/userApi";
-// import { API_URL } from "../../../utils/constants";
 
 // const UserManagement = () => {
 //   const dispatch = useDispatch();
@@ -20,6 +21,9 @@
 //   const [selectedRole, setSelectedRole] = useState("all");
 //   const [selectedStatus, setSelectedStatus] = useState("all");
 //   const navigate = useNavigate();
+
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const [projectsPerPage] = useState(6);
 
 //   useEffect(() => {
 //     dispatch(fetchUsers());
@@ -38,8 +42,6 @@
 //     setMenuOpen(menuOpen === userId ? null : userId);
 //   };
 
-  
-
 //   const filteredUsers = users.filter((user) => {
 //     const matchesSearch =
 //       user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,12 +57,29 @@
 //     return matchesSearch && matchesRole && matchesStatus;
 //   });
 
+//   const indexOfLastProject = currentPage * projectsPerPage;
+//   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
+//   // const currentProjects = sortedProjects.slice(indexOfFirstProject, indexOfLastProject);
+
+//   // Pagination controls
+//   const goToNextPage = () => {
+//     if (currentPage < Math.ceil(sortedProjects.length / projectsPerPage)) {
+//       setCurrentPage(currentPage + 1);
+//     }
+//   };
+
+//   const goToPreviousPage = () => {
+//     if (currentPage > 1) {
+//       setCurrentPage(currentPage - 1);
+//     }
+//   };
+
 //   const handleRowClick = (userId) => {
 //     navigate(`/admin_dashboard/view_user_details/${userId}`);
 //   };
 
 //   return (
-//     <div className="p-4 bg-slate-100 rounded-lg h-full">
+//     <div className="p-4 bg-slate-200 rounded-lg h-full">
 //       <div className="flex flex-col md:flex-row gap-3 justify-between items-start md:items-center mb-4">
         
 //         <div className="relative flex-grow max-w-md">
@@ -75,7 +94,7 @@
 //         </div>
 
 //         <div className="flex flex-row gap-2 self-end md:self-auto">
-//           <select
+//           {/* <select
 //             className="bg-white text-xs rounded-lg border border-gray-200 p-2"
 //             value={selectedRole}
 //             onChange={(e) => setSelectedRole(e.target.value)}
@@ -86,7 +105,7 @@
 //                 {roles.role_name}
 //               </option>
 //             ))}
-//           </select>
+//           </select> */}
 
 //           <select
 //             className="bg-white text-xs rounded-lg border border-gray-200 p-2"
@@ -103,7 +122,7 @@
 //             onClick={() => setShowPopup(true)}
 //           >
 //             <UserPlus size={16} strokeWidth={2} className="mr-1" />
-//             <span className="text-xs"></span>
+//             <span className="text-xs">Add User</span>
 //           </button>
 //         </div>
 //       </div>
@@ -132,7 +151,7 @@
 //               >
 //                 <td className="p-3">
 //                   <img
-//                     src={user?.profile_picture ? `${API_URL}${user.profile_picture}` : "/default.svg"}
+//                     src={user?.profile_picture || "/default.svg"}
 //                     alt="Profile"
 //                     className="w-8 h-8 rounded-full object-cover"
 //                   />
@@ -174,12 +193,11 @@
 // export default UserManagement;
 
 
-
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers, deleteUser } from "../../../redux/slices/userSlice";
 import AddUserPopup from "../../../components/ui/AddUserPopup";
-import { Search, UserPlus } from "lucide-react";
+import { Search, UserPlus, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { fetchRole } from "../../../api/userApi";
 
@@ -195,6 +213,10 @@ const UserManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const navigate = useNavigate();
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(6);
+
   useEffect(() => {
     dispatch(fetchUsers());
     const getRoles = async () => {
@@ -207,6 +229,11 @@ const UserManagement = () => {
     };
     getRoles();
   }, [dispatch]);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedRole, selectedStatus]);
 
   const toggleMenu = (userId) => {
     setMenuOpen(menuOpen === userId ? null : userId);
@@ -227,12 +254,31 @@ const UserManagement = () => {
     return matchesSearch && matchesRole && matchesStatus;
   });
 
+  // Pagination logic
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  // Pagination controls
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   const handleRowClick = (userId) => {
     navigate(`/admin_dashboard/view_user_details/${userId}`);
   };
 
   return (
-    <div className="p-4 bg-slate-100 rounded-lg h-full">
+    <div className="p-4 bg-slate-200 rounded-lg h-full">
       <div className="flex flex-col md:flex-row gap-3 justify-between items-start md:items-center mb-4">
         
         <div className="relative flex-grow max-w-md">
@@ -296,7 +342,7 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((user) => (
+            {currentUsers.map((user) => (
               <tr 
                 key={user.id} 
                 className="border-b border-gray-100 hover:bg-blue-50 cursor-pointer transition-colors" 
@@ -334,6 +380,39 @@ const UserManagement = () => {
             <Search size={24} className="mx-auto mb-2 text-gray-400" />
             <p className="text-sm">No users found</p>
             {searchQuery && <p className="text-xs mt-1 text-gray-400">Try adjusting your search or filters</p>}
+          </div>
+        )}
+        
+        {/* Pagination UI - Updated to match ProjectManagement style */}
+        {filteredUsers.length > 0 && (
+          <div className="flex justify-between items-center p-4 border-t border-gray-300">
+            <div className="text-sm text-gray-600">
+              Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={goToPreviousPage}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded ${
+                  currentPage === 1 
+                    ? 'text-gray-500 cursor-not-allowed' 
+                    : 'bg-gray-300 text-white hover:bg-lime-300'
+                }`}
+              >
+                <ChevronsLeft size={16} />
+              </button>
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage >= totalPages}
+                className={`px-4 py-2 rounded ${
+                  currentPage >= totalPages
+                    ? 'text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-300 text-white hover:bg-lime-300'
+                }`}
+              >
+                <ChevronsRight size={16} />
+              </button>
+            </div>
           </div>
         )}
       </div>

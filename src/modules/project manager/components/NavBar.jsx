@@ -389,7 +389,7 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
           </div>
           
           {/* Profile Content */}
-          <div className="px-6 -mt-8">
+          <div className="px-6 -mt-8 ">
             <div className="flex flex-col items-center">
               {/* Profile Image with Upload/Remove options */}
               <div className="relative mb-2">
@@ -411,8 +411,8 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
                   </button>
                   
                   {showOptions && (
-                    <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-md w-32 border border-gray-100 overflow-hidden">
-                      <label className="block px-3 py-2 text-sm text-gray-700 cursor-pointer hover:bg-gray-50 transition-colors flex items-center">
+                    <div className="absolute right-0 mt-2 bg-sidebar shadow-lg rounded-md w-32 border border-gray-100 overflow-hidden">
+                      <label className="block px-3 py-2 text-sm text-black font-medium cursor-pointer hover:bg-white transition-colors flex items-center">
                         <FiUser className="mr-2 text-gray-500" size={14} />
                         Upload Image
                         <input

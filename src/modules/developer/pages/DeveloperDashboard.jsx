@@ -11,7 +11,7 @@ const DeveloperDashboard = () => {
   const pageTitles = {
     "/dev_dashboard": "Dashboard",
     "/dev_dashboard/mainsection": "Dashboard",
-    "/dev_dashboard/task_details": "Task Details",
+    "/dev_dashboard/task_details": "Tasks",
     "/dev_dashboard/track_task": "Track Task",
     "/dev_dashboard/reassign_task" : "Fix Bug ",
   };

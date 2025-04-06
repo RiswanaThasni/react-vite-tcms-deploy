@@ -15,6 +15,8 @@ const ProjectManagerDashboard = () => {
     "/projectmanager_dashboard/task_management": "Task Management",
     "/projectmanager_dashboard/bug_assignment": "Reassign Bug",
     "/projectmanager_dashboard/report_analysis": "Report",
+    "/projectmanager_dashboard/bug_detail/:bugId": "Bug Details",
+    
   };
   
   const getPageTitle = () => {
@@ -22,6 +24,10 @@ const ProjectManagerDashboard = () => {
     
     if (/^\/projectmanager_dashboard\/project_details\/\d+$/.test(location.pathname)) {
       return "Project Details";
+    }
+
+    if (/^\/projectmanager_dashboard\/bug_detail\/\d+$/.test(location.pathname)) {
+      return "Bug Details";
     }
     
     return "Dashboard";

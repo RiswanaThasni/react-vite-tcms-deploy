@@ -39,6 +39,7 @@ import UserDetails from '../modules/admin/pages/UserDetails'
 import BugAssignment from '../modules/project manager/pages/BugAssignment'
 import ReassignTask from '../modules/developer/pages/ReassignTask'
 import FixBugs from '../modules/developer/pages/FixBugs'
+import BugDetails from '../modules/project manager/pages/BugDetails'
 
 
 const AppRouter = () => {
@@ -75,6 +76,7 @@ const AppRouter = () => {
 <Route path='/projectmanager_dashboard/report_analysis' element={<ReportAnalysis/>}/> 
 <Route path='/projectmanager_dashboard/create_project' element={<CreateProject/>}/>
 <Route path='/projectmanager_dashboard/bug_assignment' element={<BugAssignment/>}/> 
+<Route path='/projectmanager_dashboard/bug_detail/:bugId' element={<BugDetails/>}/>
 </Route>
 </Route>
 

@@ -66,7 +66,7 @@ const NavButton = ({ Icon, alt, path }) => {
           {/* Navigation Buttons */}
           <div className="flex flex-col flex-grow items-start w-full">
           <NavButton Icon={FiGrid} alt="Dashboard" path="/dev_dashboard" />
-<NavButton Icon={FiList} alt="Task Details" path="/dev_dashboard/task_details" />
+<NavButton Icon={FiList} alt="Tasks" path="/dev_dashboard/task_details" />
 <NavButton Icon={FiActivity} alt="Track Task" path="/dev_dashboard/track_task" />
 <NavButton Icon={FaSyncAlt} alt="Fix Bug" path="/dev_dashboard/reassign_task" />
 
@@ -108,7 +108,7 @@ const NavButton = ({ Icon, alt, path }) => {
         >
           <div className="flex flex-col items-start gap-4 mt-16">
             <NavButton Icon={FiGrid} alt="Dashboard"  path="/dev_dashboard" />
-            <NavButton Icon={FiList} alt="Task Details"  path="/dev_dashboard/task_details" />
+            <NavButton Icon={FiList} alt="Tasks"  path="/dev_dashboard/task_details" />
             <NavButton Icon={FiActivity} alt="Track Task"  path="/dev_dashboard/track_task" />
             <NavButton Icon={FaSyncAlt} alt="Fix Bug" path="/dev_dashboard/reassign_task" />
 
