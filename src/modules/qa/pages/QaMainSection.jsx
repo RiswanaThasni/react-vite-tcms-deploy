@@ -11,6 +11,7 @@ const QaMainSection = () => {
     total_test_cases: 0,
     completed_test_cases: 0,
     pending_test_cases: 0,
+    passed_test_cases:0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +24,8 @@ const QaMainSection = () => {
   const [cardColors, setCardColors] = useState({
     total: '#f8f9fa',
     completed: '#f8f9fa',
-    pending: '#f8f9fa'
+    pending: '#f8f9fa',
+    
   });
 
   // Function to generate a darker shade for text contrast

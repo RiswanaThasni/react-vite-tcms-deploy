@@ -113,7 +113,7 @@ const ReportAnalysis = () => {
     <div className="  rounded-lg ">
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <div className=" rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className=" "></div>
         </div>
       ) : (
         <>
@@ -175,7 +175,7 @@ const ReportAnalysis = () => {
               
               {isLoadingDetails ? (
                 <div className="flex justify-center items-center h-24">
-                  <div className=" rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                  <div className="  "></div>
                 </div>
               ) : detailedData ? (
                 <div>

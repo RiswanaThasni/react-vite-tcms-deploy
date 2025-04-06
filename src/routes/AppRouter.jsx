@@ -40,6 +40,7 @@ import BugAssignment from '../modules/project manager/pages/BugAssignment'
 import ReassignTask from '../modules/developer/pages/ReassignTask'
 import FixBugs from '../modules/developer/pages/FixBugs'
 import BugDetails from '../modules/project manager/pages/BugDetails'
+import TaskList from '../modules/developer/pages/TaskList'
 
 
 const AppRouter = () => {
@@ -99,7 +100,7 @@ const AppRouter = () => {
   <Route path='/dev_dashboard/track_task' element={<TrackTask/>}/>
   <Route path='/dev_dashboard/tasks/:taskId' element={<Tasks/>}/>
   <Route path='/dev_dashboard/reassign_task' element={<ReassignTask/>}/>
-  {/* <Route path='/dev_dashboard/fix_bugs/:taskId' element={<FixBugs/>}/> */}
+  <Route path='/dev_dashboard/listcard' element={<TaskList/>}/>
 
 </Route>
  </Route>

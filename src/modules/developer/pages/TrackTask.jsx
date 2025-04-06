@@ -52,15 +52,7 @@ const TrackTask = () => {
 
   return (
     <div className="p-2 w-full mx-auto bg-mainsection">
-      <div className="relative w-64 flex items-center mb-3">
-        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
-        <input
-          type="text"
-          placeholder="Search Tasks..."
-          className="w-full p-1.5 pl-8 bg-white rounded-md text-sm"
-        />
-      </div>
-
+      
       {/* Loading and error states */}
       {loading && <p className="text-sm">Loading tasks...</p>}
       {error && <p className="text-red-600 text-sm">{error}</p>}

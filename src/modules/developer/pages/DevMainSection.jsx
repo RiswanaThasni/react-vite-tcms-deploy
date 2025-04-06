@@ -12,6 +12,7 @@ const DevMainSection = () => {
   const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const navigate = useNavigate();
   const [cardColors, setCardColors] = useState({
     card1: '#D8F278', // Default color that matches your existing scheme
     card2: '#b8e868', // Slightly different shade
@@ -95,19 +96,14 @@ const generateColorPalette = () => {
     fetchData();
   }, []);
 
+  const handleCardClick = (type) => {
+  navigate(`/dev_dashboard/listcard?type=${type}`);
+};
+
   return (
     <div className="p-2">
       {/* Search Bar - Reduced padding */}
-      <div className="mb-4 flex items-center">
-        <div className="relative w-64">
-          <input
-            type="text" 
-            placeholder="Search project, Task"
-            className="w-full p-1.5 pl-8 bg-white rounded-lg text-sm"
-          />
-          <Search className="absolute left-2 top-2 text-gray-400" size={16} />
-        </div>
-      </div>
+      
 
       {/* Main Content */}
       {loading ? (
@@ -123,23 +119,38 @@ const generateColorPalette = () => {
                 count={taskCounts.total_tasks} 
                 bgColor={cardColors.card1} 
                 textColor={getTextColor(cardColors.card1)}
+                onClick={() => handleCardClick("all")}
               />
               <Card 
                 title="Completed Task" 
                 count={taskCounts.completed_tasks} 
                 bgColor={cardColors.card2} 
                 textColor={getTextColor(cardColors.card2)}
+                onClick={() => handleCardClick("completed")}
               />
               <Card 
                 title="Pending Task" 
                 count={taskCounts.pending_tasks} 
                 bgColor={cardColors.card3} 
                 textColor={getTextColor(cardColors.card3)}
+                onClick={() => handleCardClick("pending")}
+
               />
             </div>
 
+            <div className="mb-4 flex items-center justify-end">
+        <div className="relative w-64">
+          <input
+            type="text" 
+            placeholder="Search project, Task"
+            className="w-full p-1.5 pl-8 bg-white rounded-lg text-sm"
+          />
+          <Search className="absolute left-2 top-2 text-gray-400" size={16} />
+        </div>
+      </div>
+
             {/* Recent Activities - Reduced padding */}
-            <div className="bg-white p-3 rounded-lg mb-4">
+            <div className="bg-slate-200 p-3 rounded-lg mb-4">
               <h2 className="text-base font-medium mb-2">Recent activities</h2>
               <RecentActivitiesTable 
                 activities={recentActivities} 
@@ -211,13 +222,13 @@ const generateColorPalette = () => {
 // **Reusable Components**
 
 // Summary Cards - Now with dynamic styling
-const Card = ({ title, count, bgColor, textColor }) => (
+const Card = ({ title, count, bgColor, textColor, onClick }) => (
   <div 
-    className="p-2 rounded shadow-sm transition-all duration-200 hover:shadow-md"
+    className="p-2 rounded shadow-sm transition-all duration-200 hover:shadow-md cursor-pointer"
     style={{ 
       backgroundColor: bgColor
-      // Remove this line: borderLeft: `4px solid ${getDarkerShade(bgColor)}`
     }}
+    onClick={onClick}
   >
     <h3 className="text-xs font-medium" style={{ color: textColor }}>{title}</h3>
     <p className="text-xl font-bold" style={{ color: textColor }}>{count}</p>
@@ -258,7 +269,7 @@ const RecentActivitiesTable = ({ activities, generateActivityColor }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-lg">
       <table className="min-w-full divide-y divide-gray-200 text-xs">
         <thead className="bg-gray-50">
           <tr>

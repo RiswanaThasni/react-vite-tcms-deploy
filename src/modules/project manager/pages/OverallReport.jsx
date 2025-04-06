@@ -3,7 +3,6 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { viewProgressByAdmin } from "../../../api/projectApi";
 
-// Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const OverallReport = () => {
@@ -101,7 +100,6 @@ const OverallReport = () => {
       
       {isLoading ? (
         <div className="flex justify-center items-center h-32">
-          <div className=" rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : (
         <div className="flex flex-col space-y-2">
@@ -113,7 +111,7 @@ const OverallReport = () => {
           {/* Stats Cards - now more compact */}
           <div className="grid grid-cols-2 gap-2">
             <div className="bg-gray-50 p-2 rounded-lg border-l-4 border-green-500">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-start items-center">
                 <div>
                   <p className="text-xs text-gray-500">Completed</p>
                   <p className="text-sm font-bold text-gray-800">{statusCounts.completed}</p>
@@ -123,7 +121,7 @@ const OverallReport = () => {
             </div>
             
             <div className="bg-gray-50 p-2 rounded-lg border-l-4 border-yellow-500">
-              <div className="flex justify-between items-center">
+              <div className="justify-start  items-center">
                 <div>
                   <p className="text-xs text-gray-500">In Progress</p>
                   <p className="text-sm font-bold text-gray-800">{statusCounts.inProgress}</p>
@@ -133,7 +131,7 @@ const OverallReport = () => {
             </div>
             
             <div className="bg-gray-50 p-2 rounded-lg border-l-4 border-red-500">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-start items-center">
                 <div>
                   <p className="text-xs text-gray-500">Pending</p>
                   <p className="text-sm font-bold text-gray-800">{statusCounts.pending}</p>

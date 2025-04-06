@@ -84,6 +84,22 @@ export const getTaskById = async (taskId) => {
 };
 
 
+export const DeleteTaskById = async (taskId) => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.delete(`${API_URL}/api/pm/soft-delete-task/${taskId}/`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Failed to delte task ");
+  }
+};
+
+
 
 export const listTaskByBug = async () => {
   let accessToken = localStorage.getItem("access_token");
@@ -322,6 +338,5 @@ export const getTasks = async () => {
     throw new Error("Failed to fetch tasks. Please try again.");
   }
 };
-
 
 

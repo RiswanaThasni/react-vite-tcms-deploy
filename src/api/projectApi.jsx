@@ -107,15 +107,6 @@ export const fetchModulesByProjectId = async (projectId) => {
 }
 
 
-// export const fetchbugsByModuleId = async (moduleId) => {
-//   try {
-//     const response = await axiosInstance.get(`/api/modules/${moduleId}/unassigned-bugs/`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching bugs by module ID:", error);
-//     throw error;
-//   }
-// }
 
 
 
@@ -211,50 +202,6 @@ export const addTasksByModuleId = async (moduleId, taskData) => {
 
 
 
-// export const assignBugTask = async (bugId, taskData) => {
-//   try {
-//     // Make sure bugId is valid
-//     if (!bugId) throw new Error("Bug ID is required");
-    
-//     // Log what we're sending for debugging
-//     console.log("Sending task data to bug:", bugId);
-    
-//     // Ensure the FormData includes all required fields
-//     if (!taskData.get('assigned_to')) {
-//       throw new Error("Developer ID (assigned_to) is required");
-//     }
-    
-//     // Debug the actual data being sent
-//     console.log("Full form data being sent:");
-//     for (let [key, value] of taskData.entries()) {
-//       console.log(`${key}: ${value}`);
-//     }
-    
-//     const response = await axiosInstance.post(`/api/pm/bugs/assign-bug/${bugId}/`, taskData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-    
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error assigning bug task:", error);
-    
-//     // More detailed error logging
-//     if (error.response) {
-//       console.error("Response data:", error.response.data);
-//       console.error("Response status:", error.response.status);
-      
-//       if (error.response.status === 400) {
-//         throw new Error(`Validation error: ${JSON.stringify(error.response.data)}`);
-//       } else if (error.response.status === 500) {
-//         throw new Error("Server error. Please try again later or contact the administrator.");
-//       }
-//     }
-    
-//     throw error;
-//   }
-// };
 
 
 
@@ -432,6 +379,58 @@ export const editProject = async(projectId, projectData) => {
     throw error.response ? error.response.data : new Error("Failed to edit project");
   }
 };
+
+
+
+
+
+export const editTask = async(taskId, taskData) => {
+  try {
+    let config = {};
+    
+    // Check if taskData is FormData (for file uploads)
+    const isFormData = taskData instanceof FormData;
+    
+    if (isFormData) {
+      config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+    } else {
+      config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+    }
+    
+    // Log what's being sent
+    console.log(`Sending update to: ${API_URL}/api/task/${taskId}/update/`);
+    if (isFormData) {
+      console.log("Sending FormData with file");
+    } else {
+      console.log("With data:", JSON.stringify(taskData));
+    }
+    
+    const response = await axiosInstance.put(
+      `${API_URL}/api/task/${taskId}/update/`, 
+      taskData,
+      config
+    );
+    
+    return response.data;
+  } catch(error) {
+    console.error("API Error:", error);
+    throw error.response ? error.response.data : new Error("Failed to edit task");
+  }
+};
+
+
+
+
+
+
 
     export const deleteProject = async(projectId)=>{
       try{
