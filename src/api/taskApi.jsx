@@ -127,12 +127,18 @@ export const getBugDetail = async (taskId) => {
 
 
 
+
+
+
 export const updateTaskStatus = async (taskId, newStatus) => {
   let accessToken = localStorage.getItem("access_token");
-
+  
+  
+  const numericId = taskId.toString().replace(/\D/g, '');
+  
   try {
     const response = await axios.patch(
-      `${API_URL}/api/developer/tasks/${taskId}/update-status/`,
+      `${API_URL}/api/developer/tasks/${numericId}/update-status/`,
       { status: newStatus },
       {
         headers: {
@@ -147,11 +153,11 @@ export const updateTaskStatus = async (taskId, newStatus) => {
       try {
         // Refresh token
         accessToken = await refreshAccessToken();
-        localStorage.setItem("access_token", accessToken); // Store new token
-
-        // Retry the request
+        localStorage.setItem("access_token", accessToken);
+        
+        // Retry the request with new token
         const retryResponse = await axios.patch(
-          `${API_URL}/api/developer/tasks/${taskId}/update-status/`,
+          `${API_URL}/api/developer/tasks/${numericId}/update-status/`,
           { status: newStatus },
           {
             headers: {
@@ -166,13 +172,14 @@ export const updateTaskStatus = async (taskId, newStatus) => {
         throw new Error("Session expired. Please log in again.");
       }
     } else {
-      console.error("Error updating task status:", error.response?.data || error.message);
-      throw new Error("Failed to update task status.");
+      console.error("Error updating task status:", error);
+      throw new Error(
+        error.response?.data?.detail || 
+        `Failed to update task status (${error.response?.status || "unknown error"})`
+      );
     }
   }
 };
-
-
 
 
 // export const updateFixedTaskStatus = async (bugId, newStatus) => {
