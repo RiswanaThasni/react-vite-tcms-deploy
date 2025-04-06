@@ -341,7 +341,6 @@ const Report = () => {
 const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, projectDetails, isDetailsLoading, detailsError }) => {
   // Calculate completed tasks based on progress
   const completedTasks = Math.floor(summary.total_tasks * (summary.progress / 100));
-  const pendingTasks = summary.total_tasks - completedTasks;
 
   return (
     <div className="bg-gray-50 p-4 rounded-lg">
@@ -350,7 +349,7 @@ const ProjectAnalysis = ({ project, summary, showDetails, toggleDetails, project
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <StatCard title="Test Cases" value={summary.total_test_cases} color="purple" />
         <StatCard title="Tasks" value={summary.total_tasks} color="blue" />
-        <StatCard title="Pending" value={pendingTasks} color="yellow" />
+        <StatCard title="Total Modules" value={summary.total_modules} color="yellow" />
         <StatCard title="Bugs" value={summary.total_bugs} color="red" />
       </div>
       

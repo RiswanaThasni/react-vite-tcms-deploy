@@ -138,7 +138,7 @@ const AdminProjectDetails = () => {
       {project ? (
         <div className="grid md:grid-cols-3 gap-2">
           {/* Project Overview */}
-          <div className="md:col-span-2 bg-white rounded-lg p-4 space-y-2">
+          <div className="md:col-span-2 bg-slate-200 rounded-lg p-4 space-y-2">
             <h2 className="text-md font-semibold text-gray-800">{project.project_name}</h2>
             <p className="text-gray-600 text-sm">{project.project_description}</p>
 
@@ -177,7 +177,7 @@ const AdminProjectDetails = () => {
           </div>
 
           {/* Project Team */}
-          <div className="bg-white rounded-lg p-4">
+          <div className="bg-slate-200 rounded-lg p-4">
             <div className="flex items-center mb-2">
               <UsersIcon className="mr-1 text-gray-500" size={18} />
               <h3 className="text-sm font-semibold text-gray-800">Project Team</h3>
@@ -215,7 +215,7 @@ const AdminProjectDetails = () => {
           </div>
 
           {/* Module Tabs - Replacement for clickable list */}
-          <div className="md:col-span-3 bg-white rounded-lg p-4 mt-2">
+          <div className="md:col-span-3 bg-slate-200 rounded-lg p-4 mt-2">
             <div className="flex items-center mb-4">
               <FolderIcon className="mr-1 text-gray-500" size={18} />
               <h3 className="text-base font-semibold text-gray-800">Project Modules</h3>
@@ -230,7 +230,7 @@ const AdminProjectDetails = () => {
                       onClick={() => handleModuleClick(module.id)}
                       className={`inline-flex items-center px-4 py-2 border-b-2 rounded-t-lg text-sm font-medium transition-colors ${
                         selectedModuleId === module.id
-                          ? 'border-blue-500 text-blue-600 bg-blue-50'
+                          ? 'border-blue-500 text-blue-600 bg-slate-200'
                           : 'border-transparent hover:text-gray-600 hover:border-gray-300'
                       }`}
                     >
@@ -250,7 +250,7 @@ const AdminProjectDetails = () => {
 
           {/* Selected Module Details - Only shown when a module is selected */}
           {selectedModule && (
-            <div className="md:col-span-3 bg-blue-100 p-4 rounded-lg border border-blue-300 mt-2">
+            <div className="md:col-span-3 bg-slate-200 p-4 rounded-lg  mt-2">
               <div className="flex justify-between items-start mb-2">
                 <h4 className="text-md font-semibold text-gray-800">Selected: {selectedModule.module_name}</h4>
                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium 
@@ -269,7 +269,7 @@ const AdminProjectDetails = () => {
 
           {/* Module Details Tabs */}
           {selectedModuleId && (
-            <div className="md:col-span-3 bg-white rounded-lg p-4 mt-2">
+            <div className="md:col-span-3 bg-slate-200 rounded-lg p-4 mt-2">
               <div className="border-b border-gray-200 mb-2">
                 <ul className="flex flex-wrap -mb-px">
                   <li className="mr-2">

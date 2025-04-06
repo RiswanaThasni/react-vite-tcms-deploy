@@ -377,19 +377,19 @@ const MainSection = () => {
         { 
           label: "Total Projects", 
           count: data.total_projects, 
-          className: "bg-[#D0D4FF]",
+          className: "bg-[#9CA3ED]",
           icon: <Clipboard className="text-blue-700" size={18}   strokeWidth={3}/>
         },
         { 
           label: "Pending Projects", 
           count: data.pending_projects, 
-          className: "bg-[#D0D4FF]",
+          className: "bg-[#FC94C0]",
           icon: <Clock className="text-red-800 " size={18} strokeWidth={3}/>
         },
         { 
           label: "Completed Projects", 
           count: data.completed_projects, 
-          className: "bg-[#D0D4FF]",
+          className: "bg-[#A9F48B]",
           icon: <CheckCircle className="text-green-600 " size={18} strokeWidth={3} />
         },
       ];
@@ -492,18 +492,18 @@ const MainSection = () => {
           </div>
 
           {/* Recent Projects Table */}
-          <div className="bg-white p-3 rounded-lg shadow-sm ">
+          <div className="bg-slate-200 p-3 rounded-lg shadow-sm ">
             <h2 className="text-base font-medium mb-2">Recent Projects</h2>
-            <div>
+            <div className=" " >
               {loading.activities ? (
                 <div className="flex justify-center p-2">
                 </div>
               ) : error.activities ? (
-                <div className="flex items-center justify-center p-2 bg-red-50 rounded text-red-600">
+                <div className="flex items-center justify-center p-2 bg-white rounded-lg text-red-600">
                   {error.activities}
                 </div>
               ) : (
-                <table className="w-full divide-y divide-gray-200">
+                <table className="w-full divide-y bg-white rounded-lg  divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">

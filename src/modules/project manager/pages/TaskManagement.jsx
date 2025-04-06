@@ -405,12 +405,6 @@ const editFileInputRef = useRef(null);  // Add this line
                     <div className="text-xs text-gray-500 truncate">{module.module_description}</div>
                     
                   </button>
-                  
-                  
-
-
-
-
 
                 ))
               ) : (
@@ -419,6 +413,8 @@ const editFileInputRef = useRef(null);  // Add this line
              
 
             </div>
+
+            
           ) : (
             <p className="text-sm text-gray-500">Select a project first</p>
           )}

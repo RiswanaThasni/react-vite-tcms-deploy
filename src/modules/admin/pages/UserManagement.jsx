@@ -85,21 +85,26 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="p-4 bg-slate-200 rounded-lg h-full">
-      <div className="flex flex-col md:flex-row gap-3 justify-between items-start md:items-center mb-4">
-        
-        <div className="relative flex-grow max-w-md">
+    
+    <div className="bg-mainsection mt-3">
+    <div className="relative flex-grow max-w-md">
           <input
             type="text"
             placeholder="Search by name or email"
-            className="w-full p-2 pl-8 text-xs bg-white rounded-lg border border-gray-200"
+            className="w-full p-2 pl-8 text-xs bg-white rounded-lg "
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Search className="absolute left-2 top-2 text-gray-400" size={14} />
         </div>
 
-        <div className="flex flex-row gap-2 self-end md:self-auto">
+        <div className="p-2 mt-3 bg-slate-200 rounded-lg ">
+
+    <div className="flex flex-col md:flex-row gap-3 justify-end items-start md:items-center mb-4">
+        
+        
+
+        <div className="flex  gap-2 ">
           {/* <select
             className="bg-white text-xs rounded-lg border border-gray-200 p-2"
             value={selectedRole}
@@ -226,6 +231,9 @@ const UserManagement = () => {
 
       {showPopup && <AddUserPopup onClose={() => setShowPopup(false)} />}
     </div>
+
+    </div>
+      
   );
 };
 

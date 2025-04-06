@@ -18,7 +18,8 @@ const UserDetails = () => {
   const [roles, setRoles] = useState([]); // State to store roles
   const [rolesLoading, setRolesLoading] = useState(true);
   const [rolesError, setRolesError] = useState(null);
-  const [userStatus, setUserStatus] = useState('');
+  const [newStatus, setNewStatus] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
      
   useEffect(()=>{
@@ -105,33 +106,42 @@ lastName: selectedUser.last_name || "",
     setEditedData({ ...editedData, [e.target.name]: e.target.value });
   };
 
-  const handleStatusToggle = async () => {
-  try {
-    const newStatus = editedData.status === "active" ? "inactive" : "active";
+  const handleStatusToggle = () => {
+    const statusToChange = editedData.status === "active" ? "inactive" : "active";
+    setNewStatus(statusToChange);
+    setShowConfirmation(true);
+  };
 
-    // ✅ Update UI instantly for a smooth experience
-    setEditedData(prev => ({ ...prev, status: newStatus }));
+  const confirmStatusChange = async () => {
+    try {
+      setEditedData(prev => ({ ...prev, status: newStatus }));
+      
+      const updatePayload = { status: newStatus };
+      await updateUser(userId, updatePayload);
+      
+      dispatch(fetchUserDetails(userId));
+      
+      // Close  dialog
+      setShowConfirmation(false);
+      
+    } catch (error) {
+      console.error("Status update failed:", error);
+      setShowConfirmation(false);
+    }
+  };
 
-    // ✅ Ensure correct API payload (adjust if needed)
-    const updatePayload = { status: newStatus };
-
-    // ✅ Send API request to update status
-    await updateUser(userId, updatePayload);
-
-    // ✅ Fetch updated user details
-    dispatch(fetchUserDetails(userId));
-
-  } catch (error) {
-    console.error("Status update failed:", error);
-  }
-};
+  const cancelStatusChange = () => {
+    setShowConfirmation(false);
+    setNewStatus('');
+  };
 
 
 
 
   return (
-    <div className='p-4'>
-      <button
+    <div className=''>
+    <div className={`p-4 transition-all duration-300 ${showConfirmation ? 'blur-xs pointer-events-none' : ''}`}>
+    <button
         onClick={handleBackClick}
         className="flex items-center text-sm text-gray-600 hover:text-gray-900 mb-2"
       >
@@ -152,17 +162,16 @@ lastName: selectedUser.last_name || "",
     <p>{selectedUser.role}</p>
   </div>
 
- {/* Status Toggle Button */}
 <button
-  onClick={handleStatusToggle}
-  className={`ml-auto flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-    editedData.status === "active" 
-      ? "bg-green-200 text-green-800" 
-      : "bg-red-200 text-red-800"
-  }`}
->
-  {editedData.status}
-</button>
+            onClick={handleStatusToggle}
+            className={`ml-auto flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+              editedData.status === "active" 
+                ? "bg-green-200 text-green-800" 
+                : "bg-red-200 text-red-800"
+            }`}
+          >
+            {editedData.status}
+          </button>
 
 
 </div>
@@ -297,6 +306,38 @@ lastName: selectedUser.last_name || "",
           </div>
         </div>
       </div>
+
+    </div>
+     
+      {showConfirmation && (
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-2 max-w-md w-full">
+            <h3 className="text-sm font-semibold mb-4">Confirm Status Change</h3>
+            <p className="mb-6 text-sm">
+              Are you sure you want to change this user's status to 
+              <span className={`font-bold ${newStatus === 'active' ? 'text-green-600' : 'text-red-600'} mx-1`}>
+                {newStatus}
+              </span>?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={cancelStatusChange}
+                className="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 rounded-md text-gray-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmStatusChange}
+                className={`px-3 py-1  text-sm rounded-md text-white ${
+                  newStatus === 'active' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
