@@ -86,7 +86,7 @@ const AddTaskPopup = ({ bugId, moduleId, projectId, onClose, onTaskAdded }) => {
       formData.append('task_description', newTask.description);
       formData.append('due_date', newTask.dueDate);
       formData.append('priority', newTask.priority);
-      formData.append('task_type', newTask.taskType); // Add task_type field
+      // formData.append('task_type', newTask.taskType); // Add task_type field
       
       // Convert assignedPersonId to string
       formData.append('assigned_to', String(newTask.assignedPersonId));

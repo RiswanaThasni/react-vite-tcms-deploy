@@ -13,13 +13,13 @@ const DeveloperDashboard = () => {
     "/dev_dashboard/mainsection": "Dashboard",
     "/dev_dashboard/task_details": "Tasks",
     "/dev_dashboard/track_task": "Track Task",
-    "/dev_dashboard/reassign_task" : "Fix Bug ",
+    // "/dev_dashboard/reassign_task" : "Fix Bug ",
   };
   
   // Dynamic route patterns
   const dynamicRoutes = [
     { pattern: /^\/dev_dashboard\/tasks\/\d+$/, title: "Task Details" },
-    { pattern: /^\/dev_dashboard\/fix_bugs\/\d+$/, title: "detailed bug" }
+    // { pattern: /^\/dev_dashboard\/fix_bugs\/\d+$/, title: "detailed bug" }
 
   ];
 

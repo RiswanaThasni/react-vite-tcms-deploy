@@ -73,6 +73,7 @@ const TaskDetails = () => {
                   <tr>
                     <th className="py-2 px-3 text-left font-medium text-gray-600 border-b">Task Name</th>
                     <th className="py-2 px-3 text-left font-medium text-gray-600 border-b">Project</th>
+                    <th className="py-2 px-3 text-left font-medium text-gray-600 border-b">Task Type</th>
                     <th className="py-2 px-3 text-left font-medium text-gray-600 border-b">Due Date</th>
                   </tr>
                 </thead>
@@ -86,6 +87,7 @@ const TaskDetails = () => {
                       >
                         <td className="py-2 px-3">{task.task_name}</td>
                         <td className="py-2 px-3">{task.project_name}</td>
+                        <td className="py-2 px-3">{task.task_type}</td>
                         <td className="py-2 px-3">
                           {task.due_date ? new Date(task.due_date).toLocaleDateString() : "No Due Date"}
                         </td>
