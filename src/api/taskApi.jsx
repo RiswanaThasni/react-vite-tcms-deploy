@@ -127,9 +127,6 @@ export const getBugDetail = async (taskId) => {
 
 
 
-
-
-
 export const updateTaskStatus = async (taskId, newStatus) => {
   let accessToken = localStorage.getItem("access_token");
   

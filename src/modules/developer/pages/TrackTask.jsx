@@ -2,9 +2,12 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Calendar, AlertCircle, Search } from 'lucide-react';
 import { fetchTasks } from '../../../redux/slices/taskSlice';
+import { useNavigate } from 'react-router-dom';
+
 
 const TrackTask = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   // Access tasks, loading, and error from the Redux store
   const { tasks = [], loading, error } = useSelector((state) => state.tasks);
@@ -43,6 +46,9 @@ const TrackTask = () => {
 
   // Sort tasks by progress (in progress tasks only)
   const sortedTasks = [...inProgressTasks].sort((a, b) => b.progress - a.progress);
+  const handleRowClick = (taskId) => {
+    navigate(`/dev_dashboard/tasks/${taskId}`);
+  };
 
   return (
     <div className="p-2 w-full mx-auto bg-mainsection">
@@ -76,6 +82,8 @@ const TrackTask = () => {
             <div 
               key={task.id} 
               className="bg-white p-2 rounded-md shadow-sm transition-colors duration-200 hover:bg-gray-100"
+              onClick={() => handleRowClick(task.id)}
+
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
                 <div className="flex-1">
