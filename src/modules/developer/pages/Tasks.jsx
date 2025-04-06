@@ -83,6 +83,10 @@ const Tasks = () => {
                     <td className="px-3 py-2 text-gray-500">{taskData.project_name}</td>
                   </tr>
                   <tr className="hover:bg-blue-50 transition-colors duration-150">
+                    <td className="px-3 py-2 font-medium text-gray-900">Module Name</td>
+                    <td className="px-3 py-2 text-gray-500">{taskData.module_name}</td>
+                  </tr>
+                  <tr className="hover:bg-blue-50 transition-colors duration-150">
                     <td className="px-3 py-2 font-medium text-gray-900">Detailed Description</td>
                     <td className="px-3 py-2 text-gray-500 whitespace-normal break-words">
                       {taskData.task_description}
