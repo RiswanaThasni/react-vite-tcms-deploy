@@ -313,6 +313,80 @@ export const completeTestCase = async (userTestCaseId) => {
   }
 };
 
+export const completeTestCases = async (userTestCaseId, status = "completed", bugData = null, attachment = null) => {
+  let accessToken = localStorage.getItem("access_token");
+  
+  try {
+    const formData = new FormData();
+    formData.append("status", status);
+    
+    // Add remarks if they exist in bugData
+    if (bugData && bugData.remarks) {
+      formData.append("remarks", bugData.remarks);
+    }
+    
+    // If bug data exists, add it as a stringified JSON
+    if (bugData) {
+      formData.append("bug", JSON.stringify(bugData));
+    }
+    
+    // If attachment exists, add it
+    if (attachment) {
+      formData.append("attachment", attachment);
+    }
+    
+    const response = await axios.post(
+      `${API_URL}/api/complete-test-case/${userTestCaseId}/`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response?.data || error);
+    throw new Error(error.response?.data?.error || "Failed to report bug");
+  }
+};
+
+// export const completeTestCase = async (userTestCaseId, status = "Completed") => {
+//   let accessToken = localStorage.getItem("access_token");
+  
+//   try {
+//     // Changed endpoint to match what backend expects
+//     const response = await axios.post(
+//       `${API_URL}/api/test-cases/${userTestCaseId}/update-status/`,
+//       { status }, 
+//       {
+//         headers: { Authorization: `Bearer ${accessToken}` },
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     if (error.response && error.response.status === 401) {
+//       try {
+//         accessToken = await refreshAccessToken();
+//         const retryResponse = await axios.post(
+//           `${API_URL}/api/test-cases/${userTestCaseId}/update-status/`,
+//           { status },
+//           {
+//             headers: { Authorization: `Bearer ${accessToken}` },
+//           }
+//         );
+//         return retryResponse.data;
+//       } catch (refreshError) {
+//         console.error("Token refresh failed:", refreshError);
+//         throw new Error("Session expired. Please log in again.");
+//       }
+//     } else {
+//       console.error("Error completing test case:", error.response?.data || error.message);
+//       throw new Error(error.response?.data?.message || "Failed to complete test case. Please try again.");
+//     }
+//   }
+// };
 
 export const reportBug = async (testId, formData) => {
   try {

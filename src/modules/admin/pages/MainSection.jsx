@@ -392,6 +392,12 @@ const MainSection = () => {
           className: "bg-[#A9F48B]",
           icon: <CheckCircle className="text-green-600 " size={18} strokeWidth={3} />
         },
+        { 
+          label: "Inprogress Projects", 
+          count: data.in_progress_projects, 
+          className: "bg-[#FFD5C1]",
+          icon: <Clipboard className="text-blue-700" size={18}   strokeWidth={3}/>
+        },
       ];
 
       setSummaryData(projectData);
@@ -453,12 +459,12 @@ const MainSection = () => {
       <div className="col-span-6 flex flex-col lg:flex-row gap-2">
         <div className="flex-1">
           {/* Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-4">
             {loading.summary ? (
               <div className="col-span-3 flex justify-center p-2">
               </div>
             ) : error.summary ? (
-              <div className="col-span-3 flex items-center justify-center p-2 bg-red-50 rounded-full text-red-600">
+              <div className="col-span-4 flex items-center justify-center p-2 bg-red-50 rounded-full text-red-600">
                 {error.summary}
               </div>
             ) : (

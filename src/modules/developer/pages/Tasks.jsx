@@ -177,6 +177,12 @@ const Tasks = () => {
                     </td>
                   </tr>
                   <tr className="hover:bg-blue-50 transition-colors duration-150">
+                    <td className="px-3 py-2 font-medium text-gray-900">Attachments</td>
+                    <td className="px-3 py-2 text-gray-500 whitespace-normal break-words">
+                      {taskData.document}
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-blue-50 transition-colors duration-150">
                     <td className="px-3 py-2 font-medium text-gray-900">Due Date</td>
                     <td className="px-3 py-2 text-gray-500">
                       {taskData.due_date ? new Date(taskData.due_date).toLocaleDateString() : "No Due Date"}

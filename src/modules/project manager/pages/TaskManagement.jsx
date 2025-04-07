@@ -401,8 +401,16 @@ const editFileInputRef = useRef(null);  // Add this line
                     }`}
                     onClick={() => handleModuleSelect(module.id)}
                   >
-                    <div className="font-normal text-sm">{module.module_name}</div>
-                    <div className="text-xs text-gray-500 truncate">{module.module_description}</div>
+                   <div className="flex flex-col h-full">
+        <div>
+          <div className="font-normal text-sm">{module.module_name}</div>
+          <div className="text-xs text-gray-500  truncate"> {module.module_description}</div>
+        </div>
+        <div className="mt-2 flex justify-end">
+          <div className="text-xs text-red-800">Due :{module.due_date}</div>
+        </div>
+      </div>
+                  
                     
                   </button>
 

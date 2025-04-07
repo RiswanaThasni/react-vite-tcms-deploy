@@ -719,6 +719,8 @@ import { fetchUserNotifications, markNotificationsRead } from "../../../redux/sl
 import { fetchUserProfile } from "../../../redux/slices/profileSlice";
 import { changePassword, removeProfileImg, updateProfileImg, userProfileUpdate } from "../../../api/userApi";
 import { API_URL } from "../../../utils/constants";
+import { validatePassword } from "../../../validationSchema/passwordValidationSchema";
+
 
 
 const NavBar = ({ selectedPage, toggleSidebar}) => {
@@ -838,26 +840,15 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
     }
   };
 
-  const handlePasswordChange = async (e) => {
+    const handlePasswordChange = async (e) => {
     e.preventDefault();
     setErrors({});
     setIsLoading(true);
     
-    // Validate passwords
-    const validationErrors = {};
-    if (!passwordData.old_password) {
-      validationErrors.old_password = "This field is required.";
-    }
-    if (!passwordData.new_password) {
-      validationErrors.new_password = "This field is required.";
-    }
-    if (!passwordData.confirm_new_password) {
-      validationErrors.confirm_new_password = "This field is required.";
-    } else if (passwordData.new_password !== passwordData.confirm_new_password) {
-      validationErrors.confirm_new_password = "Passwords do not match.";
-    }
+    // Use Yup validation from imported function
+    const { isValid, errors: validationErrors } = await validatePassword(passwordData);
     
-    if (Object.keys(validationErrors).length > 0) {
+    if (!isValid) {
       setErrors(validationErrors);
       setIsLoading(false);
       return;
@@ -891,6 +882,7 @@ const NavBar = ({ selectedPage, toggleSidebar}) => {
     }
   };
 
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPasswordData(prev => ({

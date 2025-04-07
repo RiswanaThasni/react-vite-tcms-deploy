@@ -116,7 +116,7 @@ const AppRouter = () => {
   <Route path='/testengineer_dashboard/test_details' element={<TestDetails/>}/> 
   <Route path='/testengineer_dashboard/test_track' element={<TestTrack/>}/>
   <Route path='/testengineer_dashboard/tests/:testId' element={<Tests/>}/>
-    <Route path='testengineer_dashboard/tests/bugs/:testId' element={<Bugs/>}/> 
+    <Route path='/testengineer_dashboard/tests/bugs/:testId' element={<Bugs/>}/> 
 
     </Route>
   

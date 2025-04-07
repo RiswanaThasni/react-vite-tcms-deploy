@@ -56,7 +56,7 @@ const ChangePassword = () => {
           {message && <p className="text-red-500 text-sm">{message}</p>}
           <button
             type="submit"
-            className="w-full mt-4 bg-custom text-white font-semibold px-6 py-2 rounded-lg hover:bg-custom"
+            className="w-full mt-4 bg-sidebar-hover text-white font-semibold px-6 py-2 rounded-lg hover:bg-custom"
           >
             Reset Password
           </button>

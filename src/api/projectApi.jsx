@@ -340,17 +340,31 @@ export const fetchProjectManagers = async () => {
     
     
     // Create a new project
+    // export const createProject = async (projectData) => {
+    //   try {
+    //     const response = await axiosInstance.post("/api/projects/create/", projectData);
+    //     console.log("Project Created Successfully:", response.data);
+    //     return response.data;
+    //   } catch (error) {
+    //     console.error("Error creating project:", error.response?.data || error.message);
+    //     throw error;
+    //   }
+    // }
+
+
     export const createProject = async (projectData) => {
       try {
-        const response = await axiosInstance.post("/api/projects/create/", projectData);
-        console.log("Project Created Successfully:", response.data);
+        const response = await axiosInstance.post("/api/projects/create/", projectData, {
+          headers: {
+            'Content-Type': 'application/json' // Force JSON content type
+          }
+        });
         return response.data;
       } catch (error) {
-        console.error("Error creating project:", error.response?.data || error.message);
+        console.error("Detailed error:", error.response?.data);
         throw error;
       }
-    }
-
+    };
 //    
 
 
