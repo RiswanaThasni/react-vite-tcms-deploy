@@ -9,7 +9,8 @@ import { addModuleApi, addTasksByModuleId, editTask } from "../../../api/project
 import { fetchTasksByModule } from "../../../redux/slices/taskSlice"
 import { getDevelopersByProject } from "../../../redux/slices/developerSlice";
 import { FiTrash } from "react-icons/fi";
-import { DeleteTaskById } from "../../../api/taskApi";
+import { DeleteModuleById, DeleteTaskById } from "../../../api/taskApi";
+
 
 
 
@@ -120,6 +121,30 @@ const editFileInputRef = useRef(null);  // Add this line
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     setTaskFiles([...taskFiles, ...files]);
+  };
+
+
+  const handleDeleteModule = async (e, moduleId) => {
+    e.stopPropagation(); // Prevent module selection when clicking trash icon
+    
+    try {
+      if (window.confirm("Are you sure you want to delete this module? All associated tasks will also be deleted.")) {
+        await DeleteModuleById(moduleId);
+        
+        // If the deleted module was selected, clear selection
+        if (selectedModule === moduleId) {
+          setSelectedModule(null);
+        }
+        
+        // Refresh modules list after deletion
+        dispatch(fetchModules(selectedProject));
+        
+        alert("Module deleted successfully!");
+      }
+    } catch (error) {
+      console.error("Error deleting module:", error);
+      alert("Failed to delete module. Please try again.");
+    }
   };
 
   const handleDeleteTask = async (e, taskId) => {
@@ -394,29 +419,38 @@ const editFileInputRef = useRef(null);  // Add this line
             <div className="space-y-2 ">
               {modules.length > 0 ? (
                 modules.map((module) => (
-                  <button
+                  <div
                     key={module.id}
-                    className={`w-full text-left px-3 py-2 rounded-md ${
+                    className={`w-full px-3 py-2 rounded-md relative ${
                       selectedModule === module.id ? 'bg-white text-black' : 'hover:bg-gray-100'
                     }`}
-                    onClick={() => handleModuleSelect(module.id)}
                   >
-                   <div className="flex flex-col h-full">
-        <div>
-          <div className="font-normal text-sm">{module.module_name}</div>
-          <div className="text-xs text-gray-500  truncate"> {module.module_description}</div>
-        </div>
-        <div className="mt-2 flex justify-end">
-          <div className="text-xs text-red-800">Due :{module.due_date}</div>
-        </div>
-      </div>
-                  
-                    
-                  </button>
-
+                    <button
+                      className="w-full text-left"
+                      onClick={() => handleModuleSelect(module.id)}
+                    >
+                      <div className="flex flex-col h-full">
+                        <div>
+                          <div className="font-normal text-sm">{module.module_name}</div>
+                          <div className="text-xs text-gray-500 truncate">{module.module_description}</div>
+                        </div>
+                        <div className="mt-2 flex justify-end">
+                          <div className="text-xs text-red-800">Due: {module.due_date}</div>
+                        </div>
+                      </div>
+                    </button>
+                    {/* Add the trash icon button for deletion */}
+                    <button
+                      onClick={(e) => handleDeleteModule(e, module.id)}
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700 focus:outline-none"
+                      title="Delete Module"
+                    >
+                      <FiTrash size={16} />
+                    </button>
+                  </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500">No modules available</p>
+                 <p className="text-sm text-gray-500">No modules available</p>
               )}
              
 

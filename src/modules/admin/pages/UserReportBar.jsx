@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { PieChart, Pie, Cell } from "recharts";
-import { User } from "lucide-react";
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { User, UserCheck, UserX, Activity } from "lucide-react";
 import { UsersTypeCount } from "../../../api/userApi";
 
+
 const UserReportBar = () => {
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [activeUsers, setActiveUsers] = useState(0);
-  const [inactiveUsers, setInactiveUsers] = useState(0);
+  const [userStats, setUserStats] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    inactiveUsers: 0
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,32 +20,28 @@ const UserReportBar = () => {
         const data = await UsersTypeCount();
         
         if (data) {
-          // Handle total_users safely
-          if (data.total_users !== undefined) {
-            setTotalUsers(
-              typeof data.total_users === 'number' 
-                ? data.total_users 
-                : (Array.isArray(data.total_users) ? data.total_users.length : 0)
-            );
+          // Filter out admin users if the data includes user details
+          let filteredTotal = data.total_users || 0;
+          let filteredActive = data.active_count || 0;
+          let filteredInactive = data.inactive_count || 0;
+          
+          // If we have the detailed users array, we can filter out admins
+          if (Array.isArray(data.users)) {
+            const nonAdminUsers = data.users.filter(user => user.role !== "Admin");
+            filteredTotal = nonAdminUsers.length;
+            
+            if (Array.isArray(data.active_users)) {
+              const nonAdminActiveUsers = data.active_users.filter(user => user.role !== "Admin");
+              filteredActive = nonAdminActiveUsers.length;
+              filteredInactive = filteredTotal - filteredActive;
+            }
           }
           
-          // Handle active_users safely
-          if (data.active_users !== undefined) {
-            setActiveUsers(
-              typeof data.active_users === 'number' 
-                ? data.active_users 
-                : (Array.isArray(data.active_users) ? data.active_users.length : 0)
-            );
-          }
-          
-          // Handle inactive_users safely
-          if (data.inactive_users !== undefined) {
-            setInactiveUsers(
-              typeof data.inactive_users === 'number' 
-                ? data.inactive_users 
-                : (Array.isArray(data.inactive_users) ? data.inactive_users.length : 0)
-            );
-          }
+          setUserStats({
+            totalUsers: filteredTotal,
+            activeUsers: filteredActive,
+            inactiveUsers: filteredInactive
+          });
         } else {
           throw new Error("No data received from API");
         }
@@ -56,90 +55,70 @@ const UserReportBar = () => {
     fetchUserStats();
   }, []);
 
-  const data = [
-    { name: "active", value: activeUsers, color: "#F3F4F6" },
-    { name: "inactive", value: inactiveUsers, color: "#F3F4F6" },
+  // Calculate active percentage for the progress indicator
+  const activePercentage = userStats.totalUsers > 0 
+    ? Math.round((userStats.activeUsers / userStats.totalUsers) * 100) 
+    : 0;
+
+  // Chart data
+  const chartData = [
+    { name: "Total", value: userStats.totalUsers, color: "#3B82F6" },
+    { name: "Active", value: userStats.activeUsers, color: "#10B981" },
+    { name: "Inactive", value: userStats.inactiveUsers, color: "#EF4444" }
   ];
 
-  if (loading) return <p className="text-center">Loading user data...</p>;
-  if (error) return <p className="text-center text-red-500">Error: {error}</p>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-64">
+      <span className="ml-2 text-gray-600">Loading user data...</span>
+    </div>
+  );
+
+  if (error) return (
+    <div className="text-center p-2 bg-red-50 rounded-lg">
+      <p className="text-red-500 font-medium">Error: {error}</p>
+    </div>
+  );
 
   return (
-    <div className="top-0  rounded-lg ">
-     <div className="relative flex justify-center items-center ">
-        <PieChart width={250} height={150}>
-
-        <Pie
-            data={[{ name: "Outer", value: 1 }]} 
-            cx={125}
-            cy={120} // Move slightly up
-            startAngle={180}
-            endAngle={0}
-            innerRadius={100}
-            outerRadius={110} 
-            fill="#D8F278"
-            stroke="none"
-            cornerRadius={8}
-              paddingAngle={8} // Increased padding for more space between slices
-
-
-          />
-
-          {/* Middle Layer (Extra Inner Layer for Styling) */}
-          <Pie
-            data={[{ name: "Inner Border", value: 1 }]}
-            cx={125}
-            cy={120} // Move slightly up
-            startAngle={180}
-            endAngle={0}
-            innerRadius={95}
-            outerRadius={98}
-            fill="#D8F278"
-            stroke="none"
-            cornerRadius={8}
-
-          />
-
+    <div className="bg-white rounded-lg shadow-md p-2">
+      
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
+        <div className="bg-blue-100 p-2 rounded-lg flex items-center">
+          <div className="bg-blue-200 p-3 rounded-full">
+            <User size={24} className="text-blue-600" />
+          </div>
+          <div className="ml-4">
+            <p className="text-sm text-gray-600">Total Users</p>
+            <p className="text-2xl font-bold text-blue-700">{userStats.totalUsers}</p>
+          </div>
+        </div>
         
-<Pie
-  data={data}
-  cx={125}
-  cy={120}
-  startAngle={180} // Start from the left side
-  endAngle={0} // Ends at the right side
-  innerRadius={75}
-  outerRadius={90}
-  paddingAngle={0}
-  dataKey="value"
-  cornerRadius={5}
->
-  {data.map((entry, index) => (
-    <Cell key={`cell-${index}`} fill={entry.color} />
-  ))}
-</Pie>
+        <div className="bg-green-100 p-4 rounded-lg flex items-center">
+          <div className="bg-green-200 p-3 rounded-full">
+            <UserCheck size={24} className="text-green-600" />
+          </div>
+          <div className="ml-4">
+            <p className="text-sm text-gray-600">Active Users</p>
+            <p className="text-2xl font-bold text-green-700">{userStats.activeUsers}</p>
+          </div>
+        </div>
+        
+        <div className="bg-red-100 p-4 rounded-lg flex items-center">
+          <div className="bg-red-200 p-3 rounded-full">
+            <UserX size={24} className="text-red-600" />
+          </div>
+          <div className="ml-4">
+            <p className="text-sm text-gray-600">Inactive Users</p>
+            <p className="text-2xl font-bold text-red-700">{userStats.inactiveUsers}</p>
+          </div>
+        </div>
+      </div>
 
-        </PieChart>
-        {/* User Icon at Center of Half Circle */}
-         <div className="absolute top-18 left-130 flex flex-col items-center">
-                  <div className="bg-gray-100 p-2 rounded-full">
-                    <User size={24} className="text-black" />
-                  </div>
-                  <p className="text-xl font-bold text-gray-800">{totalUsers}</p>
-                  <p className="text-sm font-semibold text-blue-950">Total Users</p>
-                </div>
-              </div>
-              {/* Active & Inactive Sections */}
-              <div className="flex gap-30  ">
-                <div className="flex flex-col items-center p-1 ml-112  rounded-lg ">
-                  <p className="text-sm font-semibold text-green-900">{activeUsers}</p>
-                  <p className="text-sm font-semibold text-green-600">Active</p>
-                </div>
-                <div className="flex flex-col items-center p-1 rounded-lg ">
-                  <p className="text-sm font-bold text-red-900">{inactiveUsers}</p>
-                  <p className="text-sm font-semibold text-red-600">Inactive</p>
-                </div>
-              </div>
-            </div>
+      
+
+      
+    </div>
   );
 };
 

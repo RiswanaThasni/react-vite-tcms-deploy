@@ -232,11 +232,10 @@ const Report = () => {
   const projectOptions = getProjectOptions();
 
   return (
-    <div className="container p-4 mx-auto ">
+    <div className="container p-2 mx-auto ">
       
-      <h2 className="text-lg font-semibold mb-2">User Analysis</h2>
 <UserReportBar/>   
-   <h2 className="text-lg font-semibold mb-2"> Analysis</h2>
+   <h2 className="text-lg font-semibold mt-2 mb-2"> Analysis</h2>
 
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex  mb-4">

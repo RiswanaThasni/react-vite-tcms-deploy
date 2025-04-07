@@ -99,6 +99,21 @@ export const DeleteTaskById = async (taskId) => {
   }
 };
 
+export const DeleteModuleById = async (moduleId) => {
+  let accessToken = localStorage.getItem("access_token");
+
+  try {
+    const response = await axios.delete(`${API_URL}/api/modules/${moduleId}/`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Failed to delte module ");
+  }
+};
+
 
 
 export const listTaskByBug = async () => {
