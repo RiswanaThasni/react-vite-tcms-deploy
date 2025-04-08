@@ -1,11 +1,6 @@
-
-
 import React, { useState, useEffect } from "react";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
-import { viewProgressByAdmin } from "../../../api/projectApi";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { fetchProjects } from "../../../api/projectApi";
+import { CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 const OverallReport = () => {
   const [projectsData, setProjectsData] = useState([]);
@@ -20,27 +15,27 @@ const OverallReport = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await viewProgressByAdmin();
-        const transformedData = response.data.map((project) => ({
+        // Using the fetchProjects API
+        const data = await fetchProjects();
+        const transformedData = data.map((project) => ({
           name: project.project_name,
           progress: project.progress,
           id: project.project_id || project.id,
-          status: project.status || getProjectStatus(project.progress)
+          status: project.status
         }));
         
         setProjectsData(transformedData);
         
-        // Calculate project status counts based on API status field
+        // Calculate project status counts
         const counts = transformedData.reduce((acc, project) => {
-          // Use the status directly from API or fallback to calculated one
-          const status = project.status || getProjectStatus(project.progress);
+          const status = project.status || "pending";
           acc[status] = (acc[status] || 0) + 1;
           return acc;
         }, { completed: 0, in_progress: 0, pending: 0 });
         
         setStatusCounts(counts);
       } catch (error) {
-        console.error("Error fetching project progress:", error);
+        console.error("Error fetching projects:", error);
       } finally {
         setIsLoading(false);
       }
@@ -49,122 +44,115 @@ const OverallReport = () => {
     fetchData();
   }, []);
 
-  // Fallback function if status is not provided in API
-  const getProjectStatus = (progress) => {
-    if (progress >= 90) return "completed";
-    if (progress >= 30) return "in_progress";
-    return "pending";
-  };
-
-  // Prepare donut chart data with status labels mapped to display text
-  const chartData = {
-    labels: ["Completed  project", "In Progress project", "Pending  project    "],
-    datasets: [
-      {
-        label: "Project Status",
-        data: [
-          statusCounts.completed || 0, 
-          statusCounts.in_progress || 0, 
-          statusCounts.pending || 0
-        ],
-        backgroundColor: ["#27FF14", "#FFEB14", "#F2A6A6"],
-        borderColor: ["#27FF14", "#FFEB14", "#F2A6A6"],
-        borderWidth: 1,
-        hoverOffset: 4
-      }
-    ]
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "bottom",
-        labels: {
-          font: {
-            size: 10  // Reduced font size
-          },
-          padding: 10  // Reduced padding
-        }
-      },
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            const label = context.label || '';
-            const value = context.raw || 0;
-            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
-            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-            return `${label}: ${value} (${percentage}%)`;
-          }
-        }
-      }
-    },
-    cutout: '60%'  // Slightly smaller cutout for better proportion in small container
-  };
-
-  // Get status display text
-  const getStatusDisplay = (status) => {
-    const statusMap = {
-      completed: "Completed",
-      in_progress: "In Progress",
-      pending: "Pending"
-    };
-    return statusMap[status] || status;
+  // Calculate percentages for visualization
+  const totalProjects = projectsData.length;
+  const percentages = {
+    completed: totalProjects ? Math.round((statusCounts.completed / totalProjects) * 100) : 0,
+    in_progress: totalProjects ? Math.round((statusCounts.in_progress / totalProjects) * 100) : 0,
+    pending: totalProjects ? Math.round((statusCounts.pending / totalProjects) * 100) : 0
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm w-full h-full p-2">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2 text-center">Project Status Overview</h3>
+    <div className="bg-white rounded-lg shadow-sm w-full h-full">
+      <h3 className="text-base font-semibold text-gray-700 p-2 border-b">Project Overview</h3>
       
       {isLoading ? (
         <div className="flex justify-center items-center h-32">
-          {/* Loading indicator could be added here */}
         </div>
       ) : (
-        <div className="flex flex-col space-y-2">
-          {/* Donut Chart - now smaller and more compact */}
-          <div className="h-36 flex items-center justify-center">
-            <Doughnut data={chartData} options={options} />
+        <div className="p-3">
+          {/* Visual representation using proportional blocks */}
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-full h-24 flex rounded-lg overflow-hidden">
+              {statusCounts.completed > 0 && (
+                <div 
+                  className="bg-green-100 flex flex-col items-center justify-center border-r border-white"
+                  style={{ width: `${percentages.completed}%` }}
+                >
+                  <CheckCircle size={20} className="text-green-600 mb-1" />
+                  <span className="text-xs font-medium text-green-800">{percentages.completed}%</span>
+                </div>
+              )}
+              
+              {statusCounts.in_progress > 0 && (
+                <div 
+                  className="bg-yellow-100 flex flex-col items-center justify-center border-r border-white"
+                  style={{ width: `${percentages.in_progress}%` }}
+                >
+                  <Clock size={20} className="text-yellow-600 mb-1" />
+                  <span className="text-xs font-medium text-yellow-800">{percentages.in_progress}%</span>
+                </div>
+              )}
+              
+              {statusCounts.pending > 0 && (
+                <div 
+                  className="bg-red-100 flex flex-col items-center justify-center"
+                  style={{ width: `${percentages.pending}%` }}
+                >
+                  <AlertCircle size={20} className="text-red-600 mb-1" />
+                  <span className="text-xs font-medium text-red-800">{percentages.pending}%</span>
+                </div>
+              )}
+            </div>
           </div>
-          
-          {/* Stats Cards - now more compact */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-gray-50 p-2 rounded-lg border-l-4 border-green-500">
-              <div className="flex justify-start items-center">
-                <div>
-                  <p className="text-xs text-gray-500">Completed</p>
-                  <p className="text-sm font-bold text-gray-800">{statusCounts.completed || 0}</p>
+
+          {/* Status detail cards with progress bars */}
+          <div className="space-y-3">
+            <div className="bg-gray-50 p-2 rounded border border-gray-200">
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex items-center">
+                  <CheckCircle size={16} className="text-green-600 mr-2" />
+                  <span className="text-sm font-medium">Completed</span>
                 </div>
+                <span className="text-sm font-bold">{statusCounts.completed} projects</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-green-500 rounded-full h-2"
+                  style={{ width: `${percentages.completed}%` }}
+                ></div>
               </div>
             </div>
-            
-            <div className="bg-gray-50 p-2 rounded-lg border-l-4 border-yellow-500">
-              <div className="justify-start items-center">
-                <div>
-                  <p className="text-xs text-gray-500">In Progress</p>
-                  <p className="text-sm font-bold text-gray-800">{statusCounts.in_progress || 0}</p>
+
+            <div className="bg-gray-50 p-2 rounded border border-gray-200">
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex items-center">
+                  <Clock size={16} className="text-yellow-600 mr-2" />
+                  <span className="text-sm font-medium">In Progress</span>
                 </div>
+                <span className="text-sm font-bold">{statusCounts.in_progress} projects</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-yellow-500 rounded-full h-2"
+                  style={{ width: `${percentages.in_progress}%` }}
+                ></div>
               </div>
             </div>
-            
-            <div className="bg-gray-50 p-2 rounded-lg border-l-4 border-red-500">
-              <div className="flex justify-start items-center">
-                <div>
-                  <p className="text-xs text-gray-500">Pending </p>
-                  <p className="text-sm font-bold text-gray-800">{statusCounts.pending || 0}</p>
+
+            <div className="bg-gray-50 p-2 rounded border border-gray-200">
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex items-center">
+                  <AlertCircle size={16} className="text-red-600 mr-2" />
+                  <span className="text-sm font-medium">Pending</span>
                 </div>
+                <span className="text-sm font-bold">{statusCounts.pending} projects</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-red-500 rounded-full h-2"
+                  style={{ width: `${percentages.pending}%` }}
+                ></div>
               </div>
             </div>
-            
-            <div className="bg-blue-50 p-2 rounded-lg border-l-4 border-blue-500">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-xs text-gray-500">Total</p>
-                  <p className="text-sm font-bold text-gray-800">{projectsData.length}</p>
-                </div>
-              </div>
-            </div>
+          </div>
+
+          {/* Summary footer */}
+          <div className="mt-4 flex justify-between items-center pt-2 border-t border-gray-200">
+            <span className="text-sm font-medium text-gray-700">Total Projects</span>
+            <span className="text-sm font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+              {totalProjects}
+            </span>
           </div>
         </div>
       )}

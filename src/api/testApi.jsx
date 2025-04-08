@@ -561,6 +561,42 @@ export const getFailedTestCases = async (moduleId) => {
 };
 
 
+export const getPassedTestCases = async (moduleId) => {
+  let accessToken = localStorage.getItem("access_token");
+  
+  try {
+    const response = await axios.get(`${API_URL}/api/modules/${moduleId}/passed-test-cases/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      try {
+        accessToken = await refreshAccessToken();
+
+        // Retry API request with new token
+        const retryResponse = await axios.get(`${API_URL}/api/modules/${moduleId}/failed-test-cases/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        return retryResponse.data;
+      } catch (refreshError) {
+        console.error("Token refresh failed:", refreshError);
+        throw new Error("Session expired. Please log in again.");
+      }
+    } else {
+      console.error("Error fetching failed test cases:", error.response?.data || error.message);
+      throw new Error("Failed to load failed test cases. Please try again.");
+    }
+  }
+};
+
+
 export const getTestCaseBugs = async (testCaseId) => {
   let accessToken = localStorage.getItem("access_token");
 

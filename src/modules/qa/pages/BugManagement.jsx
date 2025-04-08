@@ -2,9 +2,10 @@
 // import { getProjectByQa } from '../../../redux/slices/projectSlice';
 // import { useDispatch, useSelector } from 'react-redux';
 // import { fetchModules } from '../../../redux/slices/moduleSlice';
-// import { getBugDetails, getFailedTestCases, getTestCaseBugs } from '../../../api/testApi';
+// import { getBugDetails, getFailedTestCases, getPassedTestCases, getTestCaseBugs } from '../../../api/testApi';
 // import { ReportBug } from '../../../api/bugApi';
 // import { Search } from 'lucide-react';
+
 
 // const BugManagement = () => {
 //   const dispatch = useDispatch();
@@ -127,6 +128,21 @@
 //     setNewBug({...newBug, testCaseId});
 //   };
 
+//   // const handleBugSelect = async (bugId) => {
+//   //   setSelectedBug(bugId);
+//   //   setLoadingBugDetails(true);
+//   //   setErrorBugDetails(null);
+//   //   try {
+//   //     const details = await getBugDetails(bugId);
+//   //     setBugDetails(details);
+//   //   } catch (error) {
+//   //     console.error("Error fetching bug details:", error);
+//   //     setErrorBugDetails(error.message || "Failed to load bug details");
+//   //   } finally {
+//   //     setLoadingBugDetails(false);
+//   //   }
+//   // };
+
 //   const handleBugSelect = async (bugId) => {
 //     setSelectedBug(bugId);
 //     setLoadingBugDetails(true);
@@ -144,6 +160,9 @@
 
 //   const handleAddBug = async () => {
 //     if (!selectedTestCase || !newBug.title) return;
+    
+//     // Generate a temporary ID that will be used until we get the real one from the server
+//     const tempId = `temp-${Date.now()}`;
     
 //     try {
 //       const formData = new FormData();
@@ -170,10 +189,38 @@
 //         formData.append('attachment', file);
 //       });
       
-//       // Use your existing ReportBug API function
+//       // Add the temporary bug to the UI first for immediate feedback
+//       const temporaryBug = {
+//         id: tempId,
+//         bug_id: bugData.bug_id,
+//         title: newBug.title, 
+//         description: newBug.description,
+//         severity: newBug.severity,
+//         priority: newBug.priority,
+//         status: 'Open',
+//         stepsToReproduce: newBug.stepsToReproduce,
+//         environmentInfo: newBug.environmentInfo,
+//         reportedBy: "Current User",
+//         reportedDate: new Date().toISOString(),
+//         // Include more fields as needed
+//       };
+      
+//       // Update the UI immediately
+//       setBugs(prevBugs => [...prevBugs, temporaryBug]);
+      
+//       // Now make the API call
 //       const reportedBug = await ReportBug(selectedTestCase, formData);
       
-//       setBugs(prevBugs => [...prevBugs, reportedBug]);
+//       // Replace the temporary bug with the real one
+//       setBugs(prevBugs => prevBugs.map(bug => 
+//         bug.id === tempId ? {
+//           ...reportedBug,
+//           id: reportedBug.id || reportedBug.bug.id,
+//           severity: reportedBug.severity || newBug.severity,
+//           status: reportedBug.status || 'Open',
+//           description: reportedBug.description || newBug.description
+//         } : bug
+//       ));
       
 //       // Reset the form
 //       setNewBug({
@@ -186,9 +233,11 @@
 //     } catch (error) {
 //       console.error("Error reporting bug:", error.response?.data || error.message);
 //       alert(error.response?.data?.error || "Failed to report bug");
+      
+//       // Remove the temporary bug if the API call failed
+//       setBugs(prevBugs => prevBugs.filter(bug => bug.id !== tempId));
 //     }
 //   };
-
 //   // Helper functions for UI display
 //   const getFailedTestCasesByModuleId = () => testCases.filter(t => t.status === 'Failed' || t.status === 'failed');
 //   const getTestCaseById = (testCaseId) => testCases.find(t => t.id === testCaseId);
@@ -217,106 +266,42 @@
 
 //   return (
 //     <div className="p-4">
-//     <div className='flex gap-3'>
-//     <div className="flex  gap-2 mb-2">
-//         <select
-//           className="bg-white text-sm text-black rounded-lg p-2"
-//           onChange={(e) => handleProjectSelect(e.target.value)}
-//           value={selectedProject || ''}
-//         >
-//           <option value="">--Select Project--</option>
-//           {projects.map((project) => (
-//             <option key={project.id} value={project.id}>
-//               {project.project_name}
-//             </option>
-//           ))}
-//         </select>
+//       <div className='flex gap-3'>
+//         <div className="flex gap-2 mb-2">
+//           <select
+//             className="bg-white text-sm text-black rounded-lg p-2"
+//             onChange={(e) => handleProjectSelect(e.target.value)}
+//             value={selectedProject || ''}
+//           >
+//             <option value="">--Select Project--</option>
+//             {projects.map((project) => (
+//               <option key={project.id} value={project.id}>
+//                 {project.project_name}
+//               </option>
+//             ))}
+//           </select>
 //         </div>
 
-//         <div className="flex  gap-2 mb-2">
-//         <select
-//           className="bg-white text-sm text-black rounded-lg p-2"
-//           onChange={(e) => handleModuleSelect(e.target.value)}
-//           value={selectedProject || ''}
-//         >
-//           <option value="">--Select Module--</option>
-//           {modules.map((module) => (
-//             <option key={module.id} value={module.id}>
-//               {module.module_name}
-//             </option>
-//           ))}
-//         </select>
+//         <div className="flex gap-2 mb-2">
+//           <select
+//             className="bg-white text-sm text-black rounded-lg p-2"
+//             onChange={(e) => handleModuleSelect(e.target.value)}
+//             value={selectedModule || ''}
+//             disabled={!selectedProject}
+//           >
+//             <option value="">--Select Module--</option>
+//             {modules.map((module) => (
+//               <option key={module.id} value={module.id}>
+//                 {module.module_name}
+//               </option>
+//             ))}
+//           </select>
 //         </div>
+//       </div>
 
-//     </div>
-
-
-
-
-//     {/* <div className="relative w-72 mb-4">
-//             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
-//             <input type="text" placeholder="Search Test Cases..." className="w-full p-2 pl-10 bg-white rounded-md text-sm" />
-//           </div> */}
-//       <div className="grid grid-cols-1 md:grid-cols-1 ">
-//         {/* Left Panel: Projects and Modules */}
-//         {/* <div className="col-span-1 bg-slate-200 p-4 rounded-lg shadow-md">
-//           <h2 className="text-base font-semibold mb-3">Projects</h2>
-//           {projectsLoading && <p className="text-sm text-gray-500">Loading projects...</p>}
-//           {projectsError && <p className="text-sm text-red-500">{projectsError}</p>}
-//           <div className="space-y-2">
-//             {projects?.length > 0 ? (
-//               projects.map((project) => (
-//                 <button
-//                   key={project.id}
-//                   className={`w-full text-left px-3 py-2 rounded-md text-sm ${
-//                     selectedProject === project.id ? 'bg-blue-100 text-blue-700 font-medium' : 'hover:bg-gray-100'
-//                   }`}
-//                   onClick={() => handleProjectSelect(project.id)}
-//                 >
-//                   {project.project_name}
-//                 </button>
-//               ))
-//             ) : !projectsLoading && (
-//               <p className="text-sm text-gray-500">No projects available</p>
-//             )}
-//           </div>
-//         </div> */}
-
-//         {/* Module panel */}
-//         {/* <div className="col-span-1 bg-slate-200 p-4 rounded-lg shadow-md">
-//           <h2 className="text-base font-semibold mb-3">Modules</h2>
-//           <div className="space-y-2">
-//           {modulesLoading ? (
-//             <p className="text-sm text-gray-500">Loading modules...</p>
-//           ) : modulesError ? (
-//             <p className="text-sm text-red-500">{modulesError}</p>
-//           ) : selectedProject ? (
-//             <div className="space-y-2">
-//               {modules?.length > 0 ? (
-//                 modules.map((module) => (
-//                   <button
-//                     key={module.id}
-//                     className={`w-full text-left px-3 py-2 rounded-md ${
-//                       selectedModule === module.id ? 'bg-blue-100 text-blue-700 font-medium' : 'hover:bg-gray-100'
-//                     }`}
-//                     onClick={() => handleModuleSelect(module.id)}
-//                   >
-//                     <div className="font-medium text-sm">{module.module_name}</div>
-//                     <div className="text-xs text-gray-500 truncate mt-1">{module.module_description}</div>
-//                   </button>
-//                 ))
-//               ) : (
-//                 <p className="text-sm text-gray-500">No modules available</p>
-//               )}
-//             </div>
-//           ) : (
-//             <p className="text-sm text-gray-500">Select a project first</p>
-//           )}
-//           </div>
-//         </div> */}
-        
+//       <div className="grid grid-cols-1 md:grid-cols-1">
 //         {/* Middle Panel: Failed Test Cases */}
-//         <div className="  bg-slate-200 p-4 rounded-lg shadow-md">
+//         <div className="bg-slate-200 p-4 rounded-lg shadow-md">
 //           <div className="flex justify-between items-center mb-4">
 //             <h2 className="text-base font-semibold mb-3">Failed Test Cases</h2>
 //           </div>
@@ -477,9 +462,9 @@
 //             </div>
 //           ) : selectedTestCase ? (
 //             <div className=''>
-//               <div className="flex justify-between  items-center mb-4">
+//               <div className="flex justify-between items-center mb-4">
 //                 <h2 className="text-base font-semibold mb-3">
-//                   Bugs for: {getTestCaseById(selectedTestCase)?.title || getTestCaseById(selectedTestCase)?.name}
+//                   Bugs for: {getTestCaseById(selectedTestCase)?.test_title || getTestCaseById(selectedTestCase)?.name}
 //                 </h2>
 //                 <button 
 //                   className="text-sm px-3 py-1 bg-red-600 text-white rounded-md font-medium hover:bg-red-700"
@@ -629,9 +614,10 @@ import React, { useEffect, useState } from 'react';
 import { getProjectByQa } from '../../../redux/slices/projectSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchModules } from '../../../redux/slices/moduleSlice';
-import { getBugDetails, getFailedTestCases, getTestCaseBugs } from '../../../api/testApi';
+import { getBugDetails, getFailedTestCases, getPassedTestCases, getTestCaseBugs } from '../../../api/testApi';
 import { ReportBug } from '../../../api/bugApi';
 import { Search } from 'lucide-react';
+
 
 const BugManagement = () => {
   const dispatch = useDispatch();
@@ -650,6 +636,13 @@ const BugManagement = () => {
   const [bugDetails, setBugDetails] = useState(null);
   const [loadingBugDetails, setLoadingBugDetails] = useState(false);
   const [errorBugDetails, setErrorBugDetails] = useState(null);
+
+
+  // Add this to your state declarations
+const [passedTestCases, setPassedTestCases] = useState([]);
+const [loadingPassedTestCases, setLoadingPassedTestCases] = useState(false);
+const [errorPassedTestCases, setErrorPassedTestCases] = useState(null);
+const [activeTab, setActiveTab] = useState('all'); // 'all', 'failed', 'passed'
   
   // UI state
   const [selectedBug, setSelectedBug] = useState(null);
@@ -702,11 +695,13 @@ const BugManagement = () => {
   useEffect(() => {
     if (selectedModule) {
       fetchFailedTestCases(selectedModule);
+      fetchPassedTestCases(selectedModule);
       setSelectedTestCase(null);
       setSelectedBug(null);
       setBugs([]);
     }
   }, [selectedModule]);
+  
 
   // Fetch bugs when a test case is selected
   useEffect(() => {
@@ -728,6 +723,20 @@ const BugManagement = () => {
       setErrorTestCases(error.message || "Failed to load test cases");
     } finally {
       setLoadingTestCases(false);
+    }
+  };
+
+  const fetchPassedTestCases = async (moduleId) => {
+    setLoadingPassedTestCases(true);
+    setErrorPassedTestCases(null);
+    try {
+      const response = await getPassedTestCases(moduleId);
+      setPassedTestCases(response);
+    } catch (error) {
+      console.error("Error fetching passed test cases:", error);
+      setErrorPassedTestCases(error.message || "Failed to load passed test cases");
+    } finally {
+      setLoadingPassedTestCases(false);
     }
   };
 
@@ -754,20 +763,7 @@ const BugManagement = () => {
     setNewBug({...newBug, testCaseId});
   };
 
-  // const handleBugSelect = async (bugId) => {
-  //   setSelectedBug(bugId);
-  //   setLoadingBugDetails(true);
-  //   setErrorBugDetails(null);
-  //   try {
-  //     const details = await getBugDetails(bugId);
-  //     setBugDetails(details);
-  //   } catch (error) {
-  //     console.error("Error fetching bug details:", error);
-  //     setErrorBugDetails(error.message || "Failed to load bug details");
-  //   } finally {
-  //     setLoadingBugDetails(false);
-  //   }
-  // };
+ 
 
   const handleBugSelect = async (bugId) => {
     setSelectedBug(bugId);
@@ -866,8 +862,13 @@ const BugManagement = () => {
   };
   // Helper functions for UI display
   const getFailedTestCasesByModuleId = () => testCases.filter(t => t.status === 'Failed' || t.status === 'failed');
-  const getTestCaseById = (testCaseId) => testCases.find(t => t.id === testCaseId);
+// Replace your getTestCaseById function
+const getTestCaseById = (testCaseId) => {
+  const foundInFailed = testCases.find(t => t.id === testCaseId);
+  if (foundInFailed) return foundInFailed;
   
+  return passedTestCases.find(t => t.id === testCaseId);
+};  
   const getBugStatusClass = (status) => {
     if (!status) return 'bg-gray-100 text-gray-800';
     switch (status.toLowerCase()) {
@@ -889,6 +890,14 @@ const BugManagement = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  // Add this helper function
+const getAllTestCases = () => {
+  if (activeTab === 'failed') return getFailedTestCasesByModuleId();
+  if (activeTab === 'passed') return passedTestCases;
+  // Combine both for 'all' tab
+  return [...getFailedTestCasesByModuleId(), ...passedTestCases];
+};
 
   return (
     <div className="p-4">
@@ -927,42 +936,70 @@ const BugManagement = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-1">
         {/* Middle Panel: Failed Test Cases */}
-        <div className="bg-slate-200 p-4 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-base font-semibold mb-3">Failed Test Cases</h2>
-          </div>
-          
-          {loadingTestCases ? (
-            <p className="text-sm text-gray-500">Loading test cases...</p>
-          ) : errorTestCases ? (
-            <p className="text-sm text-red-500">{errorTestCases}</p>
-          ) : selectedModule ? (
-            <div className="space-y-2">
-              {getFailedTestCasesByModuleId().length > 0 ? (
-                getFailedTestCasesByModuleId().map(testCase => (
-                  <div 
-                    key={testCase.id}
-                    className={`p-3 border rounded-md cursor-pointer ${
-                      selectedTestCase === testCase.id ? 'bg-red-50 border-red-300' : 'bg-white hover:bg-gray-50'
-                    }`}
-                    onClick={() => handleTestCaseSelect(testCase.id)}
-                  >
-                    <div className="font-medium text-sm">{testCase.test_title || testCase.name}</div>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">
-                        Failed
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm text-gray-500">No failed test cases in this module</p>
-              )}
+       {/* Replace the test cases display section */}
+<div className="bg-slate-200 p-4 rounded-lg shadow-md">
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-base font-semibold mb-3">Test Cases</h2>
+    <div className="flex gap-2">
+      <button 
+        className={`text-xs px-3 py-1 rounded ${activeTab === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+        onClick={() => setActiveTab('all')}
+      >
+        All
+      </button>
+      <button 
+        className={`text-xs px-3 py-1 rounded ${activeTab === 'failed' ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+        onClick={() => setActiveTab('failed')}
+      >
+        Failed
+      </button>
+      <button 
+        className={`text-xs px-3 py-1 rounded ${activeTab === 'passed' ? 'bg-green-600 text-white' : 'bg-gray-200'}`}
+        onClick={() => setActiveTab('passed')}
+      >
+        Passed
+      </button>
+    </div>
+  </div>
+  
+  {(loadingTestCases || loadingPassedTestCases) ? (
+    <p className="text-sm text-gray-500">Loading test cases...</p>
+  ) : (errorTestCases || errorPassedTestCases) ? (
+    <p className="text-sm text-red-500">{errorTestCases || errorPassedTestCases}</p>
+  ) : selectedModule ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      {getAllTestCases().length > 0 ? (
+        getAllTestCases().map(testCase => (
+          <div 
+            key={testCase.id}
+            className={`p-3 border rounded-md cursor-pointer ${
+              selectedTestCase === testCase.id ? 'bg-blue-50 border-blue-300' : 'bg-white hover:bg-gray-50'
+            }`}
+            onClick={() => handleTestCaseSelect(testCase.id)}
+          >
+            <div className="font-medium text-sm">{testCase.test_title || testCase.name}</div>
+            <div className="flex justify-between items-center mt-2">
+              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                testCase.status === 'Failed' || testCase.status === 'failed' 
+                  ? 'bg-red-100 text-red-800' 
+                  : 'bg-green-100 text-green-800'
+              }`}>
+                {testCase.status === 'Failed' || testCase.status === 'failed' ? 'Failed' : 'Passed'}
+              </span>
+              <div className="text-xs text-gray-500">
+                {testCase.test_id || testCase.id}
+              </div>
             </div>
-          ) : (
-            <p className="text-sm text-gray-500">Select a module to view failed test cases</p>
-          )}
-        </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-sm text-gray-500 col-span-2">No test cases in this module</p>
+      )}
+    </div>
+  ) : (
+    <p className="text-sm text-gray-500">Select a module to view test cases</p>
+  )}
+</div>
         
         <div className="col-span-3 mt-2 bg-slate-200 p-4 rounded-lg shadow-md">
           {isAddingBug ? (
@@ -1088,17 +1125,25 @@ const BugManagement = () => {
             </div>
           ) : selectedTestCase ? (
             <div className=''>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-base font-semibold mb-3">
-                  Bugs for: {getTestCaseById(selectedTestCase)?.test_title || getTestCaseById(selectedTestCase)?.name}
-                </h2>
-                <button 
-                  className="text-sm px-3 py-1 bg-red-600 text-white rounded-md font-medium hover:bg-red-700"
-                  onClick={() => setIsAddingBug(true)}
-                >
-                  Report New Bug
-                </button>
-              </div>
+             {/* Update the top part of the bug display section */}
+<div className="flex justify-between items-center mb-4">
+  <h2 className="text-base font-semibold mb-3">
+    Bugs for: {getTestCaseById(selectedTestCase)?.test_title || getTestCaseById(selectedTestCase)?.name}
+    <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-medium ${
+      getTestCaseById(selectedTestCase)?.status === 'Failed' || getTestCaseById(selectedTestCase)?.status === 'failed'
+        ? 'bg-red-100 text-red-800' 
+        : 'bg-green-100 text-green-800'
+    }`}>
+      {getTestCaseById(selectedTestCase)?.status === 'Failed' || getTestCaseById(selectedTestCase)?.status === 'failed' ? 'Failed' : 'Passed'}
+    </span>
+  </h2>
+  <button 
+    className="text-sm px-3 py-1 bg-red-600 text-white rounded-md font-medium hover:bg-red-700"
+    onClick={() => setIsAddingBug(true)}
+  >
+    Report New Bug
+  </button>
+</div>
               
               {loadingBugs ? (
                 <p className="text-sm text-gray-500">Loading bugs...</p>
