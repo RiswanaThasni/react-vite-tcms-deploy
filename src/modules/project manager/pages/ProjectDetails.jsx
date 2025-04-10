@@ -143,7 +143,7 @@ const ProjectDetails = () => {
       {project ? (
         <div className="grid md:grid-cols-3 gap-2">
           {/* Project Overview */}
-          <div className="md:col-span-2 bg-white rounded-lg p-4 space-y-2">
+          <div className="md:col-span-2 bg-slate-200 rounded-lg p-4 space-y-2">
             <h2 className="text-xl font-bold text-gray-800">{project.project_name}</h2>
             <p className="text-gray-600 text-sm">{project.project_description}</p>
 

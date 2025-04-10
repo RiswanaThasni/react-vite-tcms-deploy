@@ -329,7 +329,7 @@ const MainSection = () => {
   });
 
 
-  const [visibleUsersCount, setVisibleUsersCount] = useState(4);
+  const [visibleUsersCount, setVisibleUsersCount] = useState(3);
   const [loadingMoreUsers, setLoadingMoreUsers] = useState(false);
   
   const [error, setError] = useState({
@@ -396,7 +396,7 @@ const MainSection = () => {
           label: "Inprogress Projects", 
           count: data.in_progress_projects, 
           className: "bg-[#FFD5C1]",
-          icon: <Clipboard className="text-blue-700" size={18}   strokeWidth={3}/>
+          icon: <Clipboard className="text-orange-500" size={18}   strokeWidth={3}/>
         },
       ];
 
