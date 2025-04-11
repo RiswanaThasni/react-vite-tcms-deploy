@@ -276,9 +276,7 @@ const ReportQa = () => {
             >
               Close
             </button>
-            <button className="bg-gray-700 text-white px-3 py-1 rounded text-sm hover:bg-gray-600">
-              Generate Bug Report
-            </button>
+            
           </div>
         </div>
       </div>
